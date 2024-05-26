@@ -2,7 +2,8 @@
 order: 5
 title: 双指针
 date: 2021-01-04
-category: 数据结构与算法
+category: 算法
+tag: 算法
 timeline: true
 article: true
 ---

@@ -2,7 +2,8 @@
 order: 8
 title: 动态规划
 date: 2021-01-07
-category: 数据结构与算法
+category: 算法
+tag: 算法
 timeline: true
 article: true
 ---

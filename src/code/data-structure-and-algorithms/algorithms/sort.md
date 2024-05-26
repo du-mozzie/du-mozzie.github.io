@@ -2,7 +2,8 @@
 order: 3
 title: 排序算法
 date: 2021-01-02
-category: 数据结构与算法
+category: 算法
+tag: 算法
 timeline: true
 article: true
 ---

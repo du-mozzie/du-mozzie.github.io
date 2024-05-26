@@ -48,7 +48,7 @@ export default navbar([
   {
     text: "随笔",
     icon: "fa-solid fa-compass-drafting",
-    link: "/jottings",
+    link: "/jottings/",
   },
   { text: "链接", icon: "link", link: "/links" },
   { text: "关于我", icon: "people", link: "/about" },

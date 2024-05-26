@@ -2,7 +2,8 @@
 order: 4
 title: 树
 date: 2020-12-29
-category: 数据结构与算法
+category: 数据结构
+tag: 数据结构
 timeline: true
 article: true
 ---

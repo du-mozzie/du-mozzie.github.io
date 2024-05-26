@@ -2,7 +2,8 @@
 order: 2
 title: 位运算
 date: 2021-01-01
-category: 数据结构与算法
+category: 算法
+tag: 算法
 timeline: true
 article: true
 ---

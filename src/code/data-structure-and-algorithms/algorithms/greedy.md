@@ -2,7 +2,8 @@
 order: 9
 title: 贪心算法
 date: 2021-01-08
-category: 数据结构与算法
+category: 算法
+tag: 算法
 timeline: true
 article: true
 ---
