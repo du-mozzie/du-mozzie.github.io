@@ -101,50 +101,6 @@ private static void insertionSort(int[] arr){
 }
 ```
 
-## 归并排序
-
-思路：
-
-整体就是一个简单递归，先找到原来数组的中间数，然后分为左右两边进行排序，在创建一个空数组，长度等于原来的数组，左右两个数组进行比较，依次排入新的数组中
-
-时间复杂度：O(NlogN)，可以用master公式求
-
-空间复杂度：O(N)
-
-```java
-public static void mergeSort(int[] arr) {
-    if (arr == null || arr.length < 2) return;
-    process(arr, 0, arr.length - 1);
-}
-
-private static void process(int[] arr, int l, int r) {
-    if (l == r) return;
-    int mid = l + ((r - l) >> 1);
-    process(arr, l, mid);
-    process(arr, mid + 1, r);
-    merge(arr, l, mid, r);
-}
-
-private static void merge(int[] arr, int l, int mid, int r) {
-    int[] help = new int[r - l + 1];
-    int p1 = l;
-    int p2 = mid + 1;
-    int i = 0;
-    while (p1 <= mid && p2 <= r) {
-        help[i++] = arr[p1] <= arr[p2] ? arr[p1++] : arr[p2++];
-    }
-    while (p1 <= mid) {
-        help[i++] = arr[p1++];
-    }
-    while (p2 <= r) {
-        help[i++] = arr[p2++];
-    }
-    for (i = 0; i < help.length; i++) {
-        arr[l + i] = help[i];
-    }
-}
-```
-
 ## 快速排序
 
 快速排序是由东尼·霍尔所发展的一种排序算法。在平均状况下，排序 n 个项目要 Ο(nlogn) 次比较。在最坏状况下则需要 Ο(n2) 次比较，但这种状况并不常见。事实上，快速排序通常明显比其他 Ο(nlogn) 算法更快，因为它的内部循环（inner loop）可以在大部分的架构上很有效率地被实现出来。
@@ -208,6 +164,50 @@ public static void swap(int[] arr, int i, int j) {
     int temp = arr[i];
     arr[i] = arr[j];
     arr[j] = temp;
+}
+```
+
+## 归并排序
+
+思路：
+
+整体就是一个简单递归，先找到原来数组的中间数，然后分为左右两边进行排序，在创建一个空数组，长度等于原来的数组，左右两个数组进行比较，依次排入新的数组中
+
+时间复杂度：O(NlogN)，可以用master公式求
+
+空间复杂度：O(N)
+
+```java
+public static void mergeSort(int[] arr) {
+    if (arr == null || arr.length < 2) return;
+    process(arr, 0, arr.length - 1);
+}
+
+private static void process(int[] arr, int l, int r) {
+    if (l == r) return;
+    int mid = l + ((r - l) >> 1);
+    process(arr, l, mid);
+    process(arr, mid + 1, r);
+    merge(arr, l, mid, r);
+}
+
+private static void merge(int[] arr, int l, int mid, int r) {
+    int[] help = new int[r - l + 1];
+    int p1 = l;
+    int p2 = mid + 1;
+    int i = 0;
+    while (p1 <= mid && p2 <= r) {
+        help[i++] = arr[p1] <= arr[p2] ? arr[p1++] : arr[p2++];
+    }
+    while (p1 <= mid) {
+        help[i++] = arr[p1++];
+    }
+    while (p2 <= r) {
+        help[i++] = arr[p2++];
+    }
+    for (i = 0; i < help.length; i++) {
+        arr[l + i] = help[i];
+    }
 }
 ```
 
