@@ -317,28 +317,21 @@ class Solution {
 ```java
 class Solution {
     public List<Integer> preorderTraversal(TreeNode root) {
-        List<Integer> res = new ArrayList<Integer>();
-        if (root == null) {
-            return res;
-        }
-
-        Deque<TreeNode> stack = new LinkedList<TreeNode>();
-        TreeNode node = root;
-        while (!stack.isEmpty() || node != null) {
-            while (node != null) {
-                res.add(node.val);
-                stack.push(node);
-                node = node.left;
+        List<Integer> res = new ArrayList<>();
+        Deque<TreeNode> stack = new LinkedList<>();
+        while(root != null || !stack.isEmpty()){
+            while(root != null){
+                res.add(root.val);
+                stack.push(root);
+                root = root.left;
             }
-            node = stack.pop();
-            node = node.right;
+            root = stack.pop();
+            root = root.right;
         }
         return res;
     }
 }
 ```
-
-
 
 ### 中序遍历
 
@@ -379,6 +372,27 @@ class Solution {
 }
 ```
 
+> 迭代
+
+```java
+class Solution {
+    public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> res = new ArrayList<>();
+        Deque<TreeNode> stack = new LinkedList<>();
+        while(root != null || !stack.isEmpty()){
+            while(root != null){
+                stack.push(root);
+                root = root.left;
+            }
+            root = stack.pop();
+            res.add(root.val);
+            root = root.right;
+        }
+        return res;
+    }
+}
+```
+
 ### 后序遍历
 
 **第三次成为栈顶元素的时候**
@@ -405,7 +419,7 @@ class Solution {
 
 后序遍历结果：DEBFCA
 
-已知前序遍历和中序遍历，就能确定后序遍历。
+> 递归
 
 ```java
 class Solution {
@@ -423,6 +437,36 @@ class Solution {
     }
 }
 ```
+
+> 迭代
+
+```java
+class Solution {
+    public List<Integer> postorderTraversal(TreeNode root) {
+        List<Integer> res = new ArrayList<>();
+        Deque<TreeNode> stack = new LinkedList<>();
+        TreeNode prevNode = null;
+        while(root != null || !stack.isEmpty()){
+            while(root != null){
+                stack.push(root);
+                root = root.left;
+            }
+            root = stack.pop();
+            if(root.right == null || root.right == prevNode){
+                res.add(root.val);
+                prevNode = root;
+                root = null;
+            }else{
+                stack.push(root);
+                root = root.right;
+            }
+        }
+        return res;
+    }
+}
+```
+
+已知前序遍历和中序遍历，就能确定后序遍历。
 
 ### 层序遍历
 
