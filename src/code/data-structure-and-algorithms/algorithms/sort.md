@@ -117,15 +117,59 @@ private static void insertionSort(int[] arr){
 
 空间复杂度最好：o(logn) 
 
-### 1. 算法步骤
+### 算法步骤
 
 1. 从数列中挑出一个元素，称为 "基准"（pivot）;
-2. 重新排序数列，所有元素比基准值小的摆放在基准前面，所有元素比基准值大的摆在基准的后面（相同的数可以到任一边）。在这个分区退出之后，该基准就处于数列的中间位置。这个称为分区（partition）操作；
-3. 递归地（recursive）把小于基准值元素的子数列和大于基准值元素的子数列排序；
+2. 将大于Pivot的数字放在Pivot的右边
+3. 将小于Pivot的数字放在Pivot的左边
+4. 分别对左右子序列重复前三步操作
 
-### 2. 动图演示
+> 代码
 
-![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/quickSort.gif)
+```java
+private void quickSort(int[] arr, int l, int r){
+    if(l >= r) return;
+    int left = l, right = r;
+    // 选取一个pivot
+    int pivot = arr[left];
+    while(left < right){
+        // 因为pivot选取的是下标0的位置，所有从right开始处理
+        while(left < right && arr[right] >= pivot){
+            right--;
+        }
+        if(left < right){
+            arr[left] = arr[right];
+        }
+        while(left < right && arr[left] < pivot){
+            left++;
+        }
+        if(left < right){
+            arr[right] = arr[left];
+        }
+    }
+    // 如果left >= right说明两边的数字已经排好序
+    arr[left] = pivot;
+    // 分别在处理左右子序列
+    quickSort(arr, l, left - 1);
+    quickSort(arr, left + 1, r);
+}
+```
+
+### 三路快排
+
+上面的排序在leetcode会超时，下面介绍一种基于快速排序的改进版本，结合了随机选择pivot和三路partitioning的思想
+
+1. 随机选择pivot：在每次递归调用中，通过随机选择数组中的一个元素作为pivot，可以避免在特定情况下（如数组已经有序）快速排序的最坏情况发生，从而提高了算法的性能。
+2. 三路partitioning：传统的快速排序使用单一的pivot将数组分为两部分，小于pivot的和大于pivot的。但在面对大量重复元素的情况下，这样的分割容易导致递归深度过深，影响性能。三路partitioning将数组分为三部分：小于、等于和大于pivot的元素，使得重复元素分布在中间部分，减少了比较和交换的次数，提高了性能。
+
+算法的步骤如下：
+
+- 在数组中随机选择一个元素作为pivot。
+- 使用三路partitioning将数组分为小于、等于和大于pivot的三部分。
+- 递归地对小于和大于pivot的两部分进行快速排序。
+- 由于等于pivot的部分已经有序，无需再次排序。
+
+通过随机选择pivot和三路partitioning，这个排序算法在处理大规模数据和包含大量重复元素的数组时都能够有很好的性能表现。
 
 ```java
 private static void quickSort(int[] arr) {
