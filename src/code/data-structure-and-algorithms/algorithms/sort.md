@@ -33,6 +33,24 @@ article: true
 
 `基于比较的排序`
 
+## 冒泡排序
+
+每一个数之间都进行比较，遇到比自己小的数就交换位置
+
+```java
+private static void bubbleSort(int[] arr) {
+    for (int i = 0; i < arr.length - 1; i++) {
+        for (int j = i + 1; j < arr.length; j++) {
+            if (arr[i] > arr[j]) {
+                int temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+        }
+    }
+}
+```
+
 ## 选择排序
 
 数组第一位先跟后面的元素，进行比较，选出最小的那一个数放在第一位
@@ -52,24 +70,6 @@ private static void selectionSort(int[] arr){
             int temp = arr[i];
             arr[i] = arr[minIndex];
             arr[minIndex] = temp;
-        }
-    }
-}
-```
-
-## 冒泡排序
-
-每一个数之间都进行比较，遇到比自己小的数就交换位置
-
-```java
-private static void bubbleSort(int[] arr) {
-    for (int i = 0; i < arr.length - 1; i++) {
-        for (int j = i + 1; j < arr.length; j++) {
-            if (arr[i] > arr[j]) {
-                int temp = arr[i];
-                arr[i] = arr[j];
-                arr[j] = temp;
-            }
         }
     }
 }
