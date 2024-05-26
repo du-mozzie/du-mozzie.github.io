@@ -92,11 +92,11 @@ void swap(int &a, int &b) {
 }
 ```
 
-位与操作解释：第一步：a ^= b ---> a = (a^b); 
+原理：
 
-第二步：b ^= a ---> b = b^(a^b) ---> b = (b^b)^a = a
-
-第三步：a ^= b ---> a = (a^b)^a = (a^a)^b = b
+1. a = a ^ b
+2. b = a ^ b = a ^ b ^ b = a
+3. a = a ^ b = a ^ b ^ a = b
 
 ### 3. 位操作判断[奇偶数](https://www.zhihu.com/search?q=奇偶数&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A736472332})
 
