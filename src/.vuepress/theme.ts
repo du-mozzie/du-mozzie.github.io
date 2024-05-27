@@ -87,19 +87,6 @@ export default hopeTheme({
       imgSize: true,
       include: true,
       mark: true,
-      stylize: [
-        {
-          matcher: "Recommended",
-          replacer: ({ tag }) => {
-            if (tag === "em")
-              return {
-                tag: "Badge",
-                attrs: { type: "tip" },
-                content: "Recommended",
-              };
-          },
-        },
-      ],
       sub: true,
       sup: true,
       tabs: true,

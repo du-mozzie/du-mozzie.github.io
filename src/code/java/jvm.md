@@ -396,7 +396,7 @@ region内是标记--复制，region之间是标记--整理，region使用率进�
 
 **要显示设置jvm参数不然是6:1:1**
 
-> -XX:MaxTenuringThreshold=N，年轻代转换到老年代阈值，默认15
+> -XX:MaxTenuringThreshold=\<N\>，年轻代转换到老年代阈值，默认15
 
 > -XX:TargetSurvivorRatio，动态年龄判断，默认Survior区一半
 
@@ -632,7 +632,7 @@ Point这个聚合量经过逃逸分析后，发现它并没有逃逸，就被替
 1. 查看日志
 2. 强制触发FullGC
 
-   - jmap -dump:live,format=b,file=heap.bin pid 将当前的存活对象dump到文件，此时会触发FullGC
+   - jmap -dump:live,format=b,file=heap.bin \<pid\> 将当前的存活对象dump到文件，此时会触发FullGC
 
    - jmap -histo:live pid 打印每个class的实例数目,内存占用,类全名信息.live子参数加上后,只统计活的对象数量. 此时会触发FullGC
 

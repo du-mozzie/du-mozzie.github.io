@@ -158,12 +158,12 @@ Runnable 方式的优缺点：
 
 -  缺点：代码复杂一点。 
 -  优点： 
+   1.  线程任务类只是实现了 Runnable 接口，可以继续继承其他类，避免了单继承的局限性 
+   1.  同一个线程任务对象可以被包装成多个线程对象 
+   1.  适合多个多个线程去共享同一个资源 
+   1.  实现解耦操作，线程任务代码可以被多个线程共享，线程任务代码和线程独立 
+   1.  线程池可以放入实现 Runnable 或 Callable 线程任务对象 
 
-1.  线程任务类只是实现了 Runnable 接口，可以继续继承其他类，避免了单继承的局限性 
-2.  同一个线程任务对象可以被包装成多个线程对象 
-3.  适合多个多个线程去共享同一个资源 
-4.  实现解耦操作，线程任务代码可以被多个线程共享，线程任务代码和线程独立 
-5.  线程池可以放入实现 Runnable 或 Callable 线程任务对象 
 
 #### Callable
 
@@ -176,7 +176,7 @@ Runnable 方式的优缺点：
 5. 把未来任务对象包装成线程对象
 6. 调用线程的 start() 方法启动线程
 
-`public FutureTask(Callable<V> callable)`：未来任务对象，在线程执行完后得到线程的执行结果
+`public FutureTask(Callable\<V\> callable)`：未来任务对象，在线程执行完后得到线程的执行结果
 
 - FutureTask 就是 Runnable 对象，因为 **Thread 类只能执行 Runnable 实例的任务对象**，所以把 Callable 包装成未来任务对象
 - 线程池部分详解了 FutureTask 的源码
@@ -195,7 +195,7 @@ Runnable 方式的优缺点：
 public class ThreadDemo {
     public static void main(String[] args) {
         Callable call = new MyCallable();
-        FutureTask<String> task = new FutureTask<>(call);
+        FutureTask\<String\> task = new FutureTask\<\>(call);
         Thread t = new Thread(task);
         t.start();
         try {
@@ -206,7 +206,7 @@ public class ThreadDemo {
         }
     }
 
-public class MyCallable implements Callable<String> {
+public class MyCallable implements Callable\<String\> {
     @Override//重写线程任务类方法
     public String call() throws Exception {
         return Thread.currentThread().getName() + "->" + "Hello World";
@@ -834,7 +834,7 @@ public static void main(String[] args) {
 }
 0: 	new				#2		// new Object
 3: 	dup
-4: 	invokespecial 	#1 		// invokespecial <init>:()V，非虚方法
+4: 	invokespecial 	#1 		// invokespecial \<init\>:()V，非虚方法
 7: 	astore_1 				// lock引用 -> lock
 8: 	aload_1					// lock （synchronized开始）
 9: 	dup						// 一份用来初始化，一份用来引用
@@ -991,7 +991,7 @@ public static void method2() {
 //手写自旋锁
 public class SpinLock {
     // 泛型装的是Thread，原子引用线程
-    AtomicReference<Thread> atomicReference = new AtomicReference<>();
+    AtomicReference\<Thread\> atomicReference = new AtomicReference\<\>();
 
     public void lock() {
         Thread thread = Thread.currentThread();
@@ -1179,14 +1179,14 @@ Java stack information for the threads listed above:
 ===================================================
 "Thread-1":
     at thread.TestDeadLock.lambda$main$1(TestDeadLock.java:28)
-    - waiting to lock <0x000000076b5bf1c0> (a java.lang.Object)
+    - waiting to lock \<0x000000076b5bf1c0\> (a java.lang.Object)
     - locked <0x000000076b5bf1d0> (a java.lang.Object)
     at thread.TestDeadLock$$Lambda$2/883049899.run(Unknown Source)
     at java.lang.Thread.run(Thread.java:745)
 "Thread-0":
     at thread.TestDeadLock.lambda$main$0(TestDeadLock.java:15)
-    - waiting to lock <0x000000076b5bf1d0> (a java.lang.Object)
-    - locked <0x000000076b5bf1c0> (a java.lang.Object)
+    - waiting to lock \<0x000000076b5bf1d0\> (a java.lang.Object)
+    - locked \<0x000000076b5bf1c0\> (a java.lang.Object)
     at thread.TestDeadLock$$Lambda$1/495053715
 ```
 
@@ -1426,7 +1426,7 @@ if(table.get("key") == null) {
 -  replace 等方法底层是新建一个对象，复制过去 
 
 ```java
-Map<String,Object> map = new HashMap<>();	// 线程不安全
+Map\<String,Object\> map = new HashMap\<\>();	// 线程不安全
 String S1 = "...";							// 线程安全
 final String S2 = "...";					// 线程安全
 Date D1 = new Date();						// 线程不安全
@@ -1459,7 +1459,7 @@ public static void main(String[] args) {
     
     Object response = object.get(2500);
     if (response != null) {
-        log.debug("get response: [{}] lines", ((List<String>) response).size());
+        log.debug("get response: [{}] lines", ((List\<String\>) response).size());
     } else {
         log.debug("can't get response");
     }
@@ -1554,7 +1554,7 @@ class Postman extends Thread{
 }
 
 class  Mailboxes {
-    private static Map<Integer, GuardedObject> boxes = new Hashtable<>();
+    private static Map\<Integer, GuardedObject\> boxes = new Hashtable\<\>();
     private static int id = 1;
 
     //产生唯一的id
@@ -1572,7 +1572,7 @@ class  Mailboxes {
         return go;
     }
 
-    public static Set<Integer> getIds() {
+    public static Set\<Integer\> getIds() {
         return boxes.keySet();
     }
 }
@@ -1776,7 +1776,7 @@ public class demo {
 
 //消息队列类，Java间线程之间通信
 class MessageQueue {
-    private LinkedList<Message> list = new LinkedList<>();//消息的队列集合
+    private LinkedList\<Message\> list = new LinkedList\<\>();//消息的队列集合
     private int capacity;//队列容量
     public MessageQueue(int capacity) {
         this.capacity = capacity;
@@ -1835,7 +1835,7 @@ final class Message {
 public static void main(String[] args) {
     ExecutorService consumer = Executors.newFixedThreadPool(1);
     ExecutorService producer = Executors.newFixedThreadPool(1);
-    BlockingQueue<Integer> queue = new SynchronousQueue<>();
+    BlockingQueue\<Integer\> queue = new SynchronousQueue\<\>();
     producer.submit(() -> {
         try {
             System.out.println("生产...");
@@ -2226,7 +2226,7 @@ getInstance 方法对应的字节码为：
 14: ifnonnull 27
 17: new 			#3 		// class test/Singleton
 20: dup
-21: invokespecial 	#4 		// Method "<init>":()V
+21: invokespecial 	#4 		// Method "\<init\>":()V
 24: putstatic 		#2 		// Field INSTANCE:Ltest/Singleton;
 27: aload_0
 28: monitorexit
@@ -2543,7 +2543,7 @@ public final boolean compareAndSet(int expect, int update) {
 
 AtomicReference 类：
 
--  构造方法：`AtomicReference<T> atomicReference = new AtomicReference<T>()` 
+-  构造方法：`AtomicReference\<T\> atomicReference = new AtomicReference\<T\>()` 
 -  常用 API： 
 
 - `public final boolean compareAndSet(V expectedValue, V newValue)`：CAS 操作
@@ -2556,7 +2556,7 @@ public class AtomicReferenceDemo {
         Student s1 = new Student(33, "z3");
         
         // 创建原子引用包装类
-        AtomicReference<Student> atomicReference = new AtomicReference<>();
+        AtomicReference\<Student\> atomicReference = new AtomicReference\<\>();
         // 设置主内存共享变量为s1
         atomicReference.set(s1);
 
@@ -2603,7 +2603,7 @@ public final boolean compareAndSet(int i, int expect, int update) {
 
 常用 API：
 
-- `static <U> AtomicIntegerFieldUpdater<U> newUpdater(Class<U> c, String fieldName)`：构造方法
+- `static \<U\> AtomicIntegerFieldUpdater\<U\> newUpdater(Class\<U\> c, String fieldName)`：构造方法
 - `abstract boolean compareAndSet(T obj, int expect, int update)`：CAS
 
 ```java
@@ -2889,7 +2889,7 @@ ABA 问题：当进行获取主内存值时，该内存值在写入主内存时�
 
 ```java
 public static void main(String[] args) {
-    AtomicStampedReference<Integer> atomicReference = new AtomicStampedReference<>(100,1);
+    AtomicStampedReference\<Integer\> atomicReference = new AtomicStampedReference\<\>(100,1);
     int startStamp = atomicReference.getStamp();
     new Thread(() ->{
         int stamp = atomicReference.getStamp();
@@ -2983,7 +2983,7 @@ public class TestFinal {
 
 ```java
 0: aload_0
-1: invokespecial #1 // Method java/lang/Object."<init>":()V
+1: invokespecial #1 // Method java/lang/Object."\<init\>":()V
 4: aload_0
 5: bipush 20		// 将值直接放入栈中
 7: putfield #2 		// Field a:I
@@ -3012,7 +3012,7 @@ String 类也是不可变的，该类和类中所有属性都是 final 的
 
 ```java
 public final class String
-    implements java.io.Serializable, Comparable<String>, CharSequence {
+    implements java.io.Serializable, Comparable\<String\>, CharSequence {
     /** The value is used for character storage. */
     private final char value[];
     //....
@@ -3054,7 +3054,7 @@ ThreadLocal 作用：
 
 | 方法                       | 描述                         |
 | -------------------------- | ---------------------------- |
-| ThreadLocal<>()            | 创建 ThreadLocal 对象        |
+| ThreadLocal\<\>()            | 创建 ThreadLocal 对象        |
 | protected T initialValue() | 返回当前线程局部变量的初始值 |
 | public void set( T value)  | 设置当前线程绑定的局部变量   |
 | public T get()             | 获取当前线程绑定的局部变量   |
@@ -3063,7 +3063,7 @@ ThreadLocal 作用：
 ```java
 public class MyDemo {
 
-    private static ThreadLocal<String> tl = new ThreadLocal<>();
+    private static ThreadLocal\<String\> tl = new ThreadLocal\<\>();
 
     private String content;
 
@@ -3113,7 +3113,7 @@ ThreadLocal 用于数据连接的事务管理：
 ```java
 public class JdbcUtils {
     // ThreadLocal对象，将connection绑定在当前线程中
-    private static final ThreadLocal<Connection> tl = new ThreadLocal();
+    private static final ThreadLocal\<Connection\> tl = new ThreadLocal();
     // c3p0 数据库连接池对象属性
     private static final ComboPooledDataSource ds = new ComboPooledDataSource();
     // 获取连接
@@ -3136,7 +3136,7 @@ public class JdbcUtils {
 
 ```java
 public class ThreadLocalDateUtil {
-    private static ThreadLocal<DateFormat> threadLocal = new ThreadLocal<DateFormat>() {
+    private static ThreadLocal\<DateFormat\> threadLocal = new ThreadLocal\<DateFormat\>() {
         @Override
         protected DateFormat initialValue() {
             return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -3333,9 +3333,9 @@ private int threshold;
 - Entry 限制只能用 ThreadLocal 作为 key，key 为 null (entry.get() == null) 意味着 key 不再被引用，entry 也可以从 table 中清除
 
 ```java
-static class Entry extends WeakReference<ThreadLocal<?>> {
+static class Entry extends WeakReference\<ThreadLocal\<?\>\> {
     Object value;
-    Entry(ThreadLocal<?> k, Object v) {
+    Entry(ThreadLocal\<?\> k, Object v) {
         // this.referent = referent = key;
         super(k);
         value = v;
@@ -3346,7 +3346,7 @@ static class Entry extends WeakReference<ThreadLocal<?>> {
 构造方法：延迟初始化的，线程第一次存储 threadLocal - value 时才会创建 threadLocalMap 对象
 
 ```java
-ThreadLocalMap(ThreadLocal<?> firstKey, Object firstValue) {
+ThreadLocalMap(ThreadLocal\<?\> firstKey, Object firstValue) {
     // 初始化table，创建一个长度为16的Entry数组
     table = new Entry[INITIAL_CAPACITY];
     // 【寻址算法】计算索引
@@ -3370,7 +3370,7 @@ ThreadLocalMap(ThreadLocal<?> firstKey, Object firstValue) {
 -  在探测过程中 ThreadLocal 会复用 key 为 null 的脏 Entry 对象，并进行垃圾清理，防止出现内存泄漏 
 
 ```java
-private void set(ThreadLocal<?> key, Object value) {
+private void set(ThreadLocal\<?\> key, Object value) {
     // 获取散列表
     ThreadLocal.ThreadLocalMap.Entry[] tab = table;
     int len = tab.length;
@@ -3379,7 +3379,7 @@ private void set(ThreadLocal<?> key, Object value) {
     // 使用线性探测法向后查找元素，碰到 entry 为空时停止探测
     for (ThreadLocal.ThreadLocalMap.Entry e = tab[i]; e != null; e = tab[i = nextIndex(i, len)]) {
         // 获取当前元素 key
-        ThreadLocal<?> k = e.get();
+        ThreadLocal\<?\> k = e.get();
         // ThreadLocal 对应的 key 存在，【直接覆盖之前的值】
         if (k == key) {
             e.value = value;
@@ -3411,7 +3411,7 @@ private static int nextIndex(int i, int len) {
     return ((i + 1 < len) ? i + 1 : 0);
 }
 // 在指定位置插入指定的数据
-private void replaceStaleEntry(ThreadLocal<?> key, Object value, int staleSlot) {
+private void replaceStaleEntry(ThreadLocal\<?\> key, Object value, int staleSlot) {
     // 获取散列表
     Entry[] tab = table;
     int len = tab.length;
@@ -3427,7 +3427,7 @@ private void replaceStaleEntry(ThreadLocal<?> key, Object value, int staleSlot) 
 	// 以 staleSlot 【向后去查找】，直到碰到 null 为止，还是线性探测
     for (int i = nextIndex(staleSlot, len); (e = tab[i]) != null; i = nextIndex(i, len)) {
         // 获取当前节点的 key
-        ThreadLocal<?> k = e.get();
+        ThreadLocal\<?\> k = e.get();
 		// 条件成立说明是【替换逻辑】
         if (k == key) {
             e.value = value;
@@ -3474,7 +3474,7 @@ private static int prevIndex(int i, int len) {
 -  getEntry()：ThreadLocal 的 get 方法以当前的 ThreadLocal 为 key，调用 getEntry 获取对应的存储实体 e 
 
 ```java
-private Entry getEntry(ThreadLocal<?> key) {
+private Entry getEntry(ThreadLocal\<?\> key) {
     // 哈希寻址
     int i = key.threadLocalHashCode & (table.length - 1);
     // 访问散列表中指定指定位置的 slot 
@@ -3487,7 +3487,7 @@ private Entry getEntry(ThreadLocal<?> key) {
         return getEntryAfterMiss(key, i, e);
 }
 // 线性探测寻址
-private Entry getEntryAfterMiss(ThreadLocal<?> key, int i, Entry e) {
+private Entry getEntryAfterMiss(ThreadLocal\<?\> key, int i, Entry e) {
     // 获取散列表
     Entry[] tab = table;
     int len = tab.length;
@@ -3495,7 +3495,7 @@ private Entry getEntryAfterMiss(ThreadLocal<?> key, int i, Entry e) {
     // 开始遍历，碰到 slot == null 的情况，搜索结束
     while (e != null) {
 		// 获取当前 slot 中 entry 对象的 key
-        ThreadLocal<?> k = e.get();
+        ThreadLocal\<?\> k = e.get();
         // 条件成立说明找到了，直接返回
         if (k == key)
             return e;
@@ -3554,7 +3554,7 @@ private void resize() {
         Entry e = oldTab[j];
         // 条件成立说明老表中该位置有数据，可能是过期数据也可能不是
         if (e != null) {
-            ThreadLocal<?> k = e.get();
+            ThreadLocal\<?\> k = e.get();
             // 过期数据
             if (k == null) {
                 e.value = null; // Help the GC
@@ -3581,7 +3581,7 @@ private void resize() {
 -  remove()：删除 Entry 
 
 ```java
-private void remove(ThreadLocal<?> key) {
+private void remove(ThreadLocal\<?\> key) {
     Entry[] tab = table;
     int len = tab.length;
     // 哈希寻址
@@ -3620,7 +3620,7 @@ private int expungeStaleEntry(int staleSlot) {
     int i;
     // 从 staleSlot 开始向后遍历，直到碰到 slot == null 结束，【区间内清理过期数据】
     for (i = nextIndex(staleSlot, len); (e = tab[i]) != null; i = nextIndex(i, len)) {
-        ThreadLocal<?> k = e.get();
+        ThreadLocal\<?\> k = e.get();
         // 当前 entry 是过期数据
         if (k == null) {
             // help gc
@@ -3712,7 +3712,7 @@ ThreadLocal 中存储的是线程的局部变量，如果想**实现线程间局
 
 ```java
 public static void main(String[] args) {
-    ThreadLocal<String> threadLocal = new InheritableThreadLocal<>();
+    ThreadLocal\<String\> threadLocal = new InheritableThreadLocal\<\>();
     threadLocal.set("父线程设置的值");
 
     new Thread(() -> System.out.println("子线程输出：" + threadLocal.get())).start();
@@ -3725,7 +3725,7 @@ public static void main(String[] args) {
 InheritableThreadLocal 源码：
 
 ```java
-public class InheritableThreadLocal<T> extends ThreadLocal<T> {
+public class InheritableThreadLocal\<T\> extends ThreadLocal\<T\> {
     protected T childValue(T parentValue) {
         return parentValue;
     }
@@ -3768,7 +3768,7 @@ private ThreadLocalMap(ThreadLocalMap parentMap) {
     for (int j = 0; j < len; j++) {
         Entry e = parentTable[j];
         if (e != null) {
-            ThreadLocal<Object> key = (ThreadLocal<Object>) e.get();
+            ThreadLocal\<Object\> key = (ThreadLocal\<Object\>) e.get();
             if (key != null) {
                 // 调用的是 InheritableThreadLocal#childValue(T parentValue)
                 Object value = key.childValue(e.value);
@@ -3859,9 +3859,9 @@ java.util.concurrent.BlockingQueue 接口有以下阻塞队列的实现：**FIFO
 LinkedBlockingQueue 源码：
 
 ```java
-public class LinkedBlockingQueue<E> extends AbstractQueue<E>
-			implements BlockingQueue<E>, java.io.Serializable {
-	static class Node<E> {
+public class LinkedBlockingQueue\<E\> extends AbstractQueue\<E\>
+			implements BlockingQueue\<E\>, java.io.Serializable {
+	static class Node\<E\> {
         E item;
         /**
         * 下列三种情况之一
@@ -3869,7 +3869,7 @@ public class LinkedBlockingQueue<E> extends AbstractQueue<E>
         * - 自己, 发生在出队时
         * - null, 表示是没有后继节点, 是尾节点了
         */
-        Node<E> next;
+        Node\<E\> next;
 
         Node(E x) { item = x; }
     }
@@ -3878,21 +3878,21 @@ public class LinkedBlockingQueue<E> extends AbstractQueue<E>
 
 入队：**尾插法**
 
--  初始化链表 `last = head = new Node<E>(null)`，**Dummy 节点用来占位**，item 为 null 
+-  初始化链表 `last = head = new Node\<E\>(null)`，**Dummy 节点用来占位**，item 为 null 
 
 ```java
 public LinkedBlockingQueue(int capacity) {
     // 默认是 Integer.MAX_VALUE
     if (capacity <= 0) throw new IllegalArgumentException();
     this.capacity = capacity;
-    last = head = new Node<E>(null);
+    last = head = new Node\<E\>(null);
 }
 ```
 
   当一个节点入队： 
 
 ```java
-private void enqueue(Node<E> node) {
+private void enqueue(Node\<E\> node) {
     // 从右向左计算
     last = last.next = node;
 }
@@ -3908,9 +3908,9 @@ private void enqueue(Node<E> node) {
 
 ```java
 private E dequeue() {
-    Node<E> h = head;
+    Node\<E\> h = head;
     // 获取临头节点
-    Node<E> first = h.next;
+    Node\<E\> first = h.next;
     // 自己指向自己，help GC
     h.next = h;
     head = first;
@@ -3965,7 +3965,7 @@ public void put(E e) throws InterruptedException {
     if (e == null) throw new NullPointerException();
     int c = -1;
     // 把待添加的元素封装为 node 节点
-    Node<E> node = new Node<E>(e);
+    Node\<E\> node = new Node\<E\>(e);
     // 获取全局生产锁
     final ReentrantLock putLock = this.putLock;
     // count 用来维护元素计数
@@ -4092,8 +4092,8 @@ static final long spinForTimeoutThreshold = 1000L;	// 纳秒
 -  转换器： 
 
 ```java
-private transient volatile Transferer<E> transferer;
-abstract static class Transferer<E> {
+private transient volatile Transferer\<E\> transferer;
+abstract static class Transferer\<E\> {
     /**
     * 参数一：可以为 null，null 时表示这个请求是一个 REQUEST 类型的请求，反之是一个 DATA 类型的请求
     * 参数二：如果为 true 表示指定了超时时间，如果为 false 表示不支持超时，会一直阻塞到匹配或者被打断
@@ -4112,7 +4112,7 @@ abstract static class Transferer<E> {
 public SynchronousQueue(boolean fair) {
     // fair 默认 false
     // 非公平模式实现的数据结构是栈，公平模式的数据结构是队列
-    transferer = fair ? new TransferQueue<E>() : new TransferStack<E>();
+    transferer = fair ? new TransferQueue\<E\>() : new TransferStack\<E\>();
 }
 ```
 
@@ -4640,7 +4640,7 @@ Object awaitFulfill(QNode s, E e, boolean timed, long nanos) {
 存放线程的容器：
 
 ```java
-private final HashSet<Worker> workers = new HashSet<Worker>();
+private final HashSet\<Worker\> workers = new HashSet\<Worker\>();
 ```
 
 构造方法：
@@ -4650,7 +4650,7 @@ public ThreadPoolExecutor(int corePoolSize,
                           int maximumPoolSize,
                           long keepAliveTime,
                           TimeUnit unit,
-                          BlockingQueue<Runnable> workQueue,
+                          BlockingQueue\<Runnable\> workQueue,
                           ThreadFactory threadFactory,
                           RejectedExecutionHandler handler)
 ```
@@ -4704,7 +4704,7 @@ Executors 提供了四种线程池的创建：newCachedThreadPool、newFixedThre
 ```java
 public static ExecutorService newFixedThreadPool(int nThreads) {
     return new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                                  new LinkedBlockingQueue<Runnable>());
+                                  new LinkedBlockingQueue\<Runnable\>());
 }
 ```
 
@@ -4717,7 +4717,7 @@ public static ExecutorService newFixedThreadPool(int nThreads) {
 ```java
 public static ExecutorService newCachedThreadPool() {
     return new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS,
-                                  new SynchronousQueue<Runnable>());
+                                  new SynchronousQueue\<Runnable\>());
 }
 ```
 
@@ -4731,7 +4731,7 @@ public static ExecutorService newCachedThreadPool() {
 public static ExecutorService newSingleThreadExecutor() {
     return new FinalizableDelegatedExecutorService
         (new ThreadPoolExecutor(1, 1,0L, TimeUnit.MILLISECONDS,
-                                new LinkedBlockingQueue<Runnable>()));
+                                new LinkedBlockingQueue\<Runnable\>()));
 }
 ```
 
@@ -4793,11 +4793,11 @@ ExecutorService 类 API：
 | 方法                                                         | 说明                                                         |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | void execute(Runnable command)                               | 执行任务（Executor 类 API）                                  |
-| Future<?> submit(Runnable task)                              | 提交任务 task()                                              |
+| Future\<?\> submit(Runnable task)                              | 提交任务 task()                                              |
 | Future submit(Callable task)                                 | 提交任务 task，用返回值 Future 获得任务执行结果              |
-| List<Future> invokeAll(Collection<? extends Callable> tasks) | 提交 tasks 中所有任务                                        |
-| List<Future> invokeAll(Collection<? extends Callable> tasks, long timeout, TimeUnit unit) | 提交 tasks 中所有任务，超时时间针对所有task，超时会取消没有执行完的任务，并抛出超时异常 |
-| T invokeAny(Collection<? extends Callable> tasks)            | 提交 tasks 中所有任务，哪个任务先成功执行完毕，返回此任务执行结果，其它任务取消 |
+| List\<Future\> invokeAll(Collection<? extends Callable\> tasks) | 提交 tasks 中所有任务                                        |
+| List\<Future\> invokeAll(Collection<? extends Callable\> tasks, long timeout, TimeUnit unit) | 提交 tasks 中所有任务，超时时间针对所有task，超时会取消没有执行完的任务，并抛出超时异常 |
+| T invokeAny(Collection<? extends Callable\> tasks)            | 提交 tasks 中所有任务，哪个任务先成功执行完毕，返回此任务执行结果，其它任务取消 |
 
 execute 和 submit 都属于线程池的方法，对比：
 
@@ -4838,7 +4838,7 @@ pool.submit(() -> {
 
 ```java
 ExecutorService executorService = Executors.newFixedThreadPool(1);
-Future<?> future = pool.submit(() -> {
+Future\<?\> future = pool.submit(() -> {
     System.out.println("task1");
     int i = 1 / 0;
     return true;
@@ -4949,7 +4949,7 @@ private void decrementWorkerCount() {
 -  **线程池中存放 Worker 的容器**：线程池没有初始化，直接往池中加线程即可 
 
 ```java
-private final HashSet<Worker> workers = new HashSet<Worker>();
+private final HashSet\<Worker\> workers = new HashSet\<Worker\>();
 ```
 
 -  线程全局锁： 
@@ -4973,7 +4973,7 @@ private volatile int corePoolSize;				// 核心线程数量
 private volatile int maximumPoolSize;			// 线程池最大线程数量
 private volatile long keepAliveTime;			// 空闲线程存活时间
 private volatile ThreadFactory threadFactory;	// 创建线程时使用的线程工厂，默认是 DefaultThreadFactory
-private final BlockingQueue<Runnable> workQueue;// 【超过核心线程提交任务就放入 阻塞队列】
+private final BlockingQueue\<Runnable\> workQueue;// 【超过核心线程提交任务就放入 阻塞队列】
 private volatile RejectedExecutionHandler handler;	// 拒绝策略，juc包提供了4中方式
 private static final RejectedExecutionHandler defaultHandler = new AbortPolicy();// 默认策略
 ```
@@ -5041,31 +5041,31 @@ public Thread newThread(Runnable r) {
 -  AbstractExecutorService#submit()：提交任务，**把 Runnable 或 Callable 任务封装成 FutureTask 执行**，可以通过方法返回的任务对象，调用 get 阻塞获取任务执行的结果或者异常，源码分析在笔记的 Future 部分 
 
 ```java
-public Future<?> submit(Runnable task) {
+public Future\<?\> submit(Runnable task) {
     // 空指针异常
     if (task == null) throw new NullPointerException();
     // 把 Runnable 封装成未来任务对象，执行结果就是 null，也可以通过参数指定 FutureTask#get 返回数据
-    RunnableFuture<Void> ftask = newTaskFor(task, null);
+    RunnableFuture\<Void\> ftask = newTaskFor(task, null);
     // 执行方法
     execute(ftask);
     return ftask;
 }
-public <T> Future<T> submit(Callable<T> task) {
+public \<T\> Future\<T\> submit(Callable\<T\> task) {
     if (task == null) throw new NullPointerException();
     // 把 Callable 封装成未来任务对象
-    RunnableFuture<T> ftask = newTaskFor(task);
+    RunnableFuture\<T\> ftask = newTaskFor(task);
     // 执行方法
     execute(ftask);	
     // 返回未来任务对象，用来获取返回值
     return ftask;
 }
-protected <T> RunnableFuture<T> newTaskFor(Runnable runnable, T value) {
+protected \<T\> RunnableFuture\<T\> newTaskFor(Runnable runnable, T value) {
     // Runnable 封装成 FutureTask，【指定返回值】
-    return new FutureTask<T>(runnable, value);
+    return new FutureTask\<T\>(runnable, value);
 }
-protected <T> RunnableFuture<T> newTaskFor(Callable<T> callable) {
+protected \<T\> RunnableFuture\<T\> newTaskFor(Callable\<T\> callable) {
     // Callable 直接封装成 FutureTask
-    return new FutureTask<T>(callable);
+    return new FutureTask\<T\>(callable);
 }
 ```
 
@@ -5492,9 +5492,9 @@ private void interruptIdleWorkers(boolean onlyOne) {
 -  shutdownNow()：直接关闭线程池，不会等待任务执行完成 
 
 ```java
-public List<Runnable> shutdownNow() {
+public List\<Runnable\> shutdownNow() {
     // 返回值引用
-    List<Runnable> tasks;
+    List\<Runnable\> tasks;
     final ReentrantLock mainLock = this.mainLock;
     // 获取线程池全局锁
     mainLock.lock();
@@ -5572,7 +5572,7 @@ FutureTask 未来任务对象，继承 Runnable、Future 接口，用于包装 C
 
 ```java
 public static void main(String[] args) throws ExecutionException, InterruptedException {
-    FutureTask<String> task = new FutureTask<>(new Callable<String>() {
+    FutureTask\<String\> task = new FutureTask\<\>(new Callable\<String\>() {
         @Override
         public String call() throws Exception {
             return "Hello World";
@@ -5587,7 +5587,7 @@ public static void main(String[] args) throws ExecutionException, InterruptedExc
 构造方法：
 
 ```java
-public FutureTask(Callable<V> callable){
+public FutureTask(Callable\<V\> callable){
 	this.callable = callable;	// 属性注入
     this.state = NEW; 			// 任务状态设置为 new
 }
@@ -5596,13 +5596,13 @@ public FutureTask(Runnable runnable, V result) {
     this.callable = Executors.callable(runnable, result);
     this.state = NEW;       
 }
-public static <T> Callable<T> callable(Runnable task, T result) {
+public static \<T\> Callable\<T\> callable(Runnable task, T result) {
     if (task == null) throw new NullPointerException();
     // 使用装饰者模式将 runnable 转换成 callable 接口，外部线程通过 get 获取
     // 当前任务执行结果时，结果可能为 null 也可能为传进来的值，【传进来什么返回什么】
-    return new RunnableAdapter<T>(task, result);
+    return new RunnableAdapter\<T\>(task, result);
 }
-static final class RunnableAdapter<T> implements Callable<T> {
+static final class RunnableAdapter\<T\> implements Callable\<T\> {
     final Runnable task;
     final T result;
     // 构造方法
@@ -5647,7 +5647,7 @@ private static final int INTERRUPTED  = 6;
 -  任务对象： 
 
 ```java
-private Callable<V> callable;	// Runnable 使用装饰者模式伪装成 Callable
+private Callable\<V\> callable;	// Runnable 使用装饰者模式伪装成 Callable
 ```
 
 -  **存储任务执行的结果**，这是 run 方法返回值是 void 也可以获取到执行结果的原因： 
@@ -5697,7 +5697,7 @@ public void run() {
         return;
     try {
         // 执行到这里，当前 task 一定是 NEW 状态，而且【当前线程也抢占 task 成功】
-        Callable<V> c = callable;
+        Callable\<V\> c = callable;
         // 判断任务是否为空，防止空指针异常；判断 state 状态，防止外部线程在此期间 cancel 掉当前任务
         // 【因为 task 的执行者已经设置为当前线程，所以这里是线程安全的】
         if (c != null && state == NEW) {
@@ -5980,9 +5980,9 @@ public ScheduledThreadPoolExecutor(int corePoolSize) {
 
 常用 API：
 
-- `ScheduledFuture<?> schedule(Runnable/Callable<V>, long delay, TimeUnit u)`：延迟执行任务
-- `ScheduledFuture<?> scheduleAtFixedRate(Runnable/Callable<V>, long initialDelay, long period, TimeUnit unit)`：定时执行周期任务，不考虑执行的耗时，参数为初始延迟时间、间隔时间、单位
-- `ScheduledFuture<?> scheduleWithFixedDelay(Runnable/Callable<V>, long initialDelay, long delay, TimeUnit unit)`：定时执行周期任务，考虑执行的耗时，参数为初始延迟时间、间隔时间、单位
+- `ScheduledFuture\<?\> schedule(Runnable/Callable\<V\>, long delay, TimeUnit u)`：延迟执行任务
+- `ScheduledFuture\<?\> scheduleAtFixedRate(Runnable/Callable\<V\>, long initialDelay, long period, TimeUnit unit)`：定时执行周期任务，不考虑执行的耗时，参数为初始延迟时间、间隔时间、单位
+- `ScheduledFuture\<?\> scheduleWithFixedDelay(Runnable/Callable\<V\>, long initialDelay, long delay, TimeUnit unit)`：定时执行周期任务，考虑执行的耗时，参数为初始延迟时间、间隔时间、单位
 
 基本使用：
 
@@ -6097,7 +6097,7 @@ fixed-rate：两次开始启动的间隔，fixed-delay：一次执行结束到�
 -  实际的任务对象： 
 
 ```java
-RunnableScheduledFuture<V> outerTask = this;
+RunnableScheduledFuture\<V\> outerTask = this;
 ```
 
 -  任务在队列数组中的索引下标： 
@@ -6131,7 +6131,7 @@ public int compareTo(Delayed other) {
         return 0;
     if (other instanceof ScheduledFutureTask) {
         // 类型强转
-        ScheduledFutureTask<?> x = (ScheduledFutureTask<?>)other;
+        ScheduledFutureTask\<?\> x = (ScheduledFutureTask\<?\>)other;
         // 比较者 - 被比较者的执行时间
         long diff = time - x.time;
         // 比较者先执行
@@ -6185,7 +6185,7 @@ protected boolean runAndReset() {
     boolean ran = false;
     int s = state;
     try {
-        Callable<V> c = callable;
+        Callable\<V\> c = callable;
         if (c != null && s == NEW) {
             try {
                 // 执行方法，没有返回值
@@ -6223,7 +6223,7 @@ private void setNextRunTime() {
 
 ```java
 // ScheduledThreadPoolExecutor#reExecutePeriodic
-void reExecutePeriodic(RunnableScheduledFuture<?> task) {
+void reExecutePeriodic(RunnableScheduledFuture\<?\> task) {
     if (canRunInCurrentRunState(true)) {
         // 【放入任务队列】
         super.getQueue().add(task);
@@ -6265,8 +6265,8 @@ DelayedWorkQueue 是支持延时获取元素的阻塞队列，内部采用优先
 ```java
 private static final int INITIAL_CAPACITY = 16;			// 初始容量
 private int size = 0;									// 节点数量
-private RunnableScheduledFuture<?>[] queue = 
-    new RunnableScheduledFuture<?>[INITIAL_CAPACITY];	// 存放节点
+private RunnableScheduledFuture\<?\>[] queue = 
+    new RunnableScheduledFuture\<?\>[INITIAL_CAPACITY];	// 存放节点
 ```
 
 -  锁： 
@@ -6295,7 +6295,7 @@ public boolean offer(Runnable x) {
     // 判空
     if (x == null)
         throw new NullPointerException();
-    RunnableScheduledFuture<?> e = (RunnableScheduledFuture<?>)x;
+    RunnableScheduledFuture\<?\> e = (RunnableScheduledFuture\<?\>)x;
     // 队列锁，增加删除数据时都要加锁
     final ReentrantLock lock = this.lock;
     lock.lock();
@@ -6332,11 +6332,11 @@ public boolean offer(Runnable x) {
     return true;
 }
 // 插入新节点后对堆进行调整，进行节点上移，保持其特性【节点的值小于子节点的值】，小顶堆
-private void siftUp(int k, RunnableScheduledFuture<?> key) {
+private void siftUp(int k, RunnableScheduledFuture\<?\> key) {
     while (k > 0) {
         // 父节点，就是堆排序
         int parent = (k - 1) >>> 1;
-        RunnableScheduledFuture<?> e = queue[parent];
+        RunnableScheduledFuture\<?\> e = queue[parent];
         // key 和父节点比，如果大于父节点可以直接返回，否则就继续上浮
         if (key.compareTo(e) >= 0)
             break;
@@ -6353,12 +6353,12 @@ private void siftUp(int k, RunnableScheduledFuture<?> key) {
 
 ```java
 // 非阻塞获取
-public RunnableScheduledFuture<?> poll() {
+public RunnableScheduledFuture\<?\> poll() {
     final ReentrantLock lock = this.lock;
     lock.lock();
     try {
         // 获取队头节点，因为是小顶堆
-        RunnableScheduledFuture<?> first = queue[0];
+        RunnableScheduledFuture\<?\> first = queue[0];
         // 头结点为空或者的延迟时间没到返回 null
         if (first == null || first.getDelay(NANOSECONDS) > 0)
             return null;
@@ -6369,11 +6369,11 @@ public RunnableScheduledFuture<?> poll() {
         lock.unlock();
     }
 }
-private RunnableScheduledFuture<?> finishPoll(RunnableScheduledFuture<?> f) {
+private RunnableScheduledFuture\<?\> finishPoll(RunnableScheduledFuture\<?\> f) {
     // 获取尾索引
     int s = --size;
     // 获取尾节点
-    RunnableScheduledFuture<?> x = queue[s];
+    RunnableScheduledFuture\<?\> x = queue[s];
     // 将堆结构最后一个节点占用的 slot 设置为 null，因为该节点要尝试升级成堆顶，会根据特性下调
     queue[s] = null;
     // s == 0 说明 当前堆结构只有堆顶一个节点，此时不需要做任何的事情
@@ -6389,14 +6389,14 @@ private RunnableScheduledFuture<?> finishPoll(RunnableScheduledFuture<?> f) {
 -  take()：阻塞获取头节点，读取当前堆中最小的也就是触发时间最近的任务 
 
 ```java
-public RunnableScheduledFuture<?> take() throws InterruptedException {
+public RunnableScheduledFuture\<?\> take() throws InterruptedException {
     final ReentrantLock lock = this.lock;
     // 保证线程安全
     lock.lockInterruptibly();
     try {
         for (;;) {
             // 头节点
-            RunnableScheduledFuture<?> first = queue[0];
+            RunnableScheduledFuture\<?\> first = queue[0];
             if (first == null)
                 // 等待队列不空，直至有任务通过 offer 入队并唤醒
                 available.await();
@@ -6457,7 +6457,7 @@ public boolean remove(Object x) {
         // 尾索引是长度-1
         int s = --size;
         // 尾节点作为替代节点
-        RunnableScheduledFuture<?> replacement = queue[s];
+        RunnableScheduledFuture\<?\> replacement = queue[s];
         queue[s] = null;
         // s == i 说明头节点就是尾节点，队列空了
         if (s != i) {
@@ -6486,11 +6486,11 @@ public void execute(Runnable command) {
     // 以零延时任务的形式实现
     schedule(command, 0, NANOSECONDS);
 }
-public ScheduledFuture<?> schedule(Runnable command, long delay, TimeUnit unit) {
+public ScheduledFuture\<?\> schedule(Runnable command, long delay, TimeUnit unit) {
     // 判空
     if (command == null || unit == null) throw new NullPointerException();
     // 没有做任何操作，直接将 task 返回，该方法主要目的是用于子类扩展，并且【根据延迟时间设置任务触发的时间点】
-    RunnableScheduledFuture<?> t = decorateTask(command, new ScheduledFutureTask<Void>(
+    RunnableScheduledFuture\<?\> t = decorateTask(command, new ScheduledFutureTask\<Void\>(
         											command, null, triggerTime(delay, unit)));
     // 延迟执行
     delayedExecute(t);
@@ -6528,17 +6528,17 @@ private long overflowFree(long delay) {
 -  scheduleAtFixedRate()：定时执行，一次任务的启动到下一次任务的启动的间隔 
 
 ```java
-public ScheduledFuture<?> scheduleAtFixedRate(Runnable command, long initialDelay, long period,
+public ScheduledFuture\<?\> scheduleAtFixedRate(Runnable command, long initialDelay, long period,
                                               TimeUnit unit) {
     if (command == null || unit == null)
         throw new NullPointerException();
     if (period <= 0)
         throw new IllegalArgumentException();
     // 任务封装，【指定初始的延迟时间和周期时间】
-    ScheduledFutureTask<Void> sft =new ScheduledFutureTask<Void>(command, null,
+    ScheduledFutureTask\<Void\> sft =new ScheduledFutureTask\<Void\>(command, null,
                                       triggerTime(initialDelay, unit), unit.toNanos(period));
     // 默认返回本身
-    RunnableScheduledFuture<Void> t = decorateTask(command, sft);
+    RunnableScheduledFuture\<Void\> t = decorateTask(command, sft);
     sft.outerTask = t;
     // 开始执行这个任务
     delayedExecute(t);
@@ -6549,16 +6549,16 @@ public ScheduledFuture<?> scheduleAtFixedRate(Runnable command, long initialDela
 -  scheduleWithFixedDelay()：定时执行，一次任务的结束到下一次任务的启动的间隔 
 
 ```java
-public ScheduledFuture<?> scheduleWithFixedDelay(Runnable command, long initialDelay, long delay,
+public ScheduledFuture\<?\> scheduleWithFixedDelay(Runnable command, long initialDelay, long delay,
                                                  TimeUnit unit) {
     if (command == null || unit == null) 
         throw new NullPointerException();
     if (delay <= 0)
         throw new IllegalArgumentException();
     // 任务封装，【指定初始的延迟时间和周期时间】，周期时间为 - 表示是 fixed-delay 模式
-    ScheduledFutureTask<Void> sft = new ScheduledFutureTask<Void>(command, null,
+    ScheduledFutureTask\<Void\> sft = new ScheduledFutureTask\<Void\>(command, null,
                                       triggerTime(initialDelay, unit), unit.toNanos(-delay));
-    RunnableScheduledFuture<Void> t = decorateTask(command, sft);
+    RunnableScheduledFuture\<Void\> t = decorateTask(command, sft);
     sft.outerTask = t;
     delayedExecute(t);
     return t;
@@ -6570,7 +6570,7 @@ public ScheduledFuture<?> scheduleWithFixedDelay(Runnable command, long initialD
 -  delayedExecute()：**校验线程池状态**，延迟或周期性任务的主要执行方法 
 
 ```java
-private void delayedExecute(RunnableScheduledFuture<?> task) {
+private void delayedExecute(RunnableScheduledFuture\<?\> task) {
     // 线程池是 SHUTDOWN 状态，需要执行拒绝策略
     if (isShutdown())
         reject(task);
@@ -6619,7 +6619,7 @@ boolean canRunInCurrentRunState(boolean periodic) {
 
 ```java
 void onShutdown() {
-    BlockingQueue<Runnable> q = super.getQueue();
+    BlockingQueue\<Runnable\> q = super.getQueue();
     // shutdown 后是否仍然执行延时任务
     boolean keepDelayed = getExecuteExistingDelayedTasksAfterShutdownPolicy();
     // shutdown 后是否仍然执行周期任务
@@ -6627,14 +6627,14 @@ void onShutdown() {
     // 如果两者皆不可，则对队列中【所有任务】调用 cancel 取消并清空队列
     if (!keepDelayed && !keepPeriodic) {
         for (Object e : q.toArray())
-            if (e instanceof RunnableScheduledFuture<?>)
-                ((RunnableScheduledFuture<?>) e).cancel(false);
+            if (e instanceof RunnableScheduledFuture\<?\>)
+                ((RunnableScheduledFuture\<?\>) e).cancel(false);
         q.clear();
     }
     else {
         for (Object e : q.toArray()) {
             if (e instanceof RunnableScheduledFuture) {
-                RunnableScheduledFuture<?> t = (RunnableScheduledFuture<?>)e;
+                RunnableScheduledFuture\<?\> t = (RunnableScheduledFuture\<?\>)e;
                 // 不需要执行的任务删除并取消，已经取消的任务也需要从队列中删除
                 if ((t.isPeriodic() ? !keepPeriodic : !keepDelayed) ||
                     t.isCancelled()) {
@@ -6667,7 +6667,7 @@ public static void main(String[] args) {
 }
 
 // 1~ n 之间整数的和
-class MyTask extends RecursiveTask<Integer> {
+class MyTask extends RecursiveTask\<Integer\> {
     private int n;
 
     public MyTask(int n) {
@@ -6698,7 +6698,7 @@ class MyTask extends RecursiveTask<Integer> {
 继续拆分优化：
 
 ```java
-class AddTask extends RecursiveTask<Integer> {
+class AddTask extends RecursiveTask\<Integer\> {
     int begin;
     int end;
     public AddTask(int begin, int end) {
@@ -8287,7 +8287,7 @@ static final class HoldCounter {
     final long tid = getThreadId(Thread.currentThread());
 }
 // 线程安全的存放线程各自的 HoldCounter 对象
-static final class ThreadLocalHoldCounter extends ThreadLocal<HoldCounter> {
+static final class ThreadLocalHoldCounter extends ThreadLocal\<HoldCounter\> {
     public HoldCounter initialValue() {
         return new HoldCounter();
     }
@@ -9438,15 +9438,15 @@ Exchanger：交换器，是一个用于线程间协作的工具类，用于进�
 public class ExchangerDemo {
     public static void main(String[] args) {
         // 创建交换对象（信使）
-        Exchanger<String> exchanger = new Exchanger<>();
+        Exchanger\<String\> exchanger = new Exchanger\<\>();
         new ThreadA(exchanger).start();
         new ThreadB(exchanger).start();
     } 
 }
 class ThreadA extends Thread{
-    private Exchanger<String> exchanger();
+    private Exchanger\<String\> exchanger();
     
-    public ThreadA(Exchanger<String> exchanger){
+    public ThreadA(Exchanger\<String\> exchanger){
         this.exchanger = exchanger;
     }
     
@@ -9463,9 +9463,9 @@ class ThreadA extends Thread{
     }
 }
 class ThreadB extends Thread{
-    private Exchanger<String> exchanger;
+    private Exchanger\<String\> exchanger;
     
-    public ThreadB(Exchanger<String> exchanger) {
+    public ThreadB(Exchanger\<String\> exchanger) {
         this.exchanger = exchanger;
     }
     
@@ -9519,7 +9519,7 @@ class ThreadB extends Thread{
 ```java
 //需求：多个线程同时往HashMap容器中存入数据会出现安全问题
 public class ConcurrentHashMapDemo{
-    public static Map<String,String> map = new ConcurrentHashMap();
+    public static Map\<String,String\> map = new ConcurrentHashMap();
     
     public static void main(String[] args){
         new AddMapDataThread().start();
@@ -9550,11 +9550,11 @@ resize() 中节点（Entry）转移的源代码：
 void transfer(Entry[] newTable, boolean rehash) {
     int newCapacity = newTable.length;//得到新数组的长度   
     // 遍历整个数组对应下标下的链表，e代表一个节点
-    for (Entry<K,V> e : table) {   
+    for (Entry\<K,V\> e : table) {   
         // 当e == null时，则该链表遍历完了，继续遍历下一数组下标的链表 
         while(null != e) { 
             // 先把e节点的下一节点存起来
-            Entry<K,V> next = e.next; 
+            Entry\<K,V\> next = e.next; 
             if (rehash) {              //得到新的hash值
                 e.hash = null == e.key ? 0 : hash(e.key);  
             }
@@ -9582,7 +9582,7 @@ B站视频解析：https://www.bilibili.com/video/BV1n541177Ea
 -  存储数组： 
 
 ```java
-transient volatile Node<K,V>[] table;
+transient volatile Node\<K,V\>[] table;
 ```
 
 -  散列表的长度： 
@@ -9634,7 +9634,7 @@ static final int HASH_BITS = 0x7fffffff; 	// 正常节点的哈希值的可用�
 
 ```java
 // 扩容过程中，会将扩容中的新 table 赋值给 nextTable 保持引用，扩容结束之后，这里会被设置为 null
-private transient volatile Node<K,V>[] nextTable;
+private transient volatile Node\<K,V\>[] nextTable;
 // 记录扩容进度，所有线程都要从 0 - transferIndex 中分配区间任务，简单说就是老表转移到哪了，索引从高到低转移
 private transient volatile int transferIndex;
 ```
@@ -9671,24 +9671,24 @@ private transient volatile int sizeCtl;		// volatile 保持可见性
 -  Node 节点： 
 
 ```java
-static class Node<K,V> implements Entry<K,V> {
+static class Node\<K,V\> implements Entry\<K,V\> {
     // 节点哈希值
     final int hash;
     final K key;
     volatile V val;
     // 单向链表
-    volatile Node<K,V> next;
+    volatile Node\<K,V\> next;
 }
 ```
 
 -  TreeBin 节点： 
 
 ```java
- static final class TreeBin<K,V> extends Node<K,V> {
+ static final class TreeBin\<K,V\> extends Node\<K,V\> {
      // 红黑树根节点
-     TreeNode<K,V> root;
+     TreeNode\<K,V\> root;
      // 链表的头节点
-     volatile TreeNode<K,V> first;
+     volatile TreeNode\<K,V\> first;
      // 等待者线程
      volatile Thread waiter;
 
@@ -9705,11 +9705,11 @@ static class Node<K,V> implements Entry<K,V> {
 -  TreeNode 节点： 
 
 ```java
-static final class TreeNode<K,V> extends Node<K,V> {
-    TreeNode<K,V> parent;  // red-black tree links
-    TreeNode<K,V> left;
-    TreeNode<K,V> right;
-    TreeNode<K,V> prev;   //双向链表
+static final class TreeNode\<K,V\> extends Node\<K,V\> {
+    TreeNode\<K,V\> parent;  // red-black tree links
+    TreeNode\<K,V\> left;
+    TreeNode\<K,V\> right;
+    TreeNode\<K,V\> prev;   //双向链表
     boolean red;
 }
 ```
@@ -9717,10 +9717,10 @@ static final class TreeNode<K,V> extends Node<K,V> {
 -  ForwardingNode 节点：转移节点 
 
 ```java
- static final class ForwardingNode<K,V> extends Node<K,V> {
+ static final class ForwardingNode\<K,V\> extends Node\<K,V\> {
      // 持有扩容后新的哈希表的引用
-     final Node<K,V>[] nextTable;
-     ForwardingNode(Node<K,V>[] tab) {
+     final Node\<K,V\>[] nextTable;
+     ForwardingNode(Node\<K,V\>[] tab) {
          // ForwardingNode 节点的 hash 值设为 -1
          super(MOVED, null, null, null);
          this.nextTable = tab;
@@ -9825,14 +9825,14 @@ public ConcurrentHashMap(int initialCapacity, float loadFactor, int concurrencyL
 -  集合构造方法： 
 
 ```java
-public ConcurrentHashMap(Map<? extends K, ? extends V> m) {
+public ConcurrentHashMap(Map<? extends K, ? extends V\> m) {
     this.sizeCtl = DEFAULT_CAPACITY;	// 默认16
     putAll(m);
 }
-public void putAll(Map<? extends K, ? extends V> m) {
+public void putAll(Map<? extends K, ? extends V\> m) {
     // 尝试触发扩容
     tryPresize(m.size());
-    for (Entry<? extends K, ? extends V> e : m.entrySet())
+    for (Entry<? extends K, ? extends V\> e : m.entrySet())
         putVal(e.getKey(), e.getValue(), false);
 }
 private final void tryPresize(int size) {
@@ -9841,14 +9841,14 @@ private final void tryPresize(int size) {
     	tableSizeFor(size + (size >>> 1) + 1);
     int sc;
     while ((sc = sizeCtl) >= 0) {
-        Node<K,V>[] tab = table; int n;
+        Node\<K,V\>[] tab = table; int n;
         // 数组还未初始化，【一般是调用集合构造方法才会成立，put 后调用该方法都是不成立的】
         if (tab == null || (n = tab.length) == 0) {
             n = (sc > c) ? sc : c;
             if (U.compareAndSwapInt(this, SIZECTL, sc, -1)) {
                 try {
                     if (table == tab) {
-                        Node<K,V>[] nt = (Node<K,V>[])new Node<?,?>[n];
+                        Node\<K,V\>[] nt = (Node\<K,V\>[])new Node<?,?>[n];
                         table = nt;
                         sc = n - (n >>> 2);// 扩容阈值：n - 1/4 n
                     }
@@ -9876,16 +9876,16 @@ private final void tryPresize(int size) {
 
 ```java
 // i 是数组索引
-static final <K,V> Node<K,V> tabAt(Node<K,V>[] tab, int i) {
+static final \<K,V\> Node\<K,V\> tabAt(Node\<K,V\>[] tab, int i) {
     // (i << ASHIFT) + ABASE == ABASE + i * 4 （一个 int 占 4 个字节），这就相当于寻址，替代了乘法
-    return (Node<K,V>)U.getObjectVolatile(tab, ((long)i << ASHIFT) + ABASE);
+    return (Node\<K,V\>)U.getObjectVolatile(tab, ((long)i << ASHIFT) + ABASE);
 }
 ```
 
 -  casTabAt()：指定数组索引位置修改原值为指定的值 
 
 ```java
-static final <K,V> boolean casTabAt(Node<K,V>[] tab, int i, Node<K,V> c, Node<K,V> v) {
+static final \<K,V\> boolean casTabAt(Node\<K,V\>[] tab, int i, Node\<K,V\> c, Node\<K,V\> v) {
     return U.compareAndSwapObject(tab, ((long)i << ASHIFT) + ABASE, c, v);
 }
 ```
@@ -9893,7 +9893,7 @@ static final <K,V> boolean casTabAt(Node<K,V>[] tab, int i, Node<K,V> c, Node<K,
 -  setTabAt()：指定数组索引位置设置值 
 
 ```java
-static final <K,V> void setTabAt(Node<K,V>[] tab, int i, Node<K,V> v) {
+static final \<K,V\> void setTabAt(Node\<K,V\>[] tab, int i, Node\<K,V\> v) {
     U.putObjectVolatile(tab, ((long)i << ASHIFT) + ABASE, v);
 }
 ```
@@ -9918,10 +9918,10 @@ final V putVal(K key, V value, boolean onlyIfAbsent) {
     // 表示当前 k-v 封装成 node 后插入到指定桶位后，在桶位中的所属链表的下标位置
     int binCount = 0;
     // tab 引用当前 map 的数组 table，开始自旋
-    for (Node<K,V>[] tab = table;;) {
+    for (Node\<K,V\>[] tab = table;;) {
         // f 表示桶位的头节点，n 表示哈希表数组的长度
         // i 表示 key 通过寻址计算后得到的桶位下标，fh 表示桶位头结点的 hash 值
-        Node<K,V> f; int n, i, fh;
+        Node\<K,V\> f; int n, i, fh;
         
         // 【CASE1】：表示当前 map 中的 table 尚未初始化
         if (tab == null || (n = tab.length) == 0)
@@ -9931,7 +9931,7 @@ final V putVal(K key, V value, boolean onlyIfAbsent) {
         // 【CASE2】：i 表示 key 使用【寻址算法】得到 key 对应数组的下标位置，tabAt 获取指定桶位的头结点f
         else if ((f = tabAt(tab, i = (n - 1) & hash)) == null) {
             // 对应的数组为 null 说明没有哈希冲突，直接新建节点添加到表中
-            if (casTabAt(tab, i, null, new Node<K,V>(hash, key, value, null)))
+            if (casTabAt(tab, i, null, new Node\<K,V\>(hash, key, value, null)))
                 break;
         }
         // 【CASE3】：逻辑说明数组已经被初始化，并且当前 key 对应的位置不为 null
@@ -9954,7 +9954,7 @@ final V putVal(K key, V value, boolean onlyIfAbsent) {
                         // 插入的key与链表中的某个元素的 key 一致，变成替换操作，binCount 表示第几个节点冲突
                         binCount = 1;
                         // 迭代循环当前桶位的链表，e 是每次循环处理节点，e 初始是头节点
-                        for (Node<K,V> e = f;; ++binCount) {
+                        for (Node\<K,V\> e = f;; ++binCount) {
                             // 当前循环节点 key
                             K ek;
                             // key 的哈希值与当前节点的哈希一致，并且 key 的值也相同
@@ -9970,10 +9970,10 @@ final V putVal(K key, V value, boolean onlyIfAbsent) {
                                 // 跳出循环
                                 break;
                             }
-                            Node<K,V> pred = e;
+                            Node\<K,V\> pred = e;
                             // 如果下一个节点为空，把数据封装成节点插入链表尾部，【binCount 代表长度 - 1】
                             if ((e = e.next) == null) {
-                                pred.next = new Node<K,V>(hash, key,
+                                pred.next = new Node\<K,V\>(hash, key,
                                                           value, null);
                                 break;
                             }
@@ -9981,9 +9981,9 @@ final V putVal(K key, V value, boolean onlyIfAbsent) {
                     }
                     // 当前桶位头节点是红黑树
                     else if (f instanceof TreeBin) {
-                        Node<K,V> p;
+                        Node\<K,V\> p;
                         binCount = 2;
-                        if ((p = ((TreeBin<K,V>)f).putTreeVal(hash, key,
+                        if ((p = ((TreeBin\<K,V\>)f).putTreeVal(hash, key,
                                                               value)) != null) {
                             oldVal = p.val;
                             if (!onlyIfAbsent)
@@ -10024,9 +10024,9 @@ static final int spread(int h) {
 -  initTable()：初始化数组，延迟初始化 
 
 ```java
-private final Node<K,V>[] initTable() {
+private final Node\<K,V\>[] initTable() {
     // tab 引用 map.table，sc 引用 sizeCtl
-    Node<K,V>[] tab; int sc;
+    Node\<K,V\>[] tab; int sc;
     // table 尚未初始化，开始自旋
     while ((tab = table) == null || tab.length == 0) {
         // sc < 0 说明 table 正在初始化或者正在扩容，当前线程可以释放 CPU 资源
@@ -10041,7 +10041,7 @@ private final Node<K,V>[] initTable() {
                     // sc > 0 创建 table 时使用 sc 为指定大小，否则使用 16 默认值
                     int n = (sc > 0) ? sc : DEFAULT_CAPACITY;
                     // 创建哈希表数组
-                    Node<K,V>[] nt = (Node<K,V>[])new Node<?,?>[n];
+                    Node\<K,V\>[] nt = (Node\<K,V\>[])new Node<?,?>[n];
                     table = tab = nt;
                     // 扩容阈值，n >>> 2  => 等于 1/4 n ，n - (1/4)n = 3/4 n => 0.75 * n
                     sc = n - (n >>> 2);
@@ -10060,8 +10060,8 @@ private final Node<K,V>[] initTable() {
 -  treeifyBin()：树化方法 
 
 ```java
-private final void treeifyBin(Node<K,V>[] tab, int index) {
-    Node<K,V> b; int n, sc;
+private final void treeifyBin(Node\<K,V\>[] tab, int index) {
+    Node\<K,V\> b; int n, sc;
     if (tab != null) {
         // 条件成立：【说明当前 table 数组长度未达到 64，此时不进行树化操作，进行扩容操作】
         if ((n = tab.length) < MIN_TREEIFY_CAPACITY)
@@ -10074,16 +10074,16 @@ private final void treeifyBin(Node<K,V>[] tab, int index) {
             synchronized (b) {
                 // 条件成立：表示加锁没问题。
                 if (tabAt(tab, index) == b) {
-                    TreeNode<K,V> hd = null, tl = null;
-                    for (Node<K,V> e = b; e != null; e = e.next) {
-                        TreeNode<K,V> p = new TreeNode<K,V>(e.hash, e.key, e.val,null, null);
+                    TreeNode\<K,V\> hd = null, tl = null;
+                    for (Node\<K,V\> e = b; e != null; e = e.next) {
+                        TreeNode\<K,V\> p = new TreeNode\<K,V\>(e.hash, e.key, e.val,null, null);
                         if ((p.prev = tl) == null)
                             hd = p;
                         else
                             tl.next = p;
                         tl = p;
                     }
-                    setTabAt(tab, index, new TreeBin<K,V>(hd));
+                    setTabAt(tab, index, new TreeBin\<K,V\>(hd));
                 }
             }
         }
@@ -10122,7 +10122,7 @@ private final void addCount(long x, int check) {
     
     // 表示一定 【是一个 put 操作调用的 addCount】
     if (check >= 0) {
-        Node<K,V>[] tab, nt; int n, sc;
+        Node\<K,V\>[] tab, nt; int n, sc;
         
         // 条件一：true 说明当前 sizeCtl 可能为一个负数表示正在扩容中，或者 sizeCtl 是一个正数，表示扩容阈值
         //        false 表示哈希表的数据的数量没达到扩容条件
@@ -10195,7 +10195,7 @@ static final int resizeStamp(int n) {
 -  transfer()：数据转移到新表中，完成扩容 
 
 ```java
-private final void transfer(Node<K,V>[] tab, Node<K,V>[] nextTab) {
+private final void transfer(Node\<K,V\>[] tab, Node\<K,V\>[] nextTab) {
     // n 表示扩容之前 table 数组的长度
     int n = tab.length, stride;
     // stride 表示分配给线程任务的步长，默认就是 16 
@@ -10205,7 +10205,7 @@ private final void transfer(Node<K,V>[] tab, Node<K,V>[] nextTab) {
     if (nextTab == null) {
         try {
             // 创建一个容量是之前【二倍的 table 数组】
-            Node<K,V>[] nt = (Node<K,V>[])new Node<?,?>[n << 1];
+            Node\<K,V\>[] nt = (Node\<K,V\>[])new Node<?,?>[n << 1];
             nextTab = nt;
         } catch (Throwable ex) {
             sizeCtl = Integer.MAX_VALUE;
@@ -10219,7 +10219,7 @@ private final void transfer(Node<K,V>[] tab, Node<K,V>[] nextTab) {
     // 新数组的长度
     int nextn = nextTab.length;
     // 当某个桶位数据处理完毕后，将此桶位设置为 fwd 节点，其它写线程或读线程看到后，可以从中获取到新表
-    ForwardingNode<K,V> fwd = new ForwardingNode<K,V>(nextTab);
+    ForwardingNode\<K,V\> fwd = new ForwardingNode\<K,V\>(nextTab);
     // 推进标记
     boolean advance = true;
     // 完成标记
@@ -10228,7 +10228,7 @@ private final void transfer(Node<K,V>[] tab, Node<K,V>[] nextTab) {
     // i 表示分配给当前线程任务，执行到的桶位
     // bound 表示分配给当前线程任务的下界限制，因为是倒序迁移，16 迁移完 迁移 15，15完成去迁移14
     for (int i = 0, bound = 0;;) {
-        Node<K,V> f; int fh;
+        Node\<K,V\> f; int fh;
         
         // 给当前线程【分配任务区间】
         while (advance) {
@@ -10295,15 +10295,15 @@ private final void transfer(Node<K,V>[] tab, Node<K,V>[] nextTab) {
                         
                     // ln 表示低位链表引用
                     // hn 表示高位链表引用
-                    Node<K,V> ln, hn;
+                    Node\<K,V\> ln, hn;
                     // 哈希 > 0 表示当前桶位是链表桶位
                     if (fh >= 0) {
                         // 和 HashMap 的处理方式一致，与老数组长度相与，16 是 10000
                         // 判断对应的 1 的位置上是 0 或 1 分成高低位链表
                         int runBit = fh & n;
-                        Node<K,V> lastRun = f;
+                        Node\<K,V\> lastRun = f;
                         // 遍历链表，寻找【逆序看】最长的对应位相同的链表，看下面的图更好的理解
-                        for (Node<K,V> p = f.next; p != null; p = p.next) {
+                        for (Node\<K,V\> p = f.next; p != null; p = p.next) {
                             // 将当前节点的哈希 与 n
                             int b = p.hash & n;
                             // 如果当前值与前面节点的值 对应位 不同，则修改 runBit，把 lastRun 指向当前节点
@@ -10323,14 +10323,14 @@ private final void transfer(Node<K,V>[] tab, Node<K,V>[] nextTab) {
                             ln = null;
                         }
                         // 从头开始遍历所有的链表节点，迭代到 p == lastRun 节点跳出循环
-                        for (Node<K,V> p = f; p != lastRun; p = p.next) {
+                        for (Node\<K,V\> p = f; p != lastRun; p = p.next) {
                             int ph = p.hash; K pk = p.key; V pv = p.val;
                             if ((ph & n) == 0)
                                 // 【头插法】，从右往左看，首先 ln 指向的是上一个节点，
                                 // 所以这次新建的节点的 next 指向上一个节点，然后更新 ln 的引用
-                                ln = new Node<K,V>(ph, pk, pv, ln);
+                                ln = new Node\<K,V\>(ph, pk, pv, ln);
                             else
-                                hn = new Node<K,V>(ph, pk, pv, hn);
+                                hn = new Node\<K,V\>(ph, pk, pv, hn);
                         }
                         // 高低位链设置到新表中的指定位置
                         setTabAt(nextTab, i, ln);
@@ -10341,15 +10341,15 @@ private final void transfer(Node<K,V>[] tab, Node<K,V>[] nextTab) {
                     }
                     // 条件成立：表示当前桶位是 红黑树结点
                     else if (f instanceof TreeBin) {
-                        TreeBin<K,V> t = (TreeBin<K,V>)f;
-                        TreeNode<K,V> lo = null, loTail = null;
-                        TreeNode<K,V> hi = null, hiTail = null;
+                        TreeBin\<K,V\> t = (TreeBin\<K,V\>)f;
+                        TreeNode\<K,V\> lo = null, loTail = null;
+                        TreeNode\<K,V\> hi = null, hiTail = null;
                         int lc = 0, hc = 0;
                         // 迭代 TreeBin 中的双向链表，从头结点至尾节点
-                        for (Node<K,V> e = t.first; e != null; e = e.next) {
+                        for (Node\<K,V\> e = t.first; e != null; e = e.next) {
                             // 迭代的当前元素的 hash
                             int h = e.hash;
-                            TreeNode<K,V> p = new TreeNode<K,V>
+                            TreeNode\<K,V\> p = new TreeNode\<K,V\>
                                 (h, e.key, e.val, null, null);
                             // 条件成立表示当前循环节点属于低位链节点
                             if ((h & n) == 0) {
@@ -10373,9 +10373,9 @@ private final void transfer(Node<K,V>[] tab, Node<K,V>[] nextTab) {
                         }
                         // 拆成的高位低位两个链，【判断是否需要需要转化为链表】，反之保持树化
                         ln = (lc <= UNTREEIFY_THRESHOLD) ? untreeify(lo) :
-                        (hc != 0) ? new TreeBin<K,V>(lo) : t;
+                        (hc != 0) ? new TreeBin\<K,V\>(lo) : t;
                         hn = (hc <= UNTREEIFY_THRESHOLD) ? untreeify(hi) :
-                        (lc != 0) ? new TreeBin<K,V>(hi) : t;
+                        (lc != 0) ? new TreeBin\<K,V\>(hi) : t;
                         setTabAt(nextTab, i, ln);
                         setTabAt(nextTab, i + n, hn);
                         setTabAt(tab, i, fwd);
@@ -10394,11 +10394,11 @@ private final void transfer(Node<K,V>[] tab, Node<K,V>[] nextTab) {
 -  helpTransfer()：帮助扩容机制 
 
 ```java
-final Node<K,V>[] helpTransfer(Node<K,V>[] tab, Node<K,V> f) {
-    Node<K,V>[] nextTab; int sc;
+final Node\<K,V\>[] helpTransfer(Node\<K,V\>[] tab, Node\<K,V\> f) {
+    Node\<K,V\>[] nextTab; int sc;
     // 数组不为空，节点是转发节点，获取转发节点指向的新表开始协助主线程扩容
     if (tab != null && (f instanceof ForwardingNode) &&
-        (nextTab = ((ForwardingNode<K,V>)f).nextTable) != null) {
+        (nextTab = ((ForwardingNode\<K,V\>)f).nextTable) != null) {
         // 扩容标识戳
         int rs = resizeStamp(tab.length);
         // 判断数据迁移是否完成，迁移完成会把 新表赋值给 nextTable 属性
@@ -10427,7 +10427,7 @@ ConcurrentHashMap 使用 get()  方法获取指定 key 的数据
 
 ```java
 public V get(Object key) {
-    Node<K,V>[] tab; Node<K,V> e, p; int n, eh; K ek;
+    Node\<K,V\>[] tab; Node\<K,V\> e, p; int n, eh; K ek;
     // 扰动运算，获取 key 的哈希值
     int h = spread(key.hashCode());
     // 判断当前哈希表的数组是否初始化
@@ -10457,11 +10457,11 @@ public V get(Object key) {
 -  ForwardingNode#find：转移节点的查找方法 
 
 ```java
-Node<K,V> find(int h, Object k) {
+Node\<K,V\> find(int h, Object k) {
     // 获取新表的引用
-    outer: for (Node<K,V>[] tab = nextTable;;)  {
+    outer: for (Node\<K,V\>[] tab = nextTable;;)  {
         // e 表示在扩容而创建新表使用寻址算法得到的桶位头结点，n 表示为扩容而创建的新表的长度
-        Node<K,V> e; int n;
+        Node\<K,V\> e; int n;
  
         if (k == null || tab == null || (n = tab.length) == 0 ||
             // 在新表中重新定位 hash 对应的头结点，表示在 oldTable 中对应的桶位在迁移之前就是 null
@@ -10479,7 +10479,7 @@ Node<K,V> find(int h, Object k) {
                 // 在并发很大的情况下新扩容的表还没完成可能【再次扩容】，在此方法处再次拿到 FWD 类型
                 if (e instanceof ForwardingNode) {
                     // 继续获取新的 fwd 指向的新数组的地址，递归了
-                    tab = ((ForwardingNode<K,V>)e).nextTable;
+                    tab = ((ForwardingNode\<K,V\>)e).nextTable;
                     continue outer;
                 }
                 else
@@ -10513,8 +10513,8 @@ final V replaceNode(Object key, V value, Object cv) {
     // 计算 key 扰动运算后的 hash
     int hash = spread(key.hashCode());
     // 开始自旋
-    for (Node<K,V>[] tab = table;;) {
-        Node<K,V> f; int n, i, fh;
+    for (Node\<K,V\>[] tab = table;;) {
+        Node\<K,V\> f; int n, i, fh;
         
         // 【CASE1】：table 还未初始化或者哈希寻址的数组索引处为 null，直接结束自旋，返回 null
         if (tab == null || (n = tab.length) == 0 || (f = tabAt(tab, i = (n - 1) & hash)) == null)
@@ -10536,7 +10536,7 @@ final V replaceNode(Object key, V value, Object cv) {
                     if (fh >= 0) {
                         validated = true;
                         //遍历所有的节点
-                        for (Node<K,V> e = f, pred = null;;) {
+                        for (Node\<K,V\> e = f, pred = null;;) {
                             K ek;
                             // hash 和值都相同，定位到了具体的节点
                             if (e.hash == hash &&
@@ -10566,8 +10566,8 @@ final V replaceNode(Object key, V value, Object cv) {
                     // 说明是红黑树节点
                     else if (f instanceof TreeBin) {
                         validated = true;
-                        TreeBin<K,V> t = (TreeBin<K,V>)f;
-                        TreeNode<K,V> r, p;
+                        TreeBin\<K,V\> t = (TreeBin\<K,V\>)f;
+                        TreeNode\<K,V\> r, p;
                         if ((r = t.root) != null &&
                             (p = r.findTreeNode(hash, key, null)) != null) {
                             V pv = p.val;
@@ -10623,7 +10623,7 @@ CopyOnWriteArraySet 底层对 CopyOnWriteArrayList 进行了包装，装饰器�
 
 ```java
 public CopyOnWriteArraySet() {
-    al = new CopyOnWriteArrayList<E>();
+    al = new CopyOnWriteArrayList\<E\>();
 }
 ```
 
@@ -10679,13 +10679,13 @@ private E get(Object[] a, int index) {
 -  迭代器：CopyOnWriteArrayList 在返回迭代器时，**创建一个内部数组当前的快照（引用）**，即使其他线程替换了原始数组，迭代器遍历的快照依然引用的是创建快照时的数组，所以这种实现方式也存在一定的数据延迟性，对其他线程并行添加的数据不可见 
 
 ```java
-public Iterator<E> iterator() {
+public Iterator\<E\> iterator() {
     // 获取到数组引用，整个遍历的过程该数组都不会变，一直引用的都是老数组，
-    return new COWIterator<E>(getArray(), 0);
+    return new COWIterator\<E\>(getArray(), 0);
 }
 
 // 迭代器会创建一个底层array的快照，故主类的修改不影响该快照
-static final class COWIterator<E> implements ListIterator<E> {
+static final class COWIterator\<E\> implements ListIterator\<E\> {
     // 内部数组快照
     private final Object[] snapshot;
 
@@ -10740,7 +10740,7 @@ Thread-0 读到了脏数据
 ConcurrentHashMap map = new ConcurrentHashMap();
 // KeyIterator
 Iterator iterator = map.keySet().iterator();
- Traverser(Node<K,V>[] tab, int size, int index, int limit) {
+ Traverser(Node\<K,V\>[] tab, int size, int index, int limit) {
      // 引用还是原来集合的 Node 数组，所以其他线程对数据的修改是可见的
      this.tab = tab;
      this.baseSize = size;
@@ -10750,7 +10750,7 @@ Iterator iterator = map.keySet().iterator();
  }
 public final boolean hasNext() { return next != null; }
 public final K next() {
-    Node<K,V> p;
+    Node\<K,V\> p;
     if ((p = next) == null)
         throw new NoSuchElementException();
     K k = p.key;
@@ -10766,11 +10766,11 @@ public final K next() {
 Collections类是用来操作集合的工具类，提供了集合转换成线程安全的方法：
 
 ```java
- public static <T> Collection<T> synchronizedCollection(Collection<T> c) {
-     return new SynchronizedCollection<>(c);
+ public static \<T\> Collection\<T\> synchronizedCollection(Collection\<T\> c) {
+     return new SynchronizedCollection\<\>(c);
  }
-public static <K,V> Map<K,V> synchronizedMap(Map<K,V> m) {
-    return new SynchronizedMap<>(m);
+public static \<K,V\> Map\<K,V\> synchronizedMap(Map\<K,V\> m) {
+    return new SynchronizedMap\<\>(m);
 }
 ```
 
@@ -10812,43 +10812,43 @@ private static final Object BASE_HEADER = new Object();
 -  跳表的顶层索引 
 
 ```java
-private transient volatile HeadIndex<K,V> head;
+private transient volatile HeadIndex\<K,V\> head;
 ```
 
 -  比较器，为 null 则使用自然排序 
 
 ```java
-final Comparator<? super K> comparator;
+final Comparator<? super K\> comparator;
 ```
 
 -  Node 节点 
 
 ```java
-static final class Node<K, V>{
+static final class Node\<K, V\>{
     final K key;  				// key 是 final 的, 说明节点一旦定下来, 除了删除, 一般不会改动 key
     volatile Object value; 		// 对应的 value
-    volatile Node<K, V> next; 	// 下一个节点，单向链表
+    volatile Node\<K, V\> next; 	// 下一个节点，单向链表
 }
 ```
 
 -  索引节点 Index，只有向下和向右的指针 
 
 ```java
-static class Index<K, V>{
-    final Node<K, V> node; 		// 索引指向的节点，每个都会指向数据节点
-    final Index<K, V> down; 	// 下边level层的Index，分层索引
-    volatile Index<K, V> right; // 右边的Index，单向
+static class Index\<K, V\>{
+    final Node\<K, V\> node; 		// 索引指向的节点，每个都会指向数据节点
+    final Index\<K, V\> down; 	// 下边level层的Index，分层索引
+    volatile Index\<K, V\> right; // 右边的Index，单向
 
     // 在 index 本身和 succ 之间插入一个新的节点 newSucc
-    final boolean link(Index<K, V> succ, Index<K, V> newSucc){
-        Node<K, V> n = node;
+    final boolean link(Index\<K, V\> succ, Index\<K, V\> newSucc){
+        Node\<K, V\> n = node;
         newSucc.right = succ;
         // 把当前节点的右指针从 succ 改为 newSucc
         return n.value != null && casRight(succ, newSucc);
     }
 
     // 断开当前节点和 succ 节点，将当前的节点 index 设置其的 right 为 succ.right，就是把 succ 删除
-    final boolean unlink(Index<K, V> succ){
+    final boolean unlink(Index\<K, V\> succ){
         return node.value != null && casRight(succ, succ.right);
     }
 }
@@ -10857,9 +10857,9 @@ static class Index<K, V>{
 -  头索引节点 HeadIndex 
 
 ```java
-static final class HeadIndex<K,V> extends Index<K,V> {
+static final class HeadIndex\<K,V\> extends Index\<K,V\> {
     final int level;	// 表示索引层级，所有的 HeadIndex 都指向同一个 Base_header 节点
-    HeadIndex(Node<K,V> node, Index<K,V> down, Index<K,V> right, int level) {
+    HeadIndex(Node\<K,V\> node, Index\<K,V\> down, Index\<K,V\> right, int level) {
         super(node, down, right);
         this.level = level;
     }
@@ -10884,7 +10884,7 @@ private void initialize() {
     descendingMap = null;
     // 初始化索引头节点，Node 的 key 为 null，value 为 BASE_HEADER 对象，下一个节点为 null
     // head 的分层索引 down 为 null，链表的后续索引 right 为 null，层级 level 为第 1 层
-    head = new HeadIndex<K,V>(new Node<K,V>(null, BASE_HEADER, null), null, null, 1);
+    head = new HeadIndex\<K,V\>(new Node\<K,V\>(null, BASE_HEADER, null), null, null, 1);
 }
 ```
 
@@ -10903,15 +10903,15 @@ static final int cpr(Comparator c, Object x, Object y) {
   从最上层的头索引开始向右查找（链表的后续索引），如果后续索引的节点的 key 大于要查找的 key，则头索引移到下层链表，在下层链表查找，以此反复，一直查找到没有下层的分层索引为止，返回该索引的节点。如果后续索引的节点的 key 小于要查找的 key，则在该层链表中向后查找。由于查找的 key 可能永远大于索引节点的 key，所以只能找到目标的前置索引节点。如果遇到空值索引的存在，通过 CAS 来断开索引 
 
 ```java
-private Node<K,V> findPredecessor(Object key, Comparator<? super K> cmp) {
+private Node\<K,V\> findPredecessor(Object key, Comparator<? super K\> cmp) {
     if (key == null)
         throw new NullPointerException(); // don't postpone errors
     for (;;) {
         // 1.初始数据 q 是 head，r 是最顶层 h 的右 Index 节点
-        for (Index<K,V> q = head, r = q.right, d;;) {
+        for (Index\<K,V\> q = head, r = q.right, d;;) {
             // 2.右索引节点不为空，则进行向下查找
             if (r != null) {
-                Node<K,V> n = r.node;
+                Node\<K,V\> n = r.node;
                 K k = n.key;
                 // 3.n.value 为 null 说明节点 n 正在删除的过程中，此时【当前线程帮其删除索引】
                 if (n.value == null) {
@@ -10956,22 +10956,22 @@ public V put(K key, V value) {
     return doPut(key, value, false);
 }
 private V doPut(K key, V value, boolean onlyIfAbsent) {
-    Node<K,V> z;
+    Node\<K,V\> z;
     // 非空判断，key 不能为空
     if (key == null)
         throw new NullPointerException();
-    Comparator<? super K> cmp = comparator;
+    Comparator<? super K\> cmp = comparator;
     // outer 循环，【把待插入数据插入到数据层的合适的位置，并在扫描过程中处理已删除(value = null)的数据】
     outer: for (;;) {
         //0.for (;;)
         //1.将 key 对应的前继节点找到, b 为前继节点，是数据层的, n 是前继节点的 next, 
 		//  若没发生条件竞争，最终 key 在 b 与 n 之间 (找到的 b 在 base_level 上)
-        for (Node<K,V> b = findPredecessor(key, cmp), n = b.next;;) {
+        for (Node\<K,V\> b = findPredecessor(key, cmp), n = b.next;;) {
             // 2.n 不为 null 说明 b 不是链表的最后一个节点
             if (n != null) {
                 Object v; int c;
                 // 3.获取 n 的右节点
-                Node<K,V> f = n.next;
+                Node\<K,V\> f = n.next;
                 // 4.条件竞争，并发下其他线程在 b 之后插入节点或直接删除节点 n, break 到步骤 0
                 if (n != b.next)              
                     break;
@@ -11005,7 +11005,7 @@ private V doPut(K key, V value, boolean onlyIfAbsent) {
                 // else c < 0; fall through
             }
             // 8.此时的情况 b.key < key < n.key，对应流程图1中的7，创建z节点指向n
-            z = new Node<K,V>(key, value, n);
+            z = new Node\<K,V\>(key, value, n);
             // 9.尝试把 b.next 从 n 设置成 z
             if (!b.casNext(n, z))
                 // cas失败，返回到步骤0，重试
@@ -11032,16 +11032,16 @@ private V doPut(K key, V value, boolean onlyIfAbsent) {
         while (((rnd >>>= 1) & 1) != 0)
             ++level;
         // 最终会指向 z 节点，就是添加的节点 
-        Index<K,V> idx = null;
+        Index\<K,V\> idx = null;
         // 指向头索引节点
-        HeadIndex<K,V> h = head;
+        HeadIndex\<K,V\> h = head;
         
         // 13.判断level是否比当前最高索引小，图中 max 为 3
         if (level <= (max = h.level)) {
             for (int i = 1; i <= level; ++i)
                 // 根据层数level不断创建新增节点的上层索引，索引的后继索引留空
                 // 第一次idx为null，也就是下层索引为空，第二次把上次的索引作为下层索引，【类似头插法】
-                idx = new Index<K,V>(z, idx, null);
+                idx = new Index\<K,V\>(z, idx, null);
             // 循环以后的索引结构
             // index-3	← idx
             //   ↓
@@ -11055,10 +11055,10 @@ private V doPut(K key, V value, boolean onlyIfAbsent) {
         else { 
             level = max + 1;
             //创建一个 index 数组，长度是 level+1，假设 level 是 4，创建的数组长度为 5
-            Index<K,V>[] idxs = (Index<K,V>[])new Index<?,?>[level+1];
+            Index\<K,V\>[] idxs = (Index\<K,V\>[])new Index<?,?>[level+1];
             // index[0]的数组 slot 并没有使用，只使用 [1,level] 这些数组的 slot
             for (int i = 1; i <= level; ++i)
-                idxs[i] = idx = new Index<K,V>(z, idx, null);
+                idxs[i] = idx = new Index\<K,V\>(z, idx, null);
               		// index-4   ← idx
                     //   ↓
                   	// ......
@@ -11075,13 +11075,13 @@ private V doPut(K key, V value, boolean onlyIfAbsent) {
                 if (level <= oldLevel)
                     break;
                 // 定义一个新的头索引节点
-                HeadIndex<K,V> newh = h;
+                HeadIndex\<K,V\> newh = h;
                 // 获取头索引的节点，就是 BASE_HEADER
-                Node<K,V> oldbase = h.node;
+                Node\<K,V\> oldbase = h.node;
                 // 升级 baseHeader 索引，升高一级，并发下可能升高多级
                 for (int j = oldLevel + 1; j <= level; ++j)
                     // 参数1：底层node，参数二：down，为以前的头节点，参数三：right，新建
-                    newh = new HeadIndex<K,V>(oldbase, newh, idxs[j], j);
+                    newh = new HeadIndex\<K,V\>(oldbase, newh, idxs[j], j);
                 // 执行完for循环之后，baseHeader 索引长这个样子，这里只升高一级
                 // index-4             →             index-4	← idx
                 //   ↓                                  ↓
@@ -11110,7 +11110,7 @@ private V doPut(K key, V value, boolean onlyIfAbsent) {
             // 获取头索引的层数，情况 1 是 3，情况 2 是 4
             int j = h.level;
             // 【遍历 insertionLevel 层的索引，找到合适的插入位置】
-            for (Index<K,V> q = h, r = q.right, t = idx;;) {
+            for (Index\<K,V\> q = h, r = q.right, t = idx;;) {
                 // 如果头索引为 null 或者新增节点索引为 null，退出插入索引的总循环
                 if (q == null || t == null)
                     // 此处表示有其他线程删除了头索引或者新增节点的索引
@@ -11118,7 +11118,7 @@ private V doPut(K key, V value, boolean onlyIfAbsent) {
                 // 头索引的链表后续索引存在，如果是新层则为新节点索引，如果是老层则为原索引
                 if (r != null) {
                     // 获取r的节点
-                    Node<K,V> n = r.node;
+                    Node\<K,V\> n = r.node;
                     // 插入的key和n.key的比较值
                     int c = cpr(cmp, key, n.key);
                     // 【删除空值索引】
@@ -11165,7 +11165,7 @@ private V doPut(K key, V value, boolean onlyIfAbsent) {
 -  findNode() 
 
 ```java
-private Node<K,V> findNode(Object key) {
+private Node\<K,V\> findNode(Object key) {
     // 原理与doGet相同，无非是 findNode 返回节点，doGet 返回 value
     if ((c = cpr(cmp, key, n.key)) == 0)
         return n;
@@ -11188,16 +11188,16 @@ public V get(Object key) {
 private V doGet(Object key) {
     if (key == null)
         throw new NullPointerException();
-    Comparator<? super K> cmp = comparator;
+    Comparator<? super K\> cmp = comparator;
     outer: for (;;) {
         // 1.找到最底层节点的前置节点
-        for (Node<K,V> b = findPredecessor(key, cmp), n = b.next;;) {
+        for (Node\<K,V\> b = findPredecessor(key, cmp), n = b.next;;) {
             Object v; int c;
             // 2.【如果该前置节点的链表后续节点为 null，说明不存在该节点】
             if (n == null)
                 break outer;
             // b → n → f
-            Node<K,V> f = n.next;
+            Node\<K,V\> f = n.next;
             // 3.如果n不为前置节点的后续节点，表示已经有其他线程删除了该节点
             if (n != b.next) 
                 break;
@@ -11236,16 +11236,16 @@ public V remove(Object key) {
 final V doRemove(Object key, Object value) {
     if (key == null)
         throw new NullPointerException();
-    Comparator<? super K> cmp = comparator;
+    Comparator<? super K\> cmp = comparator;
     outer: for (;;) {
         // 1.找到最底层目标节点的前置节点，b.key < key
-        for (Node<K,V> b = findPredecessor(key, cmp), n = b.next;;) {
+        for (Node\<K,V\> b = findPredecessor(key, cmp), n = b.next;;) {
             Object v; int c;
             // 2.如果该前置节点的链表后续节点为 null，退出循环，说明不存在这个元素
             if (n == null)
                 break outer;
             // b → n → f
-            Node<K,V> f = n.next;
+            Node\<K,V\> f = n.next;
             if (n != b.next)                    // inconsistent read
                 break;
             if ((v = n.value) == null) {        // n is deleted
@@ -11294,21 +11294,21 @@ final V doRemove(Object key, Object value) {
 -  appendMarker()：添加删除标记节点 
 
 ```java
-boolean appendMarker(Node<K,V> f) {
+boolean appendMarker(Node\<K,V\> f) {
     // 通过 CAS 让 n.next 指向一个 key 为 null，value 为 this，next 为 f 的标记节点
-    return casNext(f, new Node<K,V>(f));
+    return casNext(f, new Node\<K,V\>(f));
 }
 ```
 
 -  helpDelete()：将添加了删除标记的节点清除，参数是该节点的前驱和后继节点 
 
 ```java
-void helpDelete(Node<K,V> b, Node<K,V> f) {
+void helpDelete(Node\<K,V\> b, Node\<K,V\> f) {
     // this 节点的后续节点为 f，且本身为 b 的后续节点，一般都是正确的，除非被别的线程删除
     if (f == next && this == b.next) {
         // 如果 n 还还没有被标记
         if (f == null || f.value != f) 
-            casNext(f, new Node<K,V>(f));
+            casNext(f, new Node\<K,V\>(f));
         else
             // 通过 CAS，将 b 的下一个节点 n 变成 f.next，即成为图中的样式
             b.casNext(this, f.next);
@@ -11320,12 +11320,12 @@ void helpDelete(Node<K,V> b, Node<K,V> f) {
 
 ```java
 private void tryReduceLevel() {
-    HeadIndex<K,V> h = head;
-    HeadIndex<K,V> d;
-    HeadIndex<K,V> e;
+    HeadIndex\<K,V\> h = head;
+    HeadIndex\<K,V\> d;
+    HeadIndex\<K,V\> e;
     if (h.level > 3 &&
-        (d = (HeadIndex<K,V>)h.down) != null &&
-        (e = (HeadIndex<K,V>)d.down) != null &&
+        (d = (HeadIndex\<K,V\>)h.down) != null &&
+        (e = (HeadIndex\<K,V\>)d.down) != null &&
         e.right == null &&
         d.right == null &&
         h.right == null &&
@@ -11365,12 +11365,12 @@ ConcurrentLinkedQueue 使用约定：
 ConcurrentLinkedQueue 由 head 节点和 tail 节点组成，每个节点由节点元素和指向下一个节点的引用组成，组成一张链表结构的队列
 
 ```java
-private transient volatile Node<E> head;
-private transient volatile Node<E> tail;
+private transient volatile Node\<E\> head;
+private transient volatile Node\<E\> tail;
 
-private static class Node<E> {
+private static class Node\<E\> {
     volatile E item;
-    volatile Node<E> next;
+    volatile Node\<E\> next;
     //.....
 }
 ```
@@ -11382,19 +11382,19 @@ private static class Node<E> {
 ```java
 public ConcurrentLinkedQueue() {
     // 默认情况下 head 节点存储的元素为空，dummy 节点，tail 节点等于 head 节点
-    head = tail = new Node<E>(null);
+    head = tail = new Node\<E\>(null);
 }
 ```
 
 -  有参构造方法 
 
 ```java
-public ConcurrentLinkedQueue(Collection<? extends E> c) {
-    Node<E> h = null, t = null;
+public ConcurrentLinkedQueue(Collection<? extends E\> c) {
+    Node\<E\> h = null, t = null;
     // 遍历节点
     for (E e : c) {
         checkNotNull(e);
-        Node<E> newNode = new Node<E>(e);
+        Node\<E\> newNode = new Node\<E\>(e);
         if (h == null)
             h = t = newNode;
         else {
@@ -11404,7 +11404,7 @@ public ConcurrentLinkedQueue(Collection<? extends E> c) {
         }
     }
     if (h == null)
-        h = t = new Node<E>(null);
+        h = t = new Node\<E\>(null);
     head = h;
     tail = t;
 }
@@ -11421,12 +11421,12 @@ public ConcurrentLinkedQueue(Collection<? extends E> c) {
 public boolean offer(E e) {
     checkNotNull(e);
     // 创建入队节点
-    final Node<E> newNode = new Node<E>(e);
+    final Node\<E\> newNode = new Node\<E\>(e);
 	
     // 循环 CAS 直到入队成功
-    for (Node<E> t = tail, p = t;;) {
+    for (Node\<E\> t = tail, p = t;;) {
         // p 用来表示队列的尾节点，初始情况下等于 tail 节点，q 是 p 的 next 节点
-        Node<E> q = p.next;
+        Node\<E\> q = p.next;
         // 条件成立说明 p 是尾节点
         if (q == null) {
             // p 是尾节点，设置 p 节点的下一个节点为新节点
@@ -11480,7 +11480,7 @@ public E poll() {
     restartFromHead:
     for (;;) {
         // p 节点表示首节点，即需要出队的节点，FIFO
-        for (Node<E> h = head, p = h, q;;) {
+        for (Node\<E\> h = head, p = h, q;;) {
             E item = p.item;
 			// 如果 p 节点的元素不为 null，则通过 CAS 来设置 p 节点引用元素为 null，成功返回 item
             if (item != null && p.casItem(item, null)) {
@@ -11504,7 +11504,7 @@ public E poll() {
         }
     }
 }
-final void updateHead(Node<E> h, Node<E> p) {
+final void updateHead(Node\<E\> h, Node\<E\> p) {
     if (h != p && casHead(h, p))
         // 将旧结点 h 的 next 域指向为 h，help gc
         h.lazySetNext(h);
@@ -11532,7 +11532,7 @@ final void updateHead(Node<E> h, Node<E> p) {
 public E peek() {
     restartFromHead:
     for (;;) {
-        for (Node<E> h = head, p = h, q;;) {
+        for (Node\<E\> h = head, p = h, q;;) {
             E item = p.item;
             if (item != null || (q = p.next) == null) {
                 // 更改h的位置为非空元素节点
@@ -11556,7 +11556,7 @@ public int size() {
     // first() 获取第一个具有非空元素的节点，若不存在，返回 null
     // succ(p) 方法获取 p 的后继节点，若 p == p.next，则返回 head
     // 类似遍历链表
-    for (Node<E> p = first(); p != null; p = succ(p))
+    for (Node\<E\> p = first(); p != null; p = succ(p))
         if (p.item != null)
             // 最大返回Integer.MAX_VALUE
             if (++count == Integer.MAX_VALUE)
@@ -11571,8 +11571,8 @@ public int size() {
 public boolean remove(Object o) {
     // 删除的元素不能为null
     if (o != null) {
-        Node<E> next, pred = null;
-        for (Node<E> p = first(); p != null; pred = p, p = next) {
+        Node\<E\> next, pred = null;
+        for (Node\<E\> p = first(); p != null; pred = p, p = next) {
             boolean removed = false;
             E item = p.item;
             // 节点元素不为null
