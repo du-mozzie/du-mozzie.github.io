@@ -1,6 +1,6 @@
 ---
 order: 14
-title: 注解
+title: JVM
 date: 2021-07-01
 category: Java
 tag: Java
@@ -12,7 +12,7 @@ article: true
 
 ### JVM内存模型
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1702296545251-14404f88-739e-46fd-8de4-7ee6cbe618a6.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1702296545251-14404f88-739e-46fd-8de4-7ee6cbe618a6.png)
 
 **线程共享**：堆、方法区
 
@@ -22,7 +22,7 @@ article: true
 
 > 对象分配策略
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1702296505567-b1b0c93b-bca4-48b4-b451-62e8f700f7fc.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1702296505567-b1b0c93b-bca4-48b4-b451-62e8f700f7fc.png)
 
 - 对象进入Eden区，Minor GC存活的进入Survivor区，计数达到设置的MaxTenuringThreshold进入Old区
 - 大对象直接进入Old区
@@ -34,11 +34,11 @@ article: true
 
 #### 栈
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1715525875467-212eae86-8358-446a-81d8-3ec21e44a37f.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1715525875467-212eae86-8358-446a-81d8-3ec21e44a37f.png)
 
 #### 方法区
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1715525916410-043c5f5a-261d-4c5d-a552-b3ae027fbc9d.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1715525916410-043c5f5a-261d-4c5d-a552-b3ae027fbc9d.png)
 
 jdk7及以前叫做永久代，jdk8开始，使用元空间取代了永久代。方法区和永久代并不等价，仅是对HotSpot虚拟机而言。《Java虚拟机规范》对如何实现方法区不做统一的要求，元空间使用的是本地内存。
 
@@ -157,7 +157,7 @@ jdk1.8及以后：无永久代，类型信息、字段、方法、常量保存�
 
 2. 复制算法
 
-   需要两块空间，每次只使用其中一块，将存活对象复制一份到另外一块空间，将原来的对象引用指向新复制的对象![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1704088261924-4f6bfc04-082b-48f6-b4d2-23cdf29096f8.png)
+   需要两块空间，每次只使用其中一块，将存活对象复制一份到另外一块空间，将原来的对象引用指向新复制的对象![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1704088261924-4f6bfc04-082b-48f6-b4d2-23cdf29096f8.png)
 
    缺点：空间占用比较大，但是没有碎片空间
 
@@ -205,7 +205,7 @@ jdk1.8及以后：无永久代，类型信息、字段、方法、常量保存�
 
 按线程数分，可以分为串行垃圾回收器和并行垃圾回收器。
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1704107657017-6049e710-4cae-415f-81c4-dadc97b03bd5.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1704107657017-6049e710-4cae-415f-81c4-dadc97b03bd5.png)
 
 **并发式vs独占式**
 
@@ -217,7 +217,7 @@ jdk1.8及以后：无永久代，类型信息、字段、方法、常量保存�
 
 线程，直到垃圾回收过程完全结束。
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1704107728908-34ebfee1-645f-471a-81bc-e929a10497d1.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1704107728908-34ebfee1-645f-471a-81bc-e929a10497d1.png)
 
 **压缩式vs非压缩式**
 
@@ -255,11 +255,11 @@ jdk1.8及以后：无永久代，类型信息、字段、方法、常量保存�
 
 并发回收器：CMS、G1
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1704205359912-22c479f2-e3d2-4eab-b7f7-aa2fdb66a4e9.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1704205359912-22c479f2-e3d2-4eab-b7f7-aa2fdb66a4e9.png)
 
 不同厂商、不同版本的虚拟机实现差别很大。HotSpot 虚拟机在JDK7/8后所有收集器及组合(连线)，如下图：（更新到了JDK14）
 
-![img](https://cdn.nlark.com/yuque/0/2024/png/25672830/1704205929568-d6fcb86a-883b-4c50-92d9-0ecef6cae2a6.png)
+![](https://cdn.nlark.com/yuque/0/2024/png/25672830/1704205929568-d6fcb86a-883b-4c50-92d9-0ecef6cae2a6.png)
 
 1. 两个收集器间有连线，表明它们可以搭配使用：
 
@@ -284,7 +284,7 @@ Serial Old GC 老年代
 - HotSpot中Client模式下默认
 - 在server模式有两个用途：与新生代Parallel Scavenge配合使用，作为老年代CMS收集器的后备垃圾回收方案
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1704208181172-d4795083-5416-4348-ac2f-16e05b3d602c.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1704208181172-d4795083-5416-4348-ac2f-16e05b3d602c.png)
 
 优势：简单高效，适合单CPU，在垃圾回收时暂停用户线程，STW
 
@@ -298,7 +298,7 @@ ParNew是很多JVM运行在Server模式下新生代的默认垃圾收集器，**
 
 **默认老年代是：Serial Old GC**
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1704208583802-a9e65867-4a3e-4ef5-adfc-62be87d260e4.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1704208583802-a9e65867-4a3e-4ef5-adfc-62be87d260e4.png)
 
 对于新生代，回收次数频繁，使用并行方式高效。|
 
@@ -313,7 +313,7 @@ Parallel GC 新生代
 
 Parallel old GC 老年代
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1704287324217-f873cf87-3ad3-4ef9-9067-35c453ad8696.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1704287324217-f873cf87-3ad3-4ef9-9067-35c453ad8696.png)
 
 - 和ParNew收集器不同，Parallel Scavenge收 集器的目标则是达到一个可控制的吞吐量(Throughput)，它也被称为吞吐量优先的垃圾收集器。
 - 自适应调节策略是Parallel Scavenge 与ParNew个重要区别。
@@ -336,7 +336,7 @@ Parallel old收集器采用了标记-压缩算法，但同样也是基于并行�
 
 ##### CMS：低延迟
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1704330119911-2bab1a6a-5f1c-4e47-8672-1c87160855cf.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1704330119911-2bab1a6a-5f1c-4e47-8672-1c87160855cf.png)
 
 回收步骤
 
@@ -347,7 +347,7 @@ Parallel old收集器采用了标记-压缩算法，但同样也是基于并行�
 
 ##### G1：区域划分代式
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1704330175265-e24f9b23-66ba-4333-8d0f-b351cafe6f0d.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1704330175265-e24f9b23-66ba-4333-8d0f-b351cafe6f0d.png)
 
 老年代分为一个个region，进行清理
 
@@ -355,7 +355,7 @@ region内是标记--复制，region之间是标记--整理，region使用率进�
 
 一般使用G1垃圾回收器就不设置新生代跟老年代的空间比值，让G1自动调整，通常设置垃圾回收最大停顿时间
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1704330242306-65665e5f-e412-4a36-8a5a-68e8835c49aa.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1704330242306-65665e5f-e412-4a36-8a5a-68e8835c49aa.png)
 
 **并行与并发**
 
@@ -396,7 +396,7 @@ region内是标记--复制，region之间是标记--整理，region使用率进�
 
 **要显示设置jvm参数不然是6:1:1**
 
-> -XX:MaxTenuringThreshold=<N>，年轻代转换到老年代阈值，默认15
+> -XX:MaxTenuringThreshold=N，年轻代转换到老年代阈值，默认15
 
 > -XX:TargetSurvivorRatio，动态年龄判断，默认Survior区一半
 
@@ -620,7 +620,7 @@ Point这个聚合量经过逃逸分析后，发现它并没有逃逸，就被替
 
 依据的原则是根据Java Performance里面的推荐公式来进行设置。
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1704724054137-385b3191-2044-4cd7-9a42-ab37cbcefe0c.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1704724054137-385b3191-2044-4cd7-9a42-ab37cbcefe0c.png)
 
 - Java整个堆大小设置，Xmx 和 Xms设置为老年代存活对象的3-4倍，即FullGC之后的老年代内存占用的3-4倍。
 - 方法区（永久代 PermSize和MaxPermSize 或 元空间 MetaspaceSize 和 MaxMetaspaceSize）设置为老年代存活对象的1.2-1.5倍。
@@ -632,9 +632,9 @@ Point这个聚合量经过逃逸分析后，发现它并没有逃逸，就被替
 1. 查看日志
 2. 强制触发FullGC
 
-   - jmap -dump:live,format=b,file=heap.bin <pid> 将当前的存活对象dump到文件，此时会触发FullGC
+   - jmap -dump:live,format=b,file=heap.bin pid 将当前的存活对象dump到文件，此时会触发FullGC
 
-   - jmap -histo:live <pid> 打印每个class的实例数目,内存占用,类全名信息.live子参数加上后,只统计活的对象数量. 此时会触发FullGC
+   - jmap -histo:live pid 打印每个class的实例数目,内存占用,类全名信息.live子参数加上后,只统计活的对象数量. 此时会触发FullGC
 
    - 在性能测试环境，可以通过Java监控工具来触发FullGC，比如使用VisualVM和JConsole，VisualVM集成了JConsole，VisualVM或者JConsole上面有一个触发GC的按钮。
 
@@ -654,7 +654,7 @@ Point这个聚合量经过逃逸分析后，发现它并没有逃逸，就被替
 
 > jps，查看正在运行的Java进程
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1704206996779-df0c9c8d-8e4d-4a82-aa36-a21a3e369ef0.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1704206996779-df0c9c8d-8e4d-4a82-aa36-a21a3e369ef0.png)
 
 
 
@@ -662,23 +662,23 @@ Point这个聚合量经过逃逸分析后，发现它并没有逃逸，就被替
 
 >  jstat -gc 进程号 打印周期(ms) 打印次数，查看JVM统计信息
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1705372236245-d42c4444-ba3e-4bc8-a289-b5a2e355e3aa.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1705372236245-d42c4444-ba3e-4bc8-a289-b5a2e355e3aa.png)
 
 3. [**jinfo**](https://docs.oracle.com/javase/8/docs/technotes/tools/windows/jinfo.html#BCGEBFDD)
 
 >  jinfo -flag 相关垃圾回收器参数 进程ID，实时查看和修改JVM配置参数（+表示在使用，-未使用）
 
-![img](https://cdn.nlark.com/yuque/0/2024/png/25672830/1704207097037-e17da0c3-19d8-44ac-92d5-9bd79029650a.png)
+![](https://cdn.nlark.com/yuque/0/2024/png/25672830/1704207097037-e17da0c3-19d8-44ac-92d5-9bd79029650a.png)
 
 4. [**jmap**](https://docs.oracle.com/javase/8/docs/technotes/tools/windows/jmap.html#CEGCECJB)
 
 > jmap -histo:live 进程ID，导出内存映像文件&内存使用情况
 
-![img](https://cdn.nlark.com/yuque/0/2024/png/25672830/1705372377866-0cb243ba-a322-4c3b-99a6-cd5b664984cf.png)
+![](https://cdn.nlark.com/yuque/0/2024/png/25672830/1705372377866-0cb243ba-a322-4c3b-99a6-cd5b664984cf.png)
 
 > jmap -heap 进程ID ，打印内存信息
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1705372330181-201d48b5-7e83-42f6-ac6d-a490c5c8b0a2.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1705372330181-201d48b5-7e83-42f6-ac6d-a490c5c8b0a2.png)
 
 5. [**jhat**](https://docs.oracle.com/javase/8/docs/technotes/tools/windows/jhat.html#CIHHJAGE)
 
@@ -688,13 +688,13 @@ JDK自带堆分析工具
 
 > jstack 进程ID，打印JVM中线程快照
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1705372426504-0d317319-6105-44e9-8937-3c55fb075b3d.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1705372426504-0d317319-6105-44e9-8937-3c55fb075b3d.png)
 
 7. [**jcmd**](https://docs.oracle.com/javase/8/docs/technotes/tools/windows/jcmd.html#CIHEEDIB)
 
 多功能命令行
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1705372447216-f8284e21-6894-4d29-afa1-dbb91b3ece46.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1705372447216-f8284e21-6894-4d29-afa1-dbb91b3ece46.png)
 
 8. [**jstatd**](https://docs.oracle.com/javase/8/docs/technotes/tools/windows/jstatd.html#BABEHFHF)
 
