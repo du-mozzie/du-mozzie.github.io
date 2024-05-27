@@ -10,6 +10,8 @@ article: true
 
 # 流程控制
 
+Java 中的流程控制主要包括条件语句（if-else、switch）、循环语句（for、while、do-while）和跳转语句（break、continue、return）。
+
 ## 1、选择流程控制
 
 - if else

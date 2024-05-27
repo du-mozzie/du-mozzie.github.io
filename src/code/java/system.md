@@ -10,6 +10,8 @@ article: true
 
 # Java体系
 
+Java的体系概述可以涵盖多个方面，包括Java语言本身、Java平台和Java生态系统。
+
 ## 1、Java 基础
 
 1、跨平台

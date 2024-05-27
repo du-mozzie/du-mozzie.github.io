@@ -10,6 +10,8 @@ article: true
 
 # 基本概念
 
+Java基本概念，从安装Java环境到运算符的优先级，覆盖了Java程序开发中的关键内容。
+
 ## 1、安装 Java 环境
 
 - 编写 Java 代码

@@ -8,9 +8,11 @@ timeline: true
 article: true
 ---
 
-## 文件
+# IO
 
-### 1、文件
+Java IO（输入/输出）是指用于读取和写入数据的API，包括处理文件、网络连接、内部存储等。Java IO API 提供了广泛的类和接口来处理不同类型的输入输出操作。
+
+## 1、文件
 
 File 类
 
@@ -50,13 +52,13 @@ Java 中的流有很多种不同的分类。
 
 方法定义时的异常如果继承自 RuntimeException，调用的时候不需要处理。
 
-### 2、IO流
+## 2、IO流
 
 - 按照方向分，可以分为输入流和输出流。
 - 按照单位分，可以分为字节流和字符流。
 - 按照功能分，可以分为节点流和处理流。
 
-### 3、字节流
+## 3、字节流
 
 按照方向可以分为输入字节流和输出字节流。
 
@@ -85,7 +87,7 @@ OutputStream
 | void close()                         | 关闭数据流                     |
 | void flush()                         | 将缓冲流中的数据同步到输出流中 |
 
-### 4、字符流
+## 4、字符流
 
 字节流是单位时间内处理一个字节的数据（输入+输出）
 
@@ -96,7 +98,7 @@ OutputStream
 - 输入字符流 Reader
 - 输出字符流 Writer
 
-### 5、Reader
+## 5、Reader
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20220114202728127.png)
 
@@ -158,7 +160,7 @@ read() 返回的是 int ，直接将字符转成字节（1-1，1-3）
 
 read(char[] chars) 返回的是char数组，直接就返回字符，不会转成字节的。
 
-### 6、Writer
+## 6、Writer
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20220114202852617.png)
 
@@ -185,9 +187,9 @@ public class Test {
 }
 ```
 
-### 7、处理
+## 7、处理
 
-#### 1、读文件
+### 1、读文件
 
 ```java
 public class Test {
@@ -205,7 +207,7 @@ public class Test {
 }
 ```
 
-#### 2、写文件
+### 2、写文件
 
 ```java
 public class Test2 {
@@ -220,7 +222,7 @@ public class Test2 {
 }
 ```
 
-### 8、缓冲流
+## 8、缓冲流
 
 无论是`字节流`还是`字符流`，使用的时候都会频繁访问硬盘，对硬盘是一种损伤，同时效率不高，如何解决？
 
@@ -330,7 +332,7 @@ public class Test2 {
 
 输入流没有 flush 方法，但不代表它没有缓冲流，输出流是有 flush 方法的，实际开发中在关闭输出缓冲流之前，需要调用 flush 方法。
 
-### 9、序列化和反序列化
+## 9、序列化和反序列化
 
 序列化就是将内存中的对象输出到硬盘文件中保存。
 
@@ -427,7 +429,7 @@ public class Test2 {
 }
 ```
 
-### 10、IO 流的应用
+## 10、IO 流的应用
 
 IO 流就是完成文件传输（上传文件：发朋友圈、换头像，文件下载：CSDN 下载源代码、文档）
 

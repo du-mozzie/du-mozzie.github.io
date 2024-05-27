@@ -10,6 +10,8 @@ article: true
 
 # 常用类
 
+开发中会经常使用到的一些类的介绍
+
 ## 1、Object
 
 Object 是 Java 官方提供的类，存放在 java.lang 包中，该类是所有类的直接父类或者间接父类，无论是 Java 提供的类还是开发者自定义的类，都是 Object 的直接子类或间接子类，Java 中的任何一个类都会继承 Object 中的 public 和 protected 方法。
