@@ -117,7 +117,7 @@ private static void insertionSort(int[] arr){
 
 空间复杂度最好：o(logn) 
 
-### 算法步骤
+### 1、算法步骤
 
 1. 从数列中挑出一个元素，称为 "基准"（pivot）;
 2. 将大于Pivot的数字放在Pivot的右边
@@ -155,7 +155,7 @@ private void quickSort(int[] arr, int l, int r){
 }
 ```
 
-### 三路快排
+### 2、三路快排
 
 上面的排序在leetcode会超时，下面介绍一种基于快速排序的改进版本，结合了随机选择pivot和三路partitioning的思想
 
@@ -336,7 +336,7 @@ private static void swap(int[] arr, int i, int j) {
 
 适用于序列的均值均在0~9之间
 
-​		基数排序的发明可以追溯到1887年赫尔曼·何乐礼在打孔卡片制表机(Tabulation Machine)上的贡献。它是这样实现的：将所有待比较数值（正整数）统一为同样的数位长度，数位较短的数前面补零。然后，从最低位开始，依次进行一次排序。这样从最低位排序一直到最高位排序完成以后, 数列就变成一个有序序列。
+基数排序的发明可以追溯到1887年赫尔曼·何乐礼在打孔卡片制表机(Tabulation Machine)上的贡献。它是这样实现的：将所有待比较数值（正整数）统一为同样的数位长度，数位较短的数前面补零。然后，从最低位开始，依次进行一次排序。这样从最低位排序一直到最高位排序完成以后, 数列就变成一个有序序列。
 
 ​		基数排序的方式可以采用LSD（Least significant digital）或MSD（Most significant digital），LSD的排序方式由键值的最右边开始，而MSD则相反，由键值的最左边开始。
 
