@@ -275,8 +275,6 @@ private static void merge(int[] arr, int l, int mid, int r) {
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/heapSort.gif) 
 
-![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/Sorting_heapsort_anim.gif) 
-
 ```java
 private static void heapSort(int[] arr) {
     if (arr == null || arr.length < 2) return;
