@@ -18,6 +18,11 @@ export default navbar([
         link: "java/",
       },
       {
+        text: "MySQL",
+        icon: "mysql",
+        link: "mysql/",
+      },
+      {
         text: "杂记",
         icon: "template",
         link: "notes/",
