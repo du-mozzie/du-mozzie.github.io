@@ -24,7 +24,7 @@ export default navbar([
       },
       {
         text: "杂记",
-        icon: "template",
+        icon: "folder",
         link: "notes/",
       },
     ],

@@ -6,6 +6,7 @@ category: MySQL
 tag: MySQL
 timeline: true
 article: true
+prev: ./
 ---
 
 # Docker安装Mysql
