@@ -9,7 +9,9 @@ article: true
 prev: ./
 ---
 
-# Docker安装Mysql
+# Docker安装MySQL
+
+Docker安装MySQL笔记
 
 ```bash
 # 创建挂载文件夹
