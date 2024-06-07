@@ -108,6 +108,8 @@ public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisC
 -   allEntries： 是否清空所有缓存内容，缺省为 false，如果指定为 true，则方法调用后将立即清空所有缓存（如： `@CacheEvict(value = "user", key = "#id", allEntries = true)` ）
 -   beforeInvocation： 是否在方法执行前就清空，缺省为 false，如果指定为 true，则在方法还没有执行的时候就清空缓存，缺省情况下，如果方法执行抛出异常，则不会清空缓存（如： `@CacheEvict(value = "user", key = "#id", beforeInvocation = true)` ）
 
+## 示例
+
 >   依赖导入
 
 ```xml
