@@ -23,6 +23,11 @@ export default navbar([
         link: "mysql/",
       },
       {
+        text: "Redis",
+        icon: "redis",
+        link: "redis/",
+      },
+      {
         text: "杂记",
         icon: "folder",
         link: "notes/",

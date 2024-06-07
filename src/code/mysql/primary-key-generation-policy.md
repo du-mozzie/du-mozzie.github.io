@@ -8,9 +8,7 @@ timeline: true
 article: true
 ---
 
-# 主键生成策略
-
-uuid、自增id、雪花算法、redis、zookeeper
+在数据库设计中，主键生成策略是非常关键的一环，它影响着数据的唯一性、性能和可扩展性。以下是几种常见的主键生成策略：uuid、自增id、雪花算法、redis、zookeeper
 
 ## 雪花算法
 

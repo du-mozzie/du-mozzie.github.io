@@ -9,8 +9,6 @@ article: true
 prev: ./
 ---
 
-# Docker安装MySQL
-
 Docker安装MySQL笔记
 
 ```bash

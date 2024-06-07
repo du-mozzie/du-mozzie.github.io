@@ -8,7 +8,7 @@ timeline: true
 article: true
 ---
 
-# 事务
+MySQL事务是为确保数据一致性而将多条SQL操作封装成的逻辑工作单元，遵循ACID原则。
 
 ## 什么是事务？
 
