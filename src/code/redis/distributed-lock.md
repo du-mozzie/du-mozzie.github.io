@@ -4,9 +4,11 @@ title: Redis分布式锁
 date: 2022-02-07
 category: 
     - Redis
+    - 分布式
     - Redisson
 tag: 
     - Redis
+    - 分布式
     - Redisson
 timeline: true
 article: true

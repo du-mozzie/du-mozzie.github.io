@@ -2,8 +2,12 @@
 order: 2
 title: Docker安装Redis
 date: 2022-01-21
-category: Redis
-tag: Redis
+category: 
+    - Redis
+    - 分布式
+tag: 
+    - Redis
+    - 分布式
 timeline: true
 article: true
 ---

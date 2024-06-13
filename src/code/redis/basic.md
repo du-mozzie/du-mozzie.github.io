@@ -2,8 +2,12 @@
 order: 1
 title: Redis介绍
 date: 2022-01-14
-category: Redis
-tag: Redis
+category: 
+    - Redis
+    - 分布式
+tag: 
+    - Redis
+    - 分布式
 timeline: true
 article: true
 prev: ./

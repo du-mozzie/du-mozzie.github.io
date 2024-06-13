@@ -28,6 +28,11 @@ export default navbar([
         link: "redis/",
       },
       {
+        text: "分布式",
+        icon: "fa-solid fa-circle-nodes",
+        link: "distributed/",
+      },
+      {
         text: "杂记",
         icon: "folder",
         link: "notes/",

@@ -4,9 +4,11 @@ title: Lua脚本
 date: 2022-01-23
 category: 
     - Redis
+    - 分布式
     - Lua
 tag: 
     - Redis
+    - 分布式
     - Lua
 timeline: true
 article: true

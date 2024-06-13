@@ -4,9 +4,11 @@ title: Spring Boot Cache
 date: 2022-02-04
 category: 
     - Redis
+    - 分布式
     - Spring Boot
 tag: 
     - Redis
+    - 分布式
     - Spring Boot
 timeline: true
 article: true
