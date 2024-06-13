@@ -1,6 +1,6 @@
 ---
 order: 1
-title: 安装
+title: 安装Elasticsearch
 date: 2022-03-15
 category: 
     - ElasticSearch

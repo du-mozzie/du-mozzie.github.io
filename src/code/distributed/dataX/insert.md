@@ -1,6 +1,6 @@
 ---
 order: 1
-title: 安装
+title: 安装DataX
 date: 2023-08-11
 category: 
     - DataX
