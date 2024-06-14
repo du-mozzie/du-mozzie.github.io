@@ -225,6 +225,14 @@ Mapping 类似于数据库中的表结构定义schema，它的主要作用是：
 
 ## 分词器
 
+### 什么是分词器
+
+顾名思义，文本分析就是**把全文本转换成一系列单词（term/token）的过程**，也叫**分词**。在 ES 中，Analysis 是通过**分词器（Analyzer）** 来实现的，可使用 ES 内置的分析器或者按需定制化分析器。
+
+举一个分词简单的例子：比如你输入 `Mastering Elasticsearch`，会自动帮你分成两个单词，一个是 `mastering`，另一个是 `elasticsearch`，可以看出单词也被转化成了小写的。
+
+![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/20200306215020457.png)
+
 ### 分词器的组成
 
 分词器是专门处理分词的组件，分词器由以下三部分组成：
