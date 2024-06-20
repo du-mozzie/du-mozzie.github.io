@@ -600,7 +600,7 @@ Linux 有五种 I/O 模型：
 
 recvfrom() 用于**接收 Socket 传来的数据，并复制到应用进程的缓冲区 buf 中**，把 recvfrom() 当成系统调用
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877312490-f4d5aa1d-ca44-412a-87ee-0e4a7c5f690c.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877312490-f4d5aa1d-ca44-412a-87ee-0e4a7c5f690c.png)
 
 ##### 非阻塞式
 
@@ -608,7 +608,7 @@ recvfrom() 用于**接收 Socket 传来的数据，并复制到应用进程的�
 
 由于 CPU 要处理更多的系统调用，因此这种模型的 CPU 利用率比较低
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877312467-49203424-a7df-4913-9bd6-657680128e6f.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877312467-49203424-a7df-4913-9bd6-657680128e6f.png)
 
 ##### 信号驱动
 
@@ -616,7 +616,7 @@ recvfrom() 用于**接收 Socket 传来的数据，并复制到应用进程的�
 
 相比于非阻塞式 I/O 的轮询方式，信号驱动 I/O 的 CPU 利用率更高
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877312497-9ff2fb9a-6309-4948-86dd-59535f168a5b.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877312497-9ff2fb9a-6309-4948-86dd-59535f168a5b.png)
 
 ##### IO 复用
 
@@ -626,7 +626,7 @@ IO 复用让单个进程具有处理多个 I/O 事件的能力，又被称为 Ev
 
 如果一个 Web 服务器没有 I/O 复用，那么每一个 Socket 连接都要创建一个线程去处理，如果同时有几万个连接，就需要创建相同数量的线程。相比于多进程和多线程技术，I/O 复用不需要进程线程创建和切换的开销，系统开销更小
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877312578-7c8ed9c9-f015-4e90-83f7-b7cbc643d643.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877312578-7c8ed9c9-f015-4e90-83f7-b7cbc643d643.png)
 
 ##### 异步 IO
 
@@ -634,7 +634,7 @@ IO 复用让单个进程具有处理多个 I/O 事件的能力，又被称为 Ev
 
 异步 I/O 与信号驱动 I/O 的区别在于，异步 I/O 的信号是通知应用进程 I/O 完成，而信号驱动 I/O 的信号是通知应用进程可以开始 I/O
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877312488-57fbe5e0-1bec-47fa-ad07-9a82e9f53f9b.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877312488-57fbe5e0-1bec-47fa-ad07-9a82e9f53f9b.png)
 
 #### 多路复用
 
@@ -719,7 +719,7 @@ while(1) {
 
 select 调用流程图：
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877313167-c9d58861-9b89-4e45-8968-7e0b121c5cbf.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877313167-c9d58861-9b89-4e45-8968-7e0b121c5cbf.png)
 
 1. 使用 copy_from_user 从用户空间拷贝 fd_set 到内核空间，进程阻塞
 2. 注册回调函数 _pollwait
@@ -906,7 +906,7 @@ epoll 的特点：
 - 线程上下文：用户程序基地址，程序计数器、cpu cache、寄存器等，方便程序切回用户态时恢复现场
 - 内核堆栈：**系统调用函数也是要创建变量的，**这些变量在内核堆栈上分配
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877313205-32e3033c-19b7-4b3f-b587-8e38b5e18b8e.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877313205-32e3033c-19b7-4b3f-b587-8e38b5e18b8e.png)
 
 ##### 80中断
 
@@ -927,7 +927,7 @@ epoll 的特点：
 - 执行 80 中断处理程序，找到刚刚存的系统调用号（read），先检查缓存中有没有对应的数据，没有就去磁盘中加载到内核缓冲区，然后从内核缓冲区拷贝到用户空间
 - 最后恢复到用户态，通过 thread_info 恢复现场，用户态继续执行
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877313311-9dc1ae3e-05a3-4031-9f9e-fc9cbf343d0a.jpeg)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877313311-9dc1ae3e-05a3-4031-9f9e-fc9cbf343d0a.jpeg)
 
 参考视频：https://www.bilibili.com/video/BV19D4y1o797
 
@@ -946,7 +946,7 @@ DMA (Direct Memory Access) ：直接存储器访问，让外部设备不通过 C
 
 一个完整的 DMA 传输过程必须经历 DMA 请求、DMA 响应、DMA 传输、DMA 结束四个步骤：
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877313262-36ec3c50-ac46-46aa-88b6-a9c11011ff6e.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877313262-36ec3c50-ac46-46aa-88b6-a9c11011ff6e.png)
 
 DMA 方式是一种完全由硬件进行信息传送的控制方式，通常系统总线由 CPU 管理，在 DMA 方式中，CPU 的主存控制信号被禁止使用，CPU 把总线（地址总线、数据总线、控制总线）让出来由 DMA 控制器接管，用来控制传送的字节数、判断 DMA 是否结束、以及发出 DMA 结束信号，所以 DMA 控制器必须有以下功能：
 
@@ -967,11 +967,11 @@ DMA 方式是一种完全由硬件进行信息传送的控制方式，通常系�
 
 流程图中的箭头反过来也成立，可以从网卡获取数据
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877313288-4ea522b3-28ca-4f31-9178-688ff53e31cd.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877313288-4ea522b3-28ca-4f31-9178-688ff53e31cd.png)
 
 read 调用图示：read、write 都是系统调用指令
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877313668-a0f3b00f-5e64-46bc-8d07-e621dcf5cdf7.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877313668-a0f3b00f-5e64-46bc-8d07-e621dcf5cdf7.png)
 
 ##### mmap
 
@@ -984,7 +984,7 @@ mmap（Memory Mapped Files）内存映射加 write 实现零拷贝，**零拷贝
 - 发出 mmap 系统调用，DMA 拷贝到内核缓冲区，映射到共享缓冲区；mmap 系统调用返回，无需拷贝
 - 发出 write 系统调用，将数据从内核缓冲区拷贝到内核 Socket 缓冲区；write 系统调用返回，DMA 将内核空间 Socket 缓冲区中的数据传递到协议引擎
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877313704-13affa58-a5d3-410c-acd1-8821d3c5c2f0.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877313704-13affa58-a5d3-410c-acd1-8821d3c5c2f0.png)
 
 原理：利用操作系统的 Page 来实现文件到物理内存的直接映射，完成映射后对物理内存的操作会**被同步**到硬盘上
 
@@ -1000,7 +1000,7 @@ sendfile 实现零拷贝，打开文件的文件描述符 fd 和 socket 的 fd �
 
 说明：零拷贝技术是不允许进程对文件内容作进一步的加工的，比如压缩数据再发送
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877313805-13973f70-dee0-4c43-9139-a7c14555d1d9.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877313805-13973f70-dee0-4c43-9139-a7c14555d1d9.png)
 
 sendfile2.4 之后，sendfile 实现了更简单的方式，文件到达内核缓冲区后，不必再将数据全部复制到 socket buffer 缓冲区，而是只**将记录数据位置和长度相关等描述符信息**保存到 socket buffer，DMA 根据 Socket 缓冲区中描述符提供的位置和偏移量信息直接将内核空间缓冲区中的数据拷贝到协议引擎上（2 次复制 2 次切换）
 
@@ -1163,9 +1163,9 @@ TCP 协议的使用场景：文件上传和下载、邮件发送和接收、远�
 
 注意：**TCP 不会为没有数据的 ACK 超时重传**
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877313808-354ba9b2-838c-4ab4-87c5-d048f040bc1b.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877313808-354ba9b2-838c-4ab4-87c5-d048f040bc1b.png)
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877314269-dee875b1-3d70-45c9-b7dc-0ba4de68ea2e.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877314269-dee875b1-3d70-45c9-b7dc-0ba4de68ea2e.png)
 
 推荐阅读：https://yuanrengu.com/2020/77eef79f.html
 
@@ -1200,7 +1200,7 @@ ServerSocket 类：
 
 -  构造方法：`public ServerSocket(int port)` 
 -  常用 API：`public Socket accept()`，**阻塞等待**接收一个客户端的 Socket 管道连接请求，连接成功返回一个 Socket 对象
-   三次握手后 TCP 连接建立成功，服务器内核会把连接从 SYN 半连接队列（一次握手时在服务端建立的队列）中移出，移入 accept 全连接队列，等待进程调用 accept 函数时把连接取出。如果进程不能及时调用 accept 函数，就会造成 accept 队列溢出，最终导致建立好的 TCP 连接被丢弃 ![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877314251-4e909cbf-fc06-4edb-9435-88f6c0b18c13.png)
+   三次握手后 TCP 连接建立成功，服务器内核会把连接从 SYN 半连接队列（一次握手时在服务端建立的队列）中移出，移入 accept 全连接队列，等待进程调用 accept 函数时把连接取出。如果进程不能及时调用 accept 函数，就会造成 accept 队列溢出，最终导致建立好的 TCP 连接被丢弃 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877314251-4e909cbf-fc06-4edb-9435-88f6c0b18c13.png)
 
 **相当于**客户端和服务器建立一个数据管道（虚连接，不是真正的物理连接），管道一般不用 close
 
@@ -1221,9 +1221,9 @@ ServerSocket 类：
 3. 从 Socket 通信管道中得到一个字节输入流
 4. 从字节输入流中读取客户端发来的数据
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877314275-73944230-9433-448e-915c-b103360ebe15.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877314275-73944230-9433-448e-915c-b103360ebe15.png)
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877314341-67054877-44e7-420b-9c34-40f265fbcd1a.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877314341-67054877-44e7-420b-9c34-40f265fbcd1a.png)
 
 - 如果输出缓冲区空间不够存放主机发送的数据，则会被阻塞，输入缓冲区同理
 - 缓冲区不属于应用程序，属于内核
@@ -1594,7 +1594,7 @@ NIO 三大核心部分：Channel (通道)、Buffer (缓冲区)、Selector (选�
 
 NIO 的实现框架：
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877314506-60b2c961-2bf7-40c0-893e-a1cde5eacca0.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877314506-60b2c961-2bf7-40c0-893e-a1cde5eacca0.png)
 
 - 每个 Channel 对应一个 Buffer
 - 一个线程对应 Selector ， 一个 Selector 对应多个 Channel（连接）
@@ -1611,7 +1611,7 @@ Java NIO 系统的核心在于：通道和缓冲区，通道表示打开的 IO �
 
 缓冲区（Buffer）：缓冲区本质上是一个**可以读写数据的内存块**，用于特定基本数据类型的容器，用于与 NIO 通道进行交互，数据是从通道读入缓冲区，从缓冲区写入通道中的
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877314685-bc8824d8-cffb-4d3b-a126-3fe4f9c874a1.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877314685-bc8824d8-cffb-4d3b-a126-3fe4f9c874a1.png)
 
 **Buffer 底层是一个数组**，可以保存多个相同类型的数据，根据数据类型不同 ，有以下 Buffer 常用子类：ByteBuffer、CharBuffer、ShortBuffer、IntBuffer、LongBuffer、FloatBuffer、DoubleBuffer
 
@@ -1621,7 +1621,7 @@ Java NIO 系统的核心在于：通道和缓冲区，通道表示打开的 IO �
 -  限制 （limit）：表示缓冲区中可以操作数据的大小（limit 后数据不能进行读写），缓冲区的限制不能为负，并且不能大于其容量。写入模式，limit 等于 buffer 的容量；读取模式下，limit 等于写入的数据量 
 -  位置（position）：**下一个要读取或写入的数据的索引**，缓冲区的位置不能为负，并且不能大于其限制 
 -  标记（mark）与重置（reset）：标记是一个索引，通过 Buffer 中的 mark() 方法指定 Buffer 中一个特定的位置，可以通过调用 reset() 方法恢复到这个 position 
--  位置、限制、容量遵守以下不变式： **0 <= position <= limit <= capacity** ![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877314724-0a1b8fea-b7da-4b8b-a551-80868146edb0.png)
+-  位置、限制、容量遵守以下不变式： **0 <= position <= limit <= capacity** ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877314724-0a1b8fea-b7da-4b8b-a551-80868146edb0.png)
 
 ##### 常用API
 
@@ -1786,9 +1786,9 @@ Direct Memory 优点：
 
 JVM 直接内存图解：
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877314888-17f1a26b-51eb-4d16-ab3d-0003d5196136.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877314888-17f1a26b-51eb-4d16-ab3d-0003d5196136.png)
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877314904-1e0bcc1e-13a3-4ce7-ad3a-48f76e5e43cc.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877314904-1e0bcc1e-13a3-4ce7-ad3a-48f76e5e43cc.png)
 
 ##### 通信原理
 
@@ -2070,7 +2070,7 @@ Channel 的方法：**sendfile 实现零拷贝**
 1. Buffer
 2. 使用上述两种方法
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877314980-2f4d204b-2aa3-4af1-b16c-be555b80eff7.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877314980-2f4d204b-2aa3-4af1-b16c-be555b80eff7.png)
 
 ```java
 public class ChannelTest {
@@ -2177,7 +2177,7 @@ public class ChannelTest {
 
 选择器（Selector） 是 SelectableChannle 对象的**多路复用器**，Selector 可以同时监控多个通道的状况，利用 Selector 可使一个单独的线程管理多个 Channel，**Selector 是非阻塞 IO 的核心**
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877315508-abd3b7f0-dfdb-413f-b3d6-c6fff66a74ab.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1713877315508-abd3b7f0-dfdb-413f-b3d6-c6fff66a74ab.png)
 
 - Selector 能够检测多个注册的通道上是否有事件发生（多个 Channel 以事件的方式可以注册到同一个 Selector)，如果有事件发生，就获取事件然后针对每个事件进行相应的处理，就可以只用一个单线程去管理多个通道，也就是管理多个连接和请求
 - 只有在连接/通道真正有读写事件发生时，才会进行读写，就大大地减少了系统开销，并且不必为每个连接都创建一个线程，不用去维护多个线程

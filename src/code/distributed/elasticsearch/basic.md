@@ -231,7 +231,7 @@ Mapping 类似于数据库中的表结构定义schema，它的主要作用是：
 
 举一个分词简单的例子：比如你输入 `Mastering Elasticsearch`，会自动帮你分成两个单词，一个是 `mastering`，另一个是 `elasticsearch`，可以看出单词也被转化成了小写的。
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/20200306215020457.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/20200306215020457.png)
 
 ### 分词器的组成
 
@@ -241,7 +241,7 @@ Mapping 类似于数据库中的表结构定义schema，它的主要作用是：
 - **Tokenizer**：按照规则切分为单词，比如按照空格切分
 - **Token Filters**：将切分的单词进行加工，比如大写转小写，删除 stopwords，增加同义语
 
-![image-20240614115134029](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240614115134029.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240614115134029.png)
 
 同时 Analyzer 三个部分也是有顺序的，从图中可以看出，从上到下依次经过 `Character Filters`，`Tokenizer` 以及 `Token Filters`，这个顺序比较好理解，一个文本进来肯定要先对文本数据进行处理，再去分词，最后对分词的结果进行过滤。
 

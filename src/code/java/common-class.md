@@ -858,7 +858,7 @@ public class DateDemo06 {
 ```
 
 附：继承关系（LocalDate、LocalTime、LocalDateTime、Temporal类）
-![20240524192007](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/20240524192007.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/20240524192007.png)
 
 #### 7.2.3、设置日期时间的时区
 

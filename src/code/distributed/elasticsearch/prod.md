@@ -71,7 +71,7 @@ ES内部是通过`index.max_result_window`这个参数控制分页深度，ES之
 
 但是在ES处理的时候，会分别从每个分片上拿到1000条数据，然后在`coordinating`的节点上根据查询条件聚合出1000条记录，最后返回其中的10条。所以分页越深，ES处理的开销就大，占用内存就越大。
 
-![image-20240619154116466](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240619154116466.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240619154116466.png)
 
 ### 2. search after方案
 
@@ -122,7 +122,7 @@ GET /kibana_sample_data_ecommerce/_search
 
 因为有了排序的唯一标识，ES只需从每个分片上拿到满足条件的10条文档，然后基于这30条文档最终聚合成10条结果返回即可。
 
-![image-20240619154857865](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240619154857865.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240619154857865.png)
 
 ### 3. scroll api方案
 
