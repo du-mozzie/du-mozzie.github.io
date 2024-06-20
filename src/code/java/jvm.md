@@ -370,6 +370,20 @@ region内是标记--复制，region之间是标记--整理，region使用率进�
 - 将堆空间分为若干个区域(Region)，这些区域中包含了逻辑上的年轻代和老年代。
 - 和之前的各类回收器不同，它同时兼顾年轻代和老年代。对比其他回收器，或者工作在年轻代，或者工作在老年代
 
+#### 总结
+
+| 收集器            | 串行、并行or并发 | 新生代/老年代   | 算法               | 目标                 | 适用场景                                  |
+| ----------------- | ---------------- | --------------- | ------------------ | -------------------- | ----------------------------------------- |
+| Serial            | 串行             | 新生代          | 复制算法           | 响应速度优先         | 单CPU环境下的Client模式                   |
+| Serial Old        | 串行             | 老年代          | 标记-整理          | 响应速度优先         | 单CPU环境下的Client模式、CMS的后备预案    |
+| ParNew            | 并行             | 新生代          | 复制算法           | 响应速度优先         | 多CPU环境时在Server模式下与CMS配合        |
+| Parallel Scavenge | 并行             | 新生代          | 复制算法           | 最大化吞吐量         | 在后台运算而不需要太多交互的任务          |
+| Parallel Old      | 并行             | 老年代          | 标记-整理          | 吞吐量优先           | 在后台运算而不需要太多交互的任务          |
+| CMS               | 并发             | 老年代          | 标记-清除          | 降低暂停时间         | 集中在互联网站或B/S系统服务端上的Java应用 |
+| G1                | 并发             | 新生代 / 老年代 | 标记-整理+复制算法 | 可预测的暂停时间控制 | 面向服务端应用，将来替换CMS               |
+| Shenandoah        | 并发             | 整个堆          | 标记-复制-压缩     | 极低的暂停时间       | 适合大内存低延迟应用                      |
+| ZGC               | 并发             | 整个堆          | 标记-复制-重定位   | 极低的暂停时间       | 适合大内存低延迟应用                      |
+
 ## 参数
 
 ### 栈
@@ -493,6 +507,46 @@ TLAB：线程专用的内存分配区域，可以解决内存分配冲突问题�
 > -XX:+DoEscapeAnalysis，jdk 6u23开始已经默认开始逃逸分析
 
 > -XX:+EliminateAllocations，开启标量替换，需要逃逸分析先开启
+
+### 总结
+
+| 参数作用                                                   | 写法                                                         | 可选值                                      | 备注                                                     |
+| ---------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------- | -------------------------------------------------------- |
+| 启用G1垃圾收集器                                           | -XX:+UseG1GC                                                 | 启用: -XX:-UseG1GC                          |                                                          |
+| 启用其他的垃圾收集器                                       | -XX:+UseSerialGC<br/>-XX:+UseParallelGC<br/>-XX:+UseConcMarkSweepGC<br/>-XX:+UseZGC<br/>-XX:+UseShenandoahGC<br/> |                                             | 其中部分垃圾收集器是可以组合使用的                       |
+| 设置最大垃圾收集暂停的时间目标（毫秒）                     | -XX:MaxGCPauseMillis=\<N>                                    | 任何正整数，默认值200                       | 会影响每次收集的范围                                     |
+| 设置堆的初始大小                                           | -Xms\<size>                                                  | 任何合适的大小，例如4g、512m                |                                                          |
+| 设置堆的最大值                                             | -Xmx\<size>                                                  | 任何合适的大小，例如4g、512m                |                                                          |
+| 设置垃圾收集的最小堆大小                                   | -Xmn\<size>                                                  | 任何合适的大小，例如4g、512m                | 设置较小的堆大小可以节省内存空间                         |
+| 设置栈大小                                                 | -Xss\<size>                                                  | 任何合适的大小，例如512k                    |                                                          |
+| 设置单个Region的大小                                       | -XX:G1HeapRegionSize=\<size>                                 | 1MB到32MB，必须是2的幂                      | 较大的区域大小可能会减少收集频率，但增加了每次收集的开销 |
+| 设置年轻代初始大小占整个堆大小的百分比                     | -XX:NewSizePercent=\<percent>                                | 0到100，默认值5                             |                                                          |
+| 设置年轻代最大大小占整个堆大小的百分比                     | -XX:MaxNewSizePercent=\<percent>                             | 0到100，默认值60                            | 较大的年轻代大小可能会减少年轻代的频繁回收               |
+| 设置最大晋升阈值                                           | -XX:MaxTenuringThreshold                                     | 任何正整数                                  | 间值越大，则Survivor存放的对象越多                       |
+| 设置初始老年代并未被使用的老年代占比                       | -XX:InitiatingHeapOccupancyPercent=\<percent>                | 0到100，默认值45                            | 较低的阈值可能导致频繁的老年代收集                       |
+| 设置触发Cset的G1混合垃圾收集的老年代占比阈值               | -XX:G1MixedGCLiveThresholdPercent=\<percent>                 | 0到100                                      | 不同版本默认值不同，Region中有对象大于这个值会被放入Cset |
+| 设置G1回收时的预留空间的百分比                             | -XX:G1ReservePercent                                         | 0到100                                      | 较大的预留内存可能会减少浮动和暂停时间                   |
+| 设置触发一次（混合）回收所需的存活对象分区的最小数数       | -XX:G1MixedGCLiveThresholdPercent=\<percent>                 | 任何正整数，默认8                           |                                                          |
+| 设置垃圾收集时使用的最大并行线程数                         | -XX:ConcGCThreads=\<N>                                       | 任何正整数                                  |                                                          |
+| 设置混合垃圾收集时的最大并行线程数                         | -XX:ParallelGCThreads=\<N>                                   | 任何正整数                                  |                                                          |
+| 设置16进制的打印线程时间的概率                             | -XX:G1ConfidencePercent=\<percent>                           | 任何正整数                                  |                                                          |
+| 设置最大垃圾收集时间（毫秒）                               | -XX:MaxGCPauseMillis=\<N>                                    | 任何正整数                                  |                                                          |
+| 启用类卸载                                                 | -XX:+ClassUnloadingWithConcurrentMark                        | 启用: -XX:-ClassUnloadingWithConcurrentMark |                                                          |
+| 禁用类卸载                                                 | -XX:-ClassUnloadingWithConcurrentMark                        |                                             |                                                          |
+| 设置可进行垃圾收集的堆的最大百分比                         | -XX:G1HeapWastePercent=\<percent>                            |                                             |                                                          |
+| 启用字符串去重                                             | -XX:+UseStringDeduplication                                  |                                             |                                                          |
+| 禁用字符串去重                                             | -XX:-UseStringDeduplication                                  |                                             |                                                          |
+| 启用详细的垃圾回收日志                                     | -XX:+PrintGCDetails                                          |                                             |                                                          |
+| 启用带时间戳的垃圾回收日志                                 | -XX:+PrintGCDateStamps                                       |                                             |                                                          |
+| 启用带时间戳的垃圾回收日志                                 | -XX:+PrintGCTimeStamps                                       |                                             |                                                          |
+| 输出GC日志到文件                                           | -Xloggc:\<file>                                              | 例如: -Xloggc:/path/to/gc.log               |                                                          |
+| 打印垃圾回收过程中使用的适应性信息                         | -XX:+PrintAdaptiveSizePolicy                                 |                                             |                                                          |
+| 打印详细的G1收集器统计信息                                 | -XX:+UnlockDiagnosticVMOptions                               |                                             |                                                          |
+| 打印详细的G1收集器统计信息                                 | -XX:+G1PrintRegionLivenessInfo                               |                                             |                                                          |
+| 设置年轻代（包括Eden和Survivor区）和老年代的比例           | -XX:NewRatio                                                 | 默认值为2                                   |                                                          |
+| 设置Eden区和Survivor区的比例                               | -XX:SurvivorRatio                                            | 默认值为8，即Eden区是每个Survivor区的8倍    |                                                          |
+| 设置在垃圾回收之后希望幸存的对象在Survivor区中所占的百分比 | -XX:TargetSurvivorRatio                                      | 默认值为50                                  |                                                          |
+| 解锁实验性的JVM选项                                        | -XX:+UnlockExperimentalVMOptions                             | 某些选项需要开启这个条件                    |                                                          |
 
 ## 调优
 
