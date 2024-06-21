@@ -81,15 +81,15 @@ ES 中一个索引由一个或多个 lucene 索引构成，一个 lucene 索引�
 
 补充说明：
 
-- **text vs keyword**：text类型用于需要进行全文搜索的字段，如文章内容；keyword类型用于需要进行精确匹配、不分词的字段，如用户名、标签等。
-- **date类型的格式**：默认使用ISO 8601格式（例如："2023-06-13T18:30:00Z"），但也可以自定义格式，例如："yyyy/MM/dd HH:mm"。
-- **geo_point和geo_shape**：用于地理位置数据处理，其中geo_point用于单个地理位置，geo_shape用于复杂的地理形状，如多边形。
+- text vs keyword：text类型用于需要进行全文搜索的字段，如文章内容；keyword类型用于需要进行精确匹配、不分词的字段，如用户名、标签等。
+- date类型的格式：默认使用ISO 8601格式（例如："2023-06-13T18:30:00Z"），但也可以自定义格式，例如："yyyy/MM/dd HH:mm"。
+- geo_point和geo_shape：用于地理位置数据处理，其中geo_point用于单个地理位置，geo_shape用于复杂的地理形状，如多边形。
 
 ## Mapping
 
 ### 什么是Mapping
 
-Mapping 类似于数据库中的表结构定义schema，它的主要作用是**：用来定义索引中的字段的名称、定义字段的数据类型和定义字段类型的一些其它参数**，比如字符串、数字、布尔字段，倒排索引的相关配置，设置某个字段为不被索引、记录 position 等。每一种数据类型都有对应的使用场景，并且每个文档都有映射，但是在大多数使用场景中，我们并不需要显示的创建映射，因为ES中实现了动态映射。我们在索引中写入一个下面的JSON文档：
+Mapping 类似于数据库中的表结构定义schema，它的主要作用是：用来定义索引中的字段的名称、定义字段的数据类型和定义字段类型的一些其它参数**，比如字符串、数字、布尔字段，倒排索引的相关配置，设置某个字段为不被索引、记录 position 等。每一种数据类型都有对应的使用场景，并且每个文档都有映射，但是在大多数使用场景中，我们并不需要显示的创建映射，因为ES中实现了动态映射。我们在索引中写入一个下面的JSON文档：
 
 ```json
 {
@@ -232,9 +232,9 @@ Mapping 类似于数据库中的表结构定义schema，它的主要作用是**�
 
 分词器是专门处理分词的组件，分词器由以下三部分组成：
 
-- **Character Filters**：针对原始文本处理，比如去除 html 标签
-- **Tokenizer**：按照规则切分为单词，比如按照空格切分
-- **Token Filters**：将切分的单词进行加工，比如大写转小写，删除 stopwords，增加同义语
+- Character Filters：针对原始文本处理，比如去除 html 标签
+- Tokenizer：按照规则切分为单词，比如按照空格切分
+- Token Filters：将切分的单词进行加工，比如大写转小写，删除 stopwords，增加同义语
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240614115134029.png)
 
@@ -242,14 +242,14 @@ Mapping 类似于数据库中的表结构定义schema，它的主要作用是**�
 
 其中，ES 内置了许多分词器：
 
-- **Standard Analyzer** - 默认分词器，按词切分，小写处理
-- **Simple Analyzer** - 按照非字母切分（符号被过滤），小写处理
-- **Stop Analyzer** - 小写处理，停用词过滤（the ，a，is）
-- **Whitespace Analyzer** - 按照空格切分，不转小写
-- **Keyword Analyzer** - 不分词，直接将输入当做输出
-- **Pattern Analyzer** - 正则表达式，默认 \W+
-- **Language** - 提供了 30 多种常见语言的分词器
-- **Customer Analyzer** - 自定义分词器
+- Standard Analyzer - 默认分词器，按词切分，小写处理
+- Simple Analyzer - 按照非字母切分（符号被过滤），小写处理
+- Stop Analyzer - 小写处理，停用词过滤（the ，a，is）
+- Whitespace Analyzer - 按照空格切分，不转小写
+- Keyword Analyzer - 不分词，直接将输入当做输出
+- Pattern Analyzer - 正则表达式，默认 \W+
+- Language - 提供了 30 多种常见语言的分词器
+- Customer Analyzer - 自定义分词器
 
 **中文分词器**
 
