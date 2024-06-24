@@ -48,12 +48,6 @@ tools:
     preview: /assets/images/preview/67tool.jpg
 
 links:
-  - name: Mr.Hope 的博客
-    desc: Mr.Hope 的博客
-    logo: https://mrhope.site/logo.svg
-    url: https://mrhope.site/
-    preview: https://theme-hope.vuejs.press/assets/image/mrhope.jpg
-
   - name: 你的链接
     desc: 通过 PR 提交你的链接
     url: https://github.com/FuckDoctors/notes2/edit/main/docs/links.md

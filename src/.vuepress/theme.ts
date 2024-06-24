@@ -42,7 +42,10 @@ export default hopeTheme({
     medias: {
       Gitee: "https://gitee.com/du_mozzie",
       GitHub: "https://github.com/du-mozzie",
+      Email: "mailto:2548425238@qq.com",
+      Gmail: "mailto:mozzie.du@gmail.com",
       掘金: ["https://juejin.cn/user/87590848708078", JUE_JIN_LOGO],
+      Discord: "https://172.lot-ml.com/Product/Index/550844",
     },
     //默认每个分页的文章数
     //https://vuepress-theme-hope.gitee.io/v2/zh/guide/blog/intro.html#%E5%A4%9A%E8%AF%AD%E8%A8%80%E6%94%AF%E6%8C%81
