@@ -36,19 +36,50 @@ ES 依赖一个重要的组件 Lucene，关于数据结构的优化通常来说�
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1696928475614-f1e24e28-908a-456c-83fe-02e9fcf816d4.png)
 
-## Lucene 索引
+## Lucene
 
-Lucene 索引文件结构主要分为：词典、倒排表、正向文件、DocValues 等，如下图：
+Lucene 索引文件结构主要如下
 
-![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1696929260382-a546b876-578a-413a-b3d9-68f7b6146f60.png)
+| Name                | Extension | Description                                                  |
+| ------------------- | --------- | ------------------------------------------------------------ |
+| Term Index          | .tip      | 词典索引（需要加载进内存）                                   |
+| Term dictionary     | .tim      | 倒排表数据                                                   |
+| Frequencies         | .doc      | 包含 Trem 和频率的文档列表（倒排表）                         |
+| Fields              | .fnm      | Field 数据元信息                                             |
+| Field Index         | .fdx      | 文档位置索引（虚加载进内存）                                 |
+| Field Data          | .fdt      | 文档值                                                       |
+| Per-Document Values | .dvd .dvm | .dvm 为 DocValues 元信息<br />.dvd 为 DocValue 值（默认情况下 Elasticsearch 开启该功能用于快速排序、聚合操作等） |
 
-![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1696929815228-af4be032-3a11-410a-a4a2-9e05961b5f51.png)
+1. Inverted Index（倒排索引）：
 
-ES 中一个索引由一个或多个 lucene 索引构成，一个 lucene 索引由一个或多个 segment 构成，其中 segment 是最小的检索域。
+   一段文本进行分词后存储在 **Term dictionary** 顺序排列，**Posting list** 存储对应的文档ID，由于 **Term dictionary** 数据量大所以不适合存储内存中。
 
-数据具体被存储到哪个分片上：shard = hash(routing) % number_of_primary_shards
+   | Term dictionary | Posting list |
+   | --------------- | ------------ |
+   | follow          | 1            |
+   | forward         | 2            |
+   | link            | 0、1、2      |
+   | like            | 0            |
 
-默认情况下 routing 参数是文档 ID (murmurhash3),可通过 URL 中的 \_routing 参数指定数据分布在同一个分片中，index 和 search 的时候都需要一致才能找到数据，如果能明确根据_routing 进行数据分区，则可减少分片的检索工作，以提高性能。
+2. Term Index
+
+   lucene 中出现了另外一个结构 **Term Index** 这是一个前缀树，通过提取  **Term dictionary** 的前缀减少存储的数据，记录 **Term dictionary** 中的偏移量， **Term Index** 该结构存在内存中。查询的时候先通过 **Term Index** 定位到大概的位置，在去 **Term dictionary** 中遍历，可以提升查找的效率
+
+   ![image-20240627175528350](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240627175528350.png)
+
+3. Stored Fields：存储完整的文档内容
+
+4. Doc Values：按照某个字段排序的文档，功能类似MySQL的索引
+
+5. Segment：由上面四种结构组成，具备完整搜索功能的最小单元。Segment一旦生成就不能修改，只能进行合并 **Segment Merging**
+
+   ![image-20240628003637291](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240628003637291.png)
+
+   多个 Segment 就构成了Lucene
+
+   ![image-20240628003610415](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240628003610415.png)
+
+6. 
 
 ## 基本数据类型
 
