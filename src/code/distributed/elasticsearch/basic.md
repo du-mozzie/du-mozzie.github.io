@@ -38,6 +38,8 @@ ES 依赖一个重要的组件 Lucene，关于数据结构的优化通常来说�
 
 ## Lucene
 
+### 主要结构
+
 Lucene 索引文件结构主要如下
 
 | Name                | Extension | Description                                                  |
@@ -52,7 +54,7 @@ Lucene 索引文件结构主要如下
 
 1. Inverted Index（倒排索引）：
 
-   一段文本进行分词后存储在 **Term dictionary** 顺序排列，**Posting list** 存储对应的文档ID，由于 **Term dictionary** 数据量大所以不适合存储内存中。
+   一段文本进行分词后存储在 **Term dictionary** 按照顺序排列（可以二分查找），**Posting list** 存储对应的文档ID，由于 **Term dictionary** 数据量大所以不适合存储内存中。
 
    | Term dictionary | Posting list |
    | --------------- | ------------ |
