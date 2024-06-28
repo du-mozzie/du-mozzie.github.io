@@ -65,7 +65,7 @@ Lucene 索引文件结构主要如下
 
    lucene 中出现了另外一个结构 **Term Index** 这是一个前缀树，通过提取  **Term dictionary** 的前缀减少存储的数据，记录 **Term dictionary** 中的偏移量， **Term Index** 该结构存在内存中。查询的时候先通过 **Term Index** 定位到大概的位置，在去 **Term dictionary** 中遍历，可以提升查找的效率
 
-   ![image-20240627175528350](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240627175528350.png)
+   ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240627175528350.png)
 
 3. Stored Fields：存储完整的文档内容
 
@@ -73,11 +73,11 @@ Lucene 索引文件结构主要如下
 
 5. Segment：由上面四种结构组成，具备完整搜索功能的最小单元。Segment一旦生成就不能修改，只能进行合并 **Segment Merging**
 
-   ![image-20240628003637291](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240628003637291.png)
+   ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240628003637291.png)
 
    多个 Segment 就构成了Lucene
 
-   ![image-20240628003610415](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240628003610415.png)
+   ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240628003610415.png)
 
 ES 中一个索引由一个或多个 lucene 索引构成，一个 lucene 索引由一个或多个 segment 构成，其中 segment 是最小的检索域。数据具体被存储到哪个分片上：shard = hash(routing) % number_of_primary_shards
 
