@@ -79,7 +79,9 @@ Lucene 索引文件结构主要如下
 
    ![image-20240628003610415](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240628003610415.png)
 
-6. 
+ES 中一个索引由一个或多个 lucene 索引构成，一个 lucene 索引由一个或多个 segment 构成，其中 segment 是最小的检索域。数据具体被存储到哪个分片上：shard = hash(routing) % number_of_primary_shards
+
+默认情况下 routing 参数是文档 ID (murmurhash3), 可通过 URL 中的 \_routing 参数指定数据分布在同一个分片中，index 和 search 的时候都需要一致才能找到数据，如果能明确根据_routing 进行数据分区，则可减少分片的检索工作，以提高性能。
 
 ## 基本数据类型
 
