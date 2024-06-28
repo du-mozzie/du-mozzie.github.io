@@ -44,7 +44,7 @@ Lucene 索引文件结构主要如下
 | ------------------- | --------- | ------------------------------------------------------------ |
 | Term Index          | .tip      | 词典索引（需要加载进内存）                                   |
 | Term dictionary     | .tim      | 倒排表数据                                                   |
-| Frequencies         | .doc      | 包含 Trem 和频率的文档列表（倒排表）                         |
+| Frequencies         | .doc      | 包含 Trem 和频率的文档列表（倒排表）<br />Term Frequency (TF)：一个词项在文档中出现的次数。<br />Document Frequency (DF)：一个词项在整个索引中出现的文档数量。 |
 | Fields              | .fnm      | Field 数据元信息                                             |
 | Field Index         | .fdx      | 文档位置索引（虚加载进内存）                                 |
 | Field Data          | .fdt      | 文档值                                                       |
@@ -82,6 +82,76 @@ Lucene 索引文件结构主要如下
 ES 中一个索引由一个或多个 lucene 索引构成，一个 lucene 索引由一个或多个 segment 构成，其中 segment 是最小的检索域。数据具体被存储到哪个分片上：shard = hash(routing) % number_of_primary_shards
 
 默认情况下 routing 参数是文档 ID (murmurhash3), 可通过 URL 中的 \_routing 参数指定数据分布在同一个分片中，index 和 search 的时候都需要一致才能找到数据，如果能明确根据_routing 进行数据分区，则可减少分片的检索工作，以提高性能。
+
+### 结构示例
+
+以下是一个插入文档和查询的例子，解释这些结构在背后是如何工作的。
+
+#### 插入文档示例
+
+假设我们在 `library` 索引中插入一本书的信息：
+
+```JSON
+POST /library/_doc/1
+{
+  "title": "Elasticsearch: The Definitive Guide",
+  "author": "Clinton Gormley",
+  "published_year": 2015
+}
+```
+
+**步骤解析：**
+
+1. **解析文档**：解析 JSON 文档，提取字段 `title`、`author` 和 `published_year`。
+2. **分词**：对 `title` 字段进行分词，如 "Elasticsearch"、"The"、"Definitive"、"Guide"。
+3. 更新倒排索引：将词项添加到倒排索引中。
+   - `Term Dictionary`：记录词项 "Elasticsearch"、"The"、"Definitive"、"Guide"。
+   - `Term Index`：记录词项的位置。
+   - `Frequencies`：记录每个词项在文档中的出现频率。
+4. **存储字段值**：存储字段值用于后续的排序、聚合和返回结果。
+5. **Doc Values**：为 `published_year` 字段存储数值用于快速范围查询和排序。
+
+#### 查询文档示例
+
+##### 查询所有文档
+
+```JSON
+GET /library/_search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+```
+
+**步骤解析：**
+
+1. **解析查询**：解析 `match_all` 查询，获取所有文档。
+2. **读取倒排索引**：读取所有文档的索引。
+3. **返回结果**：返回存储的字段值。
+
+##### 按标题关键字查询
+
+```JSON
+GET /library/_search
+{
+  "query": {
+    "match": {
+      "title": "Elasticsearch"
+    }
+  }
+}
+```
+
+**步骤解析：**
+
+1. **解析查询**：解析 `match` 查询，提取查询词项 "Elasticsearch"。
+2. **查找词项**：在 `Term Dictionary` 中查找 "Elasticsearch"。
+3. **读取倒排索引**：获取包含 "Elasticsearch" 的文档列表及词频信息。
+4. **计算相关性**：根据词频和其他因素计算文档的相关性得分。
+5. **返回结果**：根据相关性得分排序并返回结果。
+
+通过这些步骤，可以看到 Elasticsearch 如何利用 Term Index、Term Dictionary、Frequencies、Fields、Field Index、Field Data 和 Per-Document Values 来实现高效的文档插入和查询。了解这些底层结构有助于优化索引和查询性能。
 
 ## 基本数据类型
 
