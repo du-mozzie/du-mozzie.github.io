@@ -736,6 +736,10 @@ Point这个聚合量经过逃逸分析后，发现它并没有逃逸，就被替
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1705372330181-201d48b5-7e83-42f6-ac6d-a490c5c8b0a2.png)
 
+> jmap -histo \<pid> | head -n 10 实时查看占用前十的对象
+
+![image-20240701110942786](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240701110942786.png)
+
 5. [**jhat**](https://docs.oracle.com/javase/8/docs/technotes/tools/windows/jhat.html#CIHHJAGE)
 
 JDK自带堆分析工具
