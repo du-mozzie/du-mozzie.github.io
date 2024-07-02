@@ -740,7 +740,7 @@ Point这个聚合量经过逃逸分析后，发现它并没有逃逸，就被替
 
 > jmap -histo \<pid> | head -n 10 实时查看占用前十的对象
 
-![image-20240701110942786](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240701110942786.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240701110942786.png)
 
 5. [**jhat**](https://docs.oracle.com/javase/8/docs/technotes/tools/windows/jhat.html#CIHHJAGE)
 
@@ -766,7 +766,7 @@ JDK自带堆分析工具
 
 1. jConsole
 2. Visual VM
-3. eclipse MAT
+3. Eclipse MAT
 4. JProfiler
 5. Arthas
 6. Java Mission Control
