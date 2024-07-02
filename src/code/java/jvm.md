@@ -730,7 +730,9 @@ Point这个聚合量经过逃逸分析后，发现它并没有逃逸，就被替
 
 4. [**jmap**](https://docs.oracle.com/javase/8/docs/technotes/tools/windows/jmap.html#CEGCECJB)
 
-> jmap -histo:live 进程ID，导出内存映像文件&内存使用情况
+> jmap -dump:live,format=b,file=heapdump.hprof \<pid>，生成堆转储文件，包含 JVM 内存中的所有对象及其详细信息（信息最完整，通常配合 Eclipse MAT 或 VisualVM 进行分析）
+
+> jmap -histo:live \<pid>，JVM 进程的内存使用情况，活跃的对象
 
 ![](https://cdn.nlark.com/yuque/0/2024/png/25672830/1705372377866-0cb243ba-a322-4c3b-99a6-cd5b664984cf.png)
 
@@ -738,7 +740,7 @@ Point这个聚合量经过逃逸分析后，发现它并没有逃逸，就被替
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1705372330181-201d48b5-7e83-42f6-ac6d-a490c5c8b0a2.png)
 
-> jmap -histo \<pid> | head -n 10 实时查看占用前十的对象
+> jmap -histo \<pid> | head -n 10 实时查看占用前十的对象，包括被回收的对象
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240701110942786.png)
 
