@@ -261,7 +261,7 @@ jdk1.8及以后：无永久代，类型信息、字段、方法、常量保存�
 
 不同厂商、不同版本的虚拟机实现差别很大。HotSpot 虚拟机在JDK7/8后所有收集器及组合(连线)，如下图：（更新到了JDK14）
 
-![](https://cdn.nlark.com/yuque/0/2024/png/25672830/1704205929568-d6fcb86a-883b-4c50-92d9-0ecef6cae2a6.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1704205929568-d6fcb86a-883b-4c50-92d9-0ecef6cae2a6.png)
 
 1. 两个收集器间有连线，表明它们可以搭配使用：
 
@@ -726,7 +726,7 @@ Point这个聚合量经过逃逸分析后，发现它并没有逃逸，就被替
 
 >  jinfo -flag 相关垃圾回收器参数 进程ID，实时查看和修改JVM配置参数（+表示在使用，-未使用）
 
-![](https://cdn.nlark.com/yuque/0/2024/png/25672830/1704207097037-e17da0c3-19d8-44ac-92d5-9bd79029650a.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1704207097037-e17da0c3-19d8-44ac-92d5-9bd79029650a.png)
 
 4. [**jmap**](https://docs.oracle.com/javase/8/docs/technotes/tools/windows/jmap.html#CEGCECJB)
 
@@ -734,7 +734,7 @@ Point这个聚合量经过逃逸分析后，发现它并没有逃逸，就被替
 
 > jmap -histo:live \<pid>，JVM 进程的内存使用情况，活跃的对象
 
-![](https://cdn.nlark.com/yuque/0/2024/png/25672830/1705372377866-0cb243ba-a322-4c3b-99a6-cd5b664984cf.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1705372377866-0cb243ba-a322-4c3b-99a6-cd5b664984cf.png)
 
 > jmap -heap 进程ID ，打印内存信息
 
