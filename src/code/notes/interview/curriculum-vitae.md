@@ -54,3 +54,13 @@ prev: ./
 1~4：在真实的前提下，可以适当的美化
 
 7~8：不要过于夸张，关键在于难点、亮点
+
+# 面试过程
+
+几个步骤
+
+![image-20240707182940924](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240707182940924.png)
+
+1. 自我介绍
+
+   我叫什么，我的工作经历主要是分为了3个阶段，1.xxx 2.xxx 3.xxx
