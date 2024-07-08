@@ -59,7 +59,7 @@ prev: ./
 
 几个步骤
 
-![image-20240707182940924](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240707182940924.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240707182940924.png)
 
 1. 自我介绍
 
