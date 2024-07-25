@@ -173,8 +173,8 @@ EXPLAIN SELECT * FROM user WHERE phone = '12456458532';
    字段上的索引也会实现。所以这就是为什么不建议使用or的原因。
 
 3. 使用复合索引的时候，没有使用左侧的列查找，索引失效
-   		什么是复合索引？
-      			    两个字段，或者更多的字段联合起来添加一个索引，叫做复合索引。
+   什么是复合索引？
+   两个字段，或者更多的字段联合起来添加一个索引，叫做复合索引。**最左前缀原则**
 
    ```sql
    CREATE INDEX phone_name_index ON user(phone,name);
@@ -193,6 +193,8 @@ EXPLAIN SELECT * FROM user WHERE phone = '12456458532';
    ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20210616130837019.png)
 
 4. 在where当中索引列参加了运算，索引失效。
+
+5. 字段使用了函数也会失效。
 
 ## 总结
 
