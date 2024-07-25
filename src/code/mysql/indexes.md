@@ -115,6 +115,16 @@ CREATE INDEX idx_user_age_p ON user (age) PARTITIONS 32;
 
 **在mysql当中，主键上，以及unique字段上都会自动添加索引**
 
+> 索引创建原则
+
+1. 数据量较大，且查询比较频繁的表
+2. 常作为查询条件、排序、分组的字段
+3. 字段内容区分度高
+4. 内容较长，使用前缀索引
+5. 尽量联合索引
+6. 要控制索引的数量
+7. 如果索引I列不能存储 NULL 值，请在创建表时使用 NOT NULL 约束它
+
 ## 索引的使用
 
 创建索引：
@@ -164,7 +174,7 @@ EXPLAIN SELECT * FROM user WHERE phone = '12456458532';
 
 3. 使用复合索引的时候，没有使用左侧的列查找，索引失效
    		什么是复合索引？
-   			    两个字段，或者更多的字段联合起来添加一个索引，叫做复合索引。
+      			    两个字段，或者更多的字段联合起来添加一个索引，叫做复合索引。
 
    ```sql
    CREATE INDEX phone_name_index ON user(phone,name);
