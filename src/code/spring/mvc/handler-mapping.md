@@ -3,9 +3,9 @@ order: 1
 title: RequestMappingHandlerMapping 与 RequestMappingHandlerAdapter
 date: 2021-10-08
 category: 
-    - Spring
+    - Spring MVC
 tag: 
-    - Spring
+    - Spring MVC
 timeline: true
 article: true
 prev: ./
