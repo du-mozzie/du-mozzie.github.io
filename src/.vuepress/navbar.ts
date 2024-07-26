@@ -23,14 +23,14 @@ export default navbar([
         link: "mysql/",
       },
       {
-        text: "Redis",
-        icon: "/assets/images/navbar/redis.svg",
-        link: "redis/",
-      },
-      {
         text: "Spring",
         icon: "/assets/images/navbar/spring.svg",
         link: "spring/",
+      },
+      {
+        text: "Redis",
+        icon: "/assets/images/navbar/redis.svg",
+        link: "redis/",
       },
       {
         text: "分布式",

@@ -1,6 +1,6 @@
 ---
 index: false
-title: 容器与Bean
+title: 动态代理
 article: false
 ---
 
