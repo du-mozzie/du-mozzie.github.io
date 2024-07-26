@@ -43,7 +43,7 @@ public class PointcutMatch {
 
 运行 main() 方法后，控制台打印出：
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1708526216195-ac7b0a3e-3277-432f-9d1c-ef50e147e3f2.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1708526216195-ac7b0a3e-3277-432f-9d1c-ef50e147e3f2.png)
 
 @Transactional 是 Spring 中使用频率非常高的注解，那它底层是通过 AspectJExpressionPointcut 与 @annotation() 切点表达式相结合对目标方法进行匹配的吗？
 
@@ -124,6 +124,6 @@ public class PointcutMatch {
 }
 ```
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1708610459178-b7af391a-e2b4-45d4-8439-1bd31875429b.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1708610459178-b7af391a-e2b4-45d4-8439-1bd31875429b.png)
 
 无论是 AspectJExpressionPointcut 还是 StaticMethodMatcherPointcut，它们都实现了 MethodMatcher 接口，用来执行方法的匹配。

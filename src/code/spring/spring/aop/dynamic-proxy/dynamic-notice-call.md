@@ -179,6 +179,6 @@ public static void main(String[] args) throws Throwable {
 }
 ```
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1709389362522-1cdceacf-73dd-469d-b54e-1f224322c389.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1709389362522-1cdceacf-73dd-469d-b54e-1f224322c389.png)
 
 动态通知调用需要切点信息，需要对参数进行匹配和绑定，复杂程度高，性能比静态通知调用低。

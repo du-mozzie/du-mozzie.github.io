@@ -11,13 +11,13 @@ article: true
 prev: ./
 ---
 
-# advisor
+## advisor
 
 切面有 aspect 和 advisor 两个概念，aspect 是多组通知（advice）和切点（pointcut）的组合，也是实际编码时使用的，advisor 则是更细粒度的切面，仅包含一个通知和切点，aspect 在生效之前会被拆解成多个 advisor。
 
 Spring 中对切点、通知、切面的抽象如下：
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1708439856791-31385206-2a33-4085-9202-2d5de36459f8.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1708439856791-31385206-2a33-4085-9202-2d5de36459f8.png)
 
 - 切点：即 Pointcut，其典型实现是 AspectJExpressionPointcut
 - 通知：即 Advice，其典型子类接口为 MethodInterceptor，表示环绕通知
@@ -25,7 +25,7 @@ Spring 中对切点、通知、切面的抽象如下：
 
 本节将重点介绍 advisor 切面。
 
-# 切面与代理对象的创建
+## 切面与代理对象的创建
 
 通过以下四步创建切面和代理：
 
@@ -157,7 +157,7 @@ public class Test1 {
 }
 ```
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1708480620419-f7746c1f-920d-46b9-96e1-62433aaefcf1.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1708480620419-f7746c1f-920d-46b9-96e1-62433aaefcf1.png)
 
 foo() 方法被增强，但 bar() 并没有，并且选择了 CGLib 动态代理作为代理的实现。
 
@@ -181,7 +181,7 @@ proxyFactory.setInterfaces(target.getClass().getInterfaces());
 T1 proxy = (T1) proxyFactory.getProxy();
 ```
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1708519032945-bc3f0f43-39a6-4629-a768-926a673baed5.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1708519032945-bc3f0f43-39a6-4629-a768-926a673baed5.png)
 
 此时选择的动态代理实现方式是 JDK 动态代理。
 
@@ -193,7 +193,7 @@ proxyFactory.setProxyTargetClass(true);
 
 运行 main() 方法后，控制台打印出以下内容，选择 CGLib 动态代理作为动态代理的实现方式：
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1708519116428-ae958d9f-e9ea-4c77-9fa8-651721d731ac.png)再将 proxyTargetClass 的值修改回 false，并修改目标对象的所在类为 Target2，Target2 并未实现任何接口：
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1708519116428-ae958d9f-e9ea-4c77-9fa8-651721d731ac.png)再将 proxyTargetClass 的值修改回 false，并修改目标对象的所在类为 Target2，Target2 并未实现任何接口：
 
 ```java
 public static void main(String[] args) {
@@ -216,14 +216,14 @@ public static void main(String[] args) {
 
 运行 main() 方法后，控制台打印出以下内容，依旧选择 CGLib 动态代理作为动态代理的实现方式：
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1708519183949-3d5612dd-f7e4-4c6f-a00c-63a4addd5a44.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1708519183949-3d5612dd-f7e4-4c6f-a00c-63a4addd5a44.png)
 
 ProxyFactory 是用来创建代理的核心实现，使用 AopProxyFactory 选择具体的代理实现：
 
 - JdkDynamicAopProxy
 - ObjenesisCglibAopProxy
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1708519227967-f6ca7e3e-a2d5-4912-93ed-e5da7ab96b33.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1708519227967-f6ca7e3e-a2d5-4912-93ed-e5da7ab96b33.png)
 
 AopProxyFactory 根据 proxyTargetClass 等设置选择 AopProxy 实现，AopProxy 通过 getProxy() 方法创建代理对象。
 

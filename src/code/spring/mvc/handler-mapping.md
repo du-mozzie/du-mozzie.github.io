@@ -11,7 +11,7 @@ article: true
 prev: ./
 ---
 
-# DispatcherServlet 的初始化
+## DispatcherServlet 的初始化
 
 选择支持内嵌 Tomcat 服务器的 Spring 容器作为 ApplicationContext 的实现：
 
@@ -127,7 +127,7 @@ public DispatcherServletRegistrationBean dispatcherServletRegistrationBean(Dispa
 
 再次重启程序，根据控制台输出的内容可知，不仅完成 Tomcat 和 Spring 容器的初始化，DispatcherServlet 也初始化成功。
 
-## 抽取配置信息到配置文件中
+#### 抽取配置信息到配置文件中
 
 使用 @PropertySource 注解设置配置类需要读取的配置文件，以便后续读取配置文件中的内容。
 
@@ -258,7 +258,7 @@ private void initHandlerMappings(ApplicationContext context) {
 
 ![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1710858790857-b1d3c199-eba6-425e-8f1d-5f3b877178d4.png)
 
-# RequestMappingHandlerMapping
+## RequestMappingHandlerMapping
 
 HandlerMapping，即处理器映射器，用于建立请求路径与控制器方法的映射关系。
 
@@ -339,7 +339,7 @@ public class Start {
 
 ![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1710861834079-a27170e9-545d-4b30-a5fb-a0d3f5908a5a.png)
 
-# RequestMappingHandlerAdapter
+## RequestMappingHandlerAdapter
 
 RequestMappingHandlerAdapter 实现了 HandlerAdapter 接口，HandlerAdapter 用于执行控制器方法，而 RequestMapping 表明 RequestMappingHandlerAdapter 用于执行被 @RequestMapping 注解标记的控制器方法。
 
@@ -417,7 +417,7 @@ Objects.requireNonNull(handlerAdapter.getReturnValueHandlers()).forEach(System.o
 
 ![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1710939402091-4e804566-49ae-459c-8c51-4b0dbd06b90d.png)
 
-## ![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1710939411548-132d3093-9a3d-4438-8eb4-3ff7427f877a.png)自定义参数解析器
+#### ![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1710939411548-132d3093-9a3d-4438-8eb4-3ff7427f877a.png)自定义参数解析器
 
 创建一个自定义的注解
 
@@ -475,7 +475,7 @@ handlerAdapter.invokeHandlerMethod(tokenRequest, response, (HandlerMethod) token
 
 ![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1710940903967-f3941633-c8aa-4aa9-87df-ecb22b377d9d.png)
 
-## 自定义返回值解析器
+#### 自定义返回值解析器
 
 创建一个自定义的解析器
 

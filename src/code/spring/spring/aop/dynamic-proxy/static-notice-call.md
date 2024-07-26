@@ -10,7 +10,7 @@ timeline: true
 article: true
 ---
 
-# 统一转换成环绕通知
+## 统一转换成环绕通知
 
 通知相关注解都对应一个原始通知类，在 Spring 底层会将这些通知转换成环绕通知 MethodInterceptor。如果原始通知类本就实现了 MethodInterceptor 接口，则无需转换。
 
@@ -28,7 +28,7 @@ article: true
 
 MethodInvocation 需要知道 advice 有哪些，还需要知道目标对象是哪个。调用次序如下：
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1709388555931-b264228f-4387-49f6-a06f-e3bcab0ff62f.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1709388555931-b264228f-4387-49f6-a06f-e3bcab0ff62f.png)
 
 由上图可知，环绕 通知最适合作为 advice，而 Before、AfterReturning 都应该转换成环绕通知。
 
@@ -46,7 +46,7 @@ MethodInvocation 需要知道 advice 有哪些，还需要知道目标对象是�
 
 转换得到的通知都是静态通知，体现在 getInterceptorsAndDynamicInterceptionAdvice() 方法中的 Interceptors 部分，这些通知在被调用时无需再次检查切点，直接调用即可。
 
-## 代码测试
+#### 代码测试
 
 切面类与目标类：
 
@@ -174,7 +174,7 @@ org.springframework.aop.framework.adapter.AfterReturningAdviceInterceptor@e87444
 - 环绕通知 AspectJAroundAdvice 保持不变
 - 后置通知 AspectJAfterReturningAdvice 被转换成 AfterReturningAdviceInterceptor
 
-# 调用链执行
+## 调用链执行
 
 高级切面成功转换成低级切面，切面中的通知也全部转换成环绕通知 MethodInterceptor，最后还要调用这些通知和目标方法。
 
@@ -220,7 +220,7 @@ Exception in thread "main" java.lang.IllegalStateException: No MethodInvocation 
 
 可以在所有通知的最外层再添加一个环绕通知，其作用是将调用链对象放入当前线程。
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1709388874301-ae3cc89a-cfdd-4098-81b1-946a805b7c59.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1709388874301-ae3cc89a-cfdd-4098-81b1-946a805b7c59.png)
 
 可以使用 Spring 提供的 ExposeInvocationInterceptor 作为最外层的环绕通知。
 
@@ -249,9 +249,9 @@ public static void main(String[] args) throws Throwable {
 
 再次运行 main() 方法不再报错，控制台打印出：
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1709388921968-93fddb5d-5478-45da-aa4d-42a2c429e7b8.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1709388921968-93fddb5d-5478-45da-aa4d-42a2c429e7b8.png)
 
-# 模拟实现调用链
+## 模拟实现调用链
 
 调用链执行过程是一个递归过程。执行 proceed() 方法将调用调用链中下一个通知或目标方法。当调用链中没有通知时，就调用目标方法，反之调用下一个通知。
 
@@ -357,9 +357,9 @@ public static void main(String[] args) throws Throwable {
 }
 ```
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1709388999801-90e0c6f0-a800-4306-afe5-a4d24df9c8be.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1709388999801-90e0c6f0-a800-4306-afe5-a4d24df9c8be.png)
 
-# 代理对象调用流程
+## 代理对象调用流程
 
 以 JDK 动态代理实现为例：
 
@@ -373,4 +373,4 @@ public static void main(String[] args) throws Throwable {
 
 下图中不同颜色对应一次环绕通知或目标的调用起始至终结：
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1709389085590-51d6e55d-8935-44a9-9ed1-5b57bb3f90df.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1709389085590-51d6e55d-8935-44a9-9ed1-5b57bb3f90df.png)

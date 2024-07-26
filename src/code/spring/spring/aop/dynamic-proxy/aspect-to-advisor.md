@@ -10,7 +10,7 @@ timeline: true
 article: true
 ---
 
-# AnnotationAwareAspectJAutoProxyCreator
+## AnnotationAwareAspectJAutoProxyCreator
 
 讲解之前，准备一下类：
 
@@ -89,7 +89,7 @@ public static void main(String[] args) {
 }
 ```
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1709130744894-cd397b64-ef10-4d2d-835a-5d6037b63112.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1709130744894-cd397b64-ef10-4d2d-835a-5d6037b63112.png)
 
 Spring 中存在一个名为 AnnotationAwareAspectJAutoProxyCreator 的 Bean 后置处理器，尽管它的名称中没有 BeanPostProcessor 的字样，但它确实是实现了 BeanPostProcessor 接口的。
 
@@ -105,7 +105,7 @@ AnnotationAwareAspectJAutoProxyCreator 实现了 BeanPostProcessor，可以在 B
 - findEligibleAdvisors()：位于父类 AbstractAdvisorAutoProxyCreator 中，用于找到符合条件的切面类。低级切面直接添加，高级切面转换为低级切面再添加。
 - wrapIfNecessary()：位于父类 AbstractAutoProxyCreator 中，用于将有资格被代理的 Bean 进行包装，即创建代理对象。
 
-## findEligibleAdvisors() 方法
+#### findEligibleAdvisors() 方法
 
 findEligibleAdvisors() 方法接收两个参数：
 
@@ -147,7 +147,7 @@ InstantiationModelAwarePointcutAdvisor: expression [execution(* foo())]; advice 
 
 若按照 creator.findEligibleAdvisors(Target2.class, "target2") 的方式进行调用，控制台不会打印出任何信息，因为没有任何切面能够配合 Target2 使用。
 
-## wrapIfNecessary() 方法
+#### wrapIfNecessary() 方法
 
 wrapIfNecessary() 方法内部调用了 findEligibleAdvisors() 方法，若 findEligibleAdvisors() 方法返回的集合不为空，则表示需要创建代理对象。
 
@@ -188,9 +188,9 @@ public static void main(String[] args) {
 }
 ```
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1709130934275-aeefadf8-9b70-41a1-a0af-cb92666d4389.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1709130934275-aeefadf8-9b70-41a1-a0af-cb92666d4389.png)
 
-# 切面的顺序控制
+## 切面的顺序控制
 
 根据上述打印的信息可知，低级切面相比于高级切面先一步被执行，这个执行顺序是可以被控制的。
 
@@ -236,9 +236,9 @@ static class Config {
 }
 ```
 
-设置完成后，高级切面的执行优先级高于低级切面。执行 main() 方法验证执行顺序是否改变：![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1709131001793-ef866880-8286-4a5e-94a8-5224fb416473.png)
+设置完成后，高级切面的执行优先级高于低级切面。执行 main() 方法验证执行顺序是否改变：![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1709131001793-ef866880-8286-4a5e-94a8-5224fb416473.png)
 
-# 代理对象创建时机
+## 代理对象创建时机
 
 使用 AnnotationAwareAspectJAutoProxyCreator Bean 后置处理器创建代理对象的时机有以下两个选择：
 
@@ -412,7 +412,7 @@ Bean1 init()
 - 有循环依赖时，在 Bean 实例化后、依赖注入之前创建，并将代理对象暂存于二级缓存。
 - Bean 的依赖注入阶段和初始化阶段不应该被增强，仍应被施加于原始对象。
 
-# 高级切面转低级切面
+## 高级切面转低级切面
 
 调用 AnnotationAwareAspectJAutoProxyCreator 对象的 findEligibleAdvisors() 方法时，获取能配合目标 Class 使用的切面，最终返回 Advisor 列表。在搜索过程中，如果遇到高级切面，则会将其转换成低级切面。
 

@@ -67,7 +67,7 @@ public class A10Application {
 
 运行主启动类后，控制台会显示：
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1708004033946-b73d30ee-a741-4b49-8bce-5eda91874b1d.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1708004033946-b73d30ee-a741-4b49-8bce-5eda91874b1d.png)
 
 如果完全按照上述步骤进行，会发现 输出结果和给出的结果不一样。
 
@@ -110,11 +110,11 @@ public class A10Application {
 
 之后不在使用 IDEA 自带的编译器进行编译，而是使用 Maven 编译，即：
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1708004113781-3c7805b5-c132-4deb-9f1a-a6491afbd12c.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1708004113781-3c7805b5-c132-4deb-9f1a-a6491afbd12c.png)
 
 这个插件将我们的被代理类MyService进行了编译增强，查看生成的 target 文件夹下的 MyService.class 文件：
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1708004188015-64914c3a-9115-44ae-b4c7-e757fee59b63.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1708004188015-64914c3a-9115-44ae-b4c7-e757fee59b63.png)
 
 可以看到在 foo() 方法中增加了一行代码：MyAspect.aspectOf().before();，也就是这行代码对 foo() 方法实现了增强。
 
