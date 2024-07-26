@@ -9,32 +9,37 @@ export default navbar([
     children: [
       {
         text: "数据结构与算法",
-        icon: "template",
+        icon: "/assets/images/navbar/data-structure.svg",
         link: "data-structure-and-algorithms/",
       },
       {
         text: "Java",
-        icon: "java",
+        icon: "/assets/images/navbar/java.svg",
         link: "java/",
       },
       {
         text: "MySQL",
-        icon: "mysql",
+        icon: "/assets/images/navbar/mysql.svg",
         link: "mysql/",
       },
       {
         text: "Redis",
-        icon: "redis",
+        icon: "/assets/images/navbar/redis.svg",
         link: "redis/",
       },
       {
+        text: "Spring",
+        icon: "/assets/images/navbar/spring.svg",
+        link: "spring/",
+      },
+      {
         text: "分布式",
-        icon: "fa-solid fa-circle-nodes",
+        icon: "/assets/images/navbar/distributed.svg",
         link: "distributed/",
       },
       {
         text: "杂记",
-        icon: "folder",
+        icon: "/assets/images/navbar/notes.svg",
         link: "notes/",
       },
     ],
