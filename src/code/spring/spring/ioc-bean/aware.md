@@ -10,7 +10,7 @@ timeline: true
 article: true
 ---
 
-# Aware接口
+## Aware接口
 
 Aware 接口用于注入一些与容器相关的信息，比如：
 
@@ -45,7 +45,7 @@ public static void main(String[] args) {
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1707877980523-3b5b79a1-7dd5-43d4-be79-2536dd622f4b.png)
 
-# InitializingBean
+## InitializingBean
 
 ```java
 @Slf4j
@@ -91,7 +91,7 @@ context.registerBean(AutowiredAnnotationBeanPostProcessor.class);
 context.registerBean(CommonAnnotationBeanPostProcessor.class);
 ```
 
-# 失效的 @Autowired 注解
+## 失效的 @Autowired 注解
 
 在某些情况下，尽管容器中存在必要的后置处理器，但 @Autowired 和 @PostConstruct 注解也会失效。
 

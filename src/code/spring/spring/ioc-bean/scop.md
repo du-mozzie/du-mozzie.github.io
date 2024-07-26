@@ -119,7 +119,7 @@ indi.mofan.bean.a08.BeanForRequest       : destroy
 如果想看到 session 作用范围的 Bean 执行销毁方法，可以等 session 过期时在控制台上看到对应的信息。默认情况下，session 的过期时间是 30 分钟，为了更好地测试，可以在配置文件中添加：
 
 ```properties
-# 修改 session 过期时间为 10s
+## 修改 session 过期时间为 10s
 server.servlet.session.timeout=10s
 ```
 
@@ -143,7 +143,7 @@ indi.mofan.bean.a08.BeanForSession       : destroy
 
 很遗憾没有办法看到 application 作用范围的 Bean 执行销毁方法，因为 Spring 似乎并没有对 application 作用范围的 Bean 进行正确的销毁处理，因此在 Servlet 容器销毁时看不到 application 作用范围的 Bean 执行销毁方法。
 
-# Scope 失效分析
+## Scope 失效分析
 
 现有两个类：
 

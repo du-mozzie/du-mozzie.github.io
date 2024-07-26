@@ -11,13 +11,11 @@ article: true
 prev: ./
 ---
 
-
-
 BeanFactory与ApplicationContext
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1705927765126-ae155b94-43f7-4e4d-85ee-b32806bb9370.png)
 
-# BeanFactory
+## BeanFactory
 
 现有如下类，尝试将 Config 添加到 Bean 工厂中：
 
@@ -77,7 +75,7 @@ public static void main(String[] args) {
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1707454755907-24a8d2cf-792d-4e3a-b438-7a308e468318.png)
 
-## 解析配置类
+#### 解析配置类
 
 根据对 @Configuration 和 @Bean 两个注解的认识可知，Bean 工厂中应该还存在 bean1 和 bean2，那为什么现在没有呢？
 
@@ -107,7 +105,7 @@ beanFactory.getBeansOfType(BeanFactoryPostProcessor.class).values().forEach(bean
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1707455199668-916fb2fd-897c-40a1-8991-8108279257c4.png)
 
-## 依赖注入
+#### 依赖注入
 
 我们在bean1中使用@Autowired自动注入了bean2，打印看看
 
@@ -148,7 +146,7 @@ beanFactory.preInstantiateSingletons();
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1707459459325-e22d09e8-7150-4327-8e1f-143150d829b6.png)
 
-## 后处理器排序
+#### 后处理器排序
 
  给最初的类信息进行补充
 
@@ -270,7 +268,7 @@ public CommonAnnotationBeanPostProcessor() {
 
 值越小，优先级越大，就排在更前面，因此当设置了 AnnotationAwareOrderComparator 比较器后，CommonAnnotationBeanPostProcessor 排在更前面，@Resource 就先生效。
 
-## 总结
+#### 总结
 
 beanFactory 不会做的事
 
@@ -282,9 +280,9 @@ beanFactory 不会做的事
 
 bean 后处理器会有排序的逻辑
 
-# ApplicationContext
+## ApplicationContext
 
-## 四种经典
+#### 四种经典
 
 ```java
 @Slf4j
@@ -302,7 +300,7 @@ public class A02Application {
 }
 ```
 
-### ClassPathXmlApplicationContext
+###### ClassPathXmlApplicationContext
 
 基于 classpath 下 xml 格式的配置文件来创建
 
@@ -331,7 +329,7 @@ private static void testClassPathXmlApplicationContext() {
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1707460711695-ba1b41f8-e9a0-47ec-b738-155a06b78cd3.png)
 
-### FileSystemXmlApplicationContext
+###### FileSystemXmlApplicationContext
 
 基于磁盘路径下 xml 格式的配置文件来创建
 
@@ -372,7 +370,7 @@ private static void testXmlBeanDefinitionReader() {
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1707461426522-244bbe4a-883d-43db-b28f-627bb2c810cc.png)
 
-### AnnotationConfigApplicationContext
+###### AnnotationConfigApplicationContext
 
 基于 java 配置类来创建
 
@@ -428,7 +426,7 @@ private static void testAnnotationConfigApplicationContext() {
 </beans>
 ```
 
-### AnnotationConfigServletWebServerApplicationContext
+###### AnnotationConfigServletWebServerApplicationContext
 
 基于 java 配置类来创建, 用于 web 环境
 
@@ -471,7 +469,7 @@ private static void testAnnotationConfigServletWebServerApplicationContext() {
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1707461672003-eb2e563a-b0b3-464a-add8-40fc61abfcd7.png)
 
-## ApplicationContext 接口体系
+#### ApplicationContext 接口体系
 
 ```java
 public interface ApplicationContext extends EnvironmentCapable, ListableBeanFactory, HierarchicalBeanFactory, MessageSource, ApplicationEventPublisher, ResourcePatternResolver {
@@ -517,7 +515,7 @@ AbstractApplicationContext
 
 ApplicationContext 有一个非常重要的抽象实现 AbstractApplicationContext，其他具体实现都会继承这个抽象实现，在其内部通过委派的方式实现了一些接口的能力，除此之外还有一个与 Spring Bean 的生命周期息息相关的方法：refresh()。
 
-# BeanFactory 接口体系
+## BeanFactory 接口体系
 
 BeanFactory 其实就是 Spring IoC 容器，它本身是一个接口，提供了一系列获取 Bean 的方式。
 
@@ -528,7 +526,7 @@ BeanFactory 其实就是 Spring IoC 容器，它本身是一个接口，提供�
 - AutowireCapableBeanFactory：提供了创建 Bean、自动装配 Bean、属性填充、Bean 初始化、依赖注入等能力，比如 @Autowired 注解的底层实现就依赖于该接口的 resolveDependency() 方法；
 - ConfigurableBeanFactory：该接口并未直接继承至 BeanFactory，而是继承了 HierarchicalBeanFactory。Configurable 意为 “可配置的”，就是说该接口用于对 BeanFactory 进行一些配置，比如设置类型转换器。
 
-# 读取 BeanDefinition
+## 读取 BeanDefinition
 
 BeanDefinition 也是一个接口，它封装了 Bean 的定义，Spring 根据 Bean 的定义，就能创建出符合要求的 Bean。
 
@@ -537,7 +535,7 @@ BeanDefinition 也是一个接口，它封装了 Bean 的定义，Spring 根据 
 - BeanDefinitionReader
 - ClassPathBeanDefinitionScanner
 
-### BeanDefinitionReader
+###### BeanDefinitionReader
 
 该接口中对 loadBeanDefinitions() 方法进行了多种重载，支持传入一个或多个 Resource 对象、资源位置来加载 BeanDefinition。
 
@@ -548,17 +546,17 @@ BeanDefinition 也是一个接口，它封装了 Bean 的定义，Spring 根据 
 
 除此之外，还有一个 AnnotatedBeanDefinitionReader，尽管它并不是 BeanDefinition 的子类，但它们俩长得很像，根据其类注释可知：它能够通过编程的方式对 Bean 进行注册，是 ClassPathBeanDefinitionScanner 的替代方案，能读取通过注解定义的 Bean。
 
-### ClassPathBeanDefinitionScanner
+###### ClassPathBeanDefinitionScanner
 
 通过扫描指定包路径下的 @Component 及其派生注解来注册 Bean，是 @ComponentScan 注解的底层实现。
 
 比如 MyBatis 通过继承 ClassPathBeanDefinitionScanner 实现通过 @MapperScan 注解来扫描指定包下的 Mapper 接口。
 
-### BeanDefinitionRegistry
+###### BeanDefinitionRegistry
 
 AnnotatedBeanDefinitionReader 和 ClassPathBeanDefinitionScanner 中都有一个 BeanDefinitionRegistry 类型的成员变量，它是一个接口，提供了 BeanDefinition 的增加、删除和查找功能。
 
-### 注册与获取 Bean
+###### 注册与获取 Bean
 
 根据前面的补充，现在可以这样注册并获取 Bean：
 

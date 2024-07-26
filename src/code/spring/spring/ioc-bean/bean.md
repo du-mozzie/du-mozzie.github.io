@@ -10,7 +10,7 @@ timeline: true
 article: true
 ---
 
-# 生命周期
+## 生命周期
 
 1. 构造器：无参构造器
 2. 依赖注入：@Autowired：
@@ -111,7 +111,7 @@ public class MyBeanPostProcessor implements InstantiationAwareBeanPostProcessor,
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1707464218799-684d1649-fc73-40db-8309-315024c59b6e.png)
 
-# 模板模式
+## 模板模式
 
 为什么实现了 BeanPostProcessor 接口后就能够在 Bean 生命周期的各个阶段进行拓展呢？
 
@@ -177,7 +177,7 @@ public static void main(String[] args) {
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1707481096383-db30d443-7418-4309-810a-0e29bf022b4c.png)
 
-# Bean 后置处理器
+## Bean 后置处理器
 
 现有如下三个类：
 
@@ -304,7 +304,7 @@ ConfigurationPropertiesBindingPostProcessor.register(context.getDefaultListableB
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1707811482605-be699ef3-5c99-4a89-9160-5b7d5412051a.png)
 
-## AutowiredAnnotationBeanPostProcessor原理
+#### AutowiredAnnotationBeanPostProcessor原理
 
 通过前文可知 AutowiredAnnotationBeanPostProcessor 用于解析 @Autowired 和 @Value 注解，那它究竟是怎么工作的呢？
 

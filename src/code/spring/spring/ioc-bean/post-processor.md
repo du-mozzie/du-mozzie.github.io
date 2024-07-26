@@ -10,7 +10,7 @@ timeline: true
 article: true
 ---
 
-# 常见的 BeanFactory 后置处理器
+## 常见的 BeanFactory 后置处理器
 
 先引入要用到的依赖：
 
@@ -143,7 +143,7 @@ context.registerBean(MapperScannerConfigurer.class, bd -> { // @MapperScanner
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1707819791965-ba770f8b-a7b4-4251-a4a6-ee782a2c9c4f.png)
 
-# 模拟实现
+## 模拟实现
 
 移除向容器中添加的 ConfigurationClassPostProcessor 和 MapperScannerConfigurer 两个后置处理器，自行编码模拟它们功能的实现。
 
@@ -371,7 +371,7 @@ context.registerBean(MapperPostProcessor.class); // 解析 Mapper 接口
 
 容器中存在 mapper1 和 mapper2 两个 Bean。
 
-# 注册创建完成的 Bean
+## 注册创建完成的 Bean
 
 如果要将 Bean 添加到 Spring 容器中，需要先根据配置文件或注解信息为每一个 Bean 生成一个 BeanDefinition，然后将这些 BeanDefinition 添加到 BeanDefinitionRegistry 中，当创建 Bean 对象时，直接从 BeanDefinitionRegistry 中获取 BeanDefinition 来生成 Bean。
 
