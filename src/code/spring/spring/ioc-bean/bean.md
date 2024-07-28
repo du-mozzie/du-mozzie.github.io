@@ -111,6 +111,18 @@ public class MyBeanPostProcessor implements InstantiationAwareBeanPostProcessor,
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1707464218799-684d1649-fc73-40db-8309-315024c59b6e.png)
 
+完整生命周期：
+
+1. 通过BeanDefinition获取bean的定义信息
+2. 调用构造函数实例化bean
+3. bean的依赖注入
+4. 处理Aware接口（BeanNameAware、BeanFactoryAware、ApplicationContextAware）
+5. Bean的后置处理器 BeanPostProcessor-前置
+6. 初始化方法（InitializingBean、init-method）
+7. Bean的后置处理器 BeanPostProcessor-后置
+
+![image-20240728182858858](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240728182858858.png)
+
 ## 模板模式
 
 为什么实现了 BeanPostProcessor 接口后就能够在 Bean 生命周期的各个阶段进行拓展呢？
