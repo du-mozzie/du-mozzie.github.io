@@ -10,8 +10,10 @@ timeline: true
 article: true
 ---
 
-1. 视图阶段（JSP）
+- 视图阶段（JSP）
 
    ![image-20240729193930322](C:\Users\Du\AppData\Roaming\Typora\typora-user-images\image-20240729193930322.png)
 
-2. 
+- 前后端分离阶段（接口开发，异步请求）
+
+  ![image-20240729194344371](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240729194344371.png)
