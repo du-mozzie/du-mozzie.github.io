@@ -197,3 +197,12 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration\
 其中 **org.springframework.boot.autoconfigure.EnableAutoConfiguration** 代表自动配置的 key，即代表需要自动配置哪些类，`\` 可以理解为一个换行符，则该行下面的每行当做一个参数。
 
 从第二行开始都是一个配置类，需要填写该配置类的全限定名
+
+## 总结
+
+1. 在 Spring Boot 项目中的引导类上有一个注解 @SpringBootApplication，这个注解是对三个注解进行了封装，分别是：
+   - @SpringBootConfiguration
+   - @EnableAutoConfiguration
+   - @ComponentScan
+2. 其中 **@EnableAutoConfiguration** 是实现自动化配置的核心注解。该注解通过 **@Import** 注解导入对应的配置选择器。内部就是读取了该项目和该项目引I用的 Jar 包的的 classpath 路径下 **META-INF/spring.factories** 文件中的所配置的类的全类名。在这些配置类中所定义的 Bean 会根据条件注解**所指定的条件来决定**是否需要将其导入到 Spring 容器中。
+3. 条件判断会有像 **@ConditionalOnClass** 这样的注解，判断是否有对应的 class 文件，如果有则加载该类，把这个配置类的所有的 Bean 放入 Spring 容器中使用。
