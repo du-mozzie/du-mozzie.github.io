@@ -30,8 +30,8 @@ public class SecurityProperties {
 # 微信开放平台
 wx:
   open:
-    app_id: wxcdc05016b9dee6ef
-    app_secret: 93ed95abec9d3c83da411f45d4ac281d
+    app_id: xxxxxxxx
+    app_secret: xxxxxxxx
     redirect_url: http://sycimi.natappfree.cc/callback
 ```
 
