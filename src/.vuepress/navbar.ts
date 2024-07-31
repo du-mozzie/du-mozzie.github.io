@@ -50,17 +50,17 @@ export default navbar([
     children: [
       {
         text: "分类",
-        icon: "categoryselected",
+        icon: "/assets/images/navbar/category.svg",
         link: "/category/",
       },
       {
         text: "标签",
-        icon: "tag",
+        icon: "/assets/images/navbar/tag.svg",
         link: "/tag/",
       },
       {
         text: "时间线",
-        icon: "flow",
+        icon: "/assets/images/navbar/timeline.svg",
         link: "/timeline/",
       },
     ],
