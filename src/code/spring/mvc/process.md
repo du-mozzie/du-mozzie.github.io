@@ -22,7 +22,7 @@ article: true
    8. DispatcherServlet 将 ModelAndView 传给 ViewReslover（视图解析器
    9. ViewReslover 解析后返回具体 View（视图）
 
-   ![image-20240729193930322](C:\Users\Du\AppData\Roaming\Typora\typora-user-images\image-20240729193930322.png)
+   ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240729193930322.png)
 
 - 前后端分离阶段（接口开发，异步请求）
 
@@ -34,4 +34,4 @@ article: true
   6. 方法上添加了 @ResponseBody
   7. 通过 HttpMessageConverter 来返回结果转换为 JSON 并响应
 
-  ![image-20240729194344371](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240729194344371.png)
+  ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240729194344371.png)

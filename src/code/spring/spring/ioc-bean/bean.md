@@ -121,7 +121,7 @@ public class MyBeanPostProcessor implements InstantiationAwareBeanPostProcessor,
 6. 初始化方法（InitializingBean、init-method）
 7. Bean的后置处理器 BeanPostProcessor-后置
 
-![image-20240728182858858](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240728182858858.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240728182858858.png)
 
 ## 模板模式
 

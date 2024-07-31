@@ -96,7 +96,7 @@ public static void main(String[] args) throws Exception {
 }
 ```
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1711028501951-d34963ff-5fc9-46b5-89d4-b68f3059bb91.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1711028501951-d34963ff-5fc9-46b5-89d4-b68f3059bb91.png)
 
 ## @RequestParam
 

@@ -7,7 +7,7 @@ export default hopeTheme({
   hostname: "https://du-mozzie.github.io",
 
   author: {
-    name: "Du",
+    name: "mozzie",
     url: "https://du-mozzie.github.io",
   },
 
@@ -15,7 +15,7 @@ export default hopeTheme({
 
   iconPrefix: "iconfont icon-",
 
-  logo: "/assets/images/du.png",
+  logo: "/assets/images/mozzie.png",
 
   repo: "https://github.com/du-mozzie/du-mozzie.github.io",
 

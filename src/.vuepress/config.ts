@@ -6,8 +6,7 @@ export default defineUserConfig({
   locales: {
     "/": {
       lang: "zh-CN",
-      //   title: "Du的小站",
-      description: "Du的随笔和笔记",
+      description: "mozzie的笔记",
     },
   },
   theme,

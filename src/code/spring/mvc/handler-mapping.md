@@ -54,7 +54,7 @@ public class WebConfig {
 }
 ```
 
-运行 main() 方法，控制台打印出：![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1709389629919-4f1d9565-f160-4656-a438-c10bd194f7b0.png)
+运行 main() 方法，控制台打印出：![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1709389629919-4f1d9565-f160-4656-a438-c10bd194f7b0.png)
 
 Tomcat 容器初始化成功，Spring 容器初始化成功，但 DispatcherServlet 还未被初始化。
 
@@ -123,7 +123,7 @@ public DispatcherServletRegistrationBean dispatcherServletRegistrationBean(Dispa
 
 在源码中loadOnStartup默认为-1
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1710855374357-51427906-e34e-4ee2-8db7-7beabc5a9e4a.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1710855374357-51427906-e34e-4ee2-8db7-7beabc5a9e4a.png)
 
 再次重启程序，根据控制台输出的内容可知，不仅完成 Tomcat 和 Spring 容器的初始化，DispatcherServlet 也初始化成功。
 
@@ -179,7 +179,7 @@ public class WebConfig {
 
 再次重启程序，根据控制台输出的内容可知，Tomcat 此时监听的端口是 8000，DispatcherServlet 也在 Tomcat 启动时被初始化。
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1710855832025-d73a00da-d216-4e98-a166-1527385c04be.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1710855832025-d73a00da-d216-4e98-a166-1527385c04be.png)
 
 DispatcherServlet 初始化时执行的操作
 
@@ -256,7 +256,7 @@ private void initHandlerMappings(ApplicationContext context) {
 
 没有的时候都用默认的，这些默认的是不会添加到Spring容器中的，只是放在Dispathcher的成员变量中
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1710858790857-b1d3c199-eba6-425e-8f1d-5f3b877178d4.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1710858790857-b1d3c199-eba6-425e-8f1d-5f3b877178d4.png)
 
 ## RequestMappingHandlerMapping
 
@@ -337,7 +337,7 @@ public class Start {
 }
 ```
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1710861834079-a27170e9-545d-4b30-a5fb-a0d3f5908a5a.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1710861834079-a27170e9-545d-4b30-a5fb-a0d3f5908a5a.png)
 
 ## RequestMappingHandlerAdapter
 
@@ -398,7 +398,7 @@ main方法
     }
 ```
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1710938281833-c0a4bd8c-1a63-40e2-b1c9-aeb383be22f3.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1710938281833-c0a4bd8c-1a63-40e2-b1c9-aeb383be22f3.png)
 
 实现控制器方法的调用很简单，但如何将请求参数与方法参数相绑定的呢？
 
@@ -415,9 +415,9 @@ System.out.println("------------>所有的返回值解析器");
 Objects.requireNonNull(handlerAdapter.getReturnValueHandlers()).forEach(System.out::println);
 ```
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1710939402091-4e804566-49ae-459c-8c51-4b0dbd06b90d.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1710939402091-4e804566-49ae-459c-8c51-4b0dbd06b90d.png)
 
-#### ![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1710939411548-132d3093-9a3d-4438-8eb4-3ff7427f877a.png)自定义参数解析器
+#### ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1710939411548-132d3093-9a3d-4438-8eb4-3ff7427f877a.png)自定义参数解析器
 
 创建一个自定义的注解
 
@@ -473,7 +473,7 @@ HandlerExecutionChain tokenChain = handlerMapping.getHandler(tokenRequest);
 handlerAdapter.invokeHandlerMethod(tokenRequest, response, (HandlerMethod) tokenChain.getHandler());
 ```
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1710940903967-f3941633-c8aa-4aa9-87df-ecb22b377d9d.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1710940903967-f3941633-c8aa-4aa9-87df-ecb22b377d9d.png)
 
 #### 自定义返回值解析器
 
@@ -537,7 +537,7 @@ handlerAdapter.invokeHandlerMethod(tokenRequest, response, (HandlerMethod) yamlC
 System.out.println(response.getContentAsString());
 ```
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1710942532794-20146998-643f-4ae9-9810-70ec594fc011.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1710942532794-20146998-643f-4ae9-9810-70ec594fc011.png)
 
 **处理流程总结**
 
@@ -546,4 +546,4 @@ System.out.println(response.getContentAsString());
 3. RequestMappingHandlerAdapter执行invokeHandlerMethod方法
 4. RequestMappingHandlerAdapter的ReturnValueResolver处理返回值
 
-![img](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1710943344380-6fde5964-6fb4-4093-8009-e1921921a947.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1710943344380-6fde5964-6fb4-4093-8009-e1921921a947.png)
