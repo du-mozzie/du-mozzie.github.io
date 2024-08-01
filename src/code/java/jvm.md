@@ -94,6 +94,38 @@ jdk1.8及以后：无永久代，类型信息、字段、方法、常量保存�
 
 6. 执行init方法进行初始化
 
+#### 类加载
+
+##### 类加载器：
+
+- BootStrapClassLoader 启动类加载器：加载JAVA_HOME/jre/lib目录下的库
+- ExtClassLoader 扩展类加载器：加载JAVA_HOME/jre/lib目录下的库
+- AppClassLoader 应用类加载器：加载classPath下的类
+- CustomizeClassLoader 自定义类加载器：自定义类加载规则
+
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240801235029585.png)
+
+双亲委派机制：当需要加载一个类的时候，先委托上一级的加载器去进行加载，如果上一级的加载器加载成功，子加载器就不会在进行加载。
+
+**为什么要使用双亲委派机制**：
+
+1. 通过双亲委派机制可以避免某一个类被重复加载，当父类已经加载后则无需重复加载，保证唯一性。
+2. 为了安全，保证核心类不被篡改
+
+##### 类加载流程：
+
+类从加载到虚拟机中开始，直到卸载为止，它的整个生命周期包括了：加载、验证、准备、解析、初始化、使用和卸载这7个阶段。其中，验证、准备和解析这三个部分统称为连接（linking)
+
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240802001210466.png)
+
+- 加载：查找和导入class文件
+- 验证：保证加载类的准确性
+- 准备：为类变量分配内存并设置类变量初始值
+- 解析：把类中的符号引用转换为直接引用
+- 初始化：对类的静态变量，静态代码块执行初始化操作
+- 使用：JVM开始从入口方法开始执行用户的程序代码
+- 卸载：当用户程序代码执行完毕后，JVM便开始销毁创建的Class对象。
+
 #### 五种引用
 
 1. 强引用：不回收，程序中绝大部分都是强引用。
@@ -156,7 +188,7 @@ jdk1.8及以后：无永久代，类型信息、字段、方法、常量保存�
    - 根据可达性分析算法得出的垃圾进行标记
    - 对这些标记为可回收的内容进行垃圾回收
 
-   ![image-20240801231845403](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240801231845403.png)
+   ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240801231845403.png)
 
    优点：标记和清除速度较快
 
