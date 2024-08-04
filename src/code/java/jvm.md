@@ -128,19 +128,27 @@ jdk1.8及以后：无永久代，类型信息、字段、方法、常量保存�
 
 #### 五种引用
 
-1. 强引用：不回收，程序中绝大部分都是强引用。
+1. 强引用：不回收，程序中绝大部分都是强引用。只有所有GCRoots对象都不通过【强引l用】引I用该对象，该对象才能被垃圾回收。
+
+   ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240804141959387.png)
 
 2. 软引用：内存不足即回收，使用SoftReference类
 
    作用：可以缓存一些经常使用到的数据，但是在垃圾回收时发现内存不足会被回收
 
+   ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240804142035143.png)
+
 3. 弱引用：发现即回收，使用WeakReference类
 
    作用：在资源充足的时候缓存一些数据，当有垃圾回收(说明资源可能不足了)直接被回收掉
 
-4. 虚引用：对象回收跟踪，使用PhantomReference类
+   ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240804142120496.png)
+
+4. 虚引用：必须配合引用队列使用，被引用对象回收时，会将虚引l用入队，由ReferenceHandler线程调用虚引l用相关方法释放直接内存
 
    作用：用于跟踪垃圾回收过程。
+
+   ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240804142448150.png)
 
 5. 终结器引用：实现对象的finalize()方法，无需手动编码，其内部配合队列使用。在GC时，终结器引用入队。由Finalizer线程通过终结器引用找到被引用对象并调用，它的finalize()方法，第二次GC时才能回收被引用对象。
 
