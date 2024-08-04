@@ -470,6 +470,8 @@ Parallel old收集器采用了标记-压缩算法，但同样也是基于并行�
 
 ## 参数
 
+[参考文档](https://www.oracle.com/java/technologies/javase/vmoptions-jsp.html)
+
 ### 栈
 
 > -Xss：设置虚拟机栈大小，JDK5后默认1024k
