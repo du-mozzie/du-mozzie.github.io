@@ -696,7 +696,33 @@ TLAB：线程专用的内存分配区域，可以解决内存分配冲突问题�
 
 ### 优化案例
 
-#### 1.调整堆大小提高服务的吞吐量
+#### 1.合理配置堆内存
+
+依据的原则是根据Java Performance里面的推荐公式来进行设置。
+
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240804205727545.png)
+
+- Java整个堆大小设置，Xmx 和 Xms设置为老年代存活对象的3-4倍，即FullGC之后的老年代内存占用的3-4倍。
+- 方法区（永久代 PermSize和MaxPermSize 或 元空间 MetaspaceSize 和 MaxMetaspaceSize）设置为老年代存活对象的1.2-1.5倍。
+- 年轻代Xmn的设置为老年代存活对象的1-1.5倍。
+- 老年代的内存大小设置为老年代存活对象的2-3倍。
+
+老年代存活对象计算方式：
+
+1. 查看日志
+2. 强制触发FullGC
+
+   - jmap -dump:live,format=b,file=heap.bin \<pid\> 将当前的存活对象dump到文件，此时会触发FullGC
+
+   - jmap -histo:live pid 打印每个class的实例数目,内存占用,类全名信息.live子参数加上后,只统计活的对象数量. 此时会触发FullGC
+
+   - 在性能测试环境，可以通过Java监控工具来触发FullGC，比如使用VisualVM和JConsole，VisualVM集成了JConsole，VisualVM或者JConsole上面有一个触发GC的按钮。
+
+调整堆大小提高服务的吞吐量，堆空间设置多少合适？
+
+- 最大大小的默认值是物理内存的1/4，初始大小是物理内存的1/64
+- 堆太小，可能会频繁的导致年轻代和老年代的垃圾回收，会产生stw，暂停用户线程
+- 堆内存大肯定是好的，存在风险，假如发生了full gc,它会扫描整个堆空间，暂停用户线程的时间长
 
 #### 2.JIT编译器优化
 
@@ -760,35 +786,35 @@ Point这个聚合量经过逃逸分析后，发现它并没有逃逸，就被替
 
 **结论：Java中的逃逸分析，其实优化的点就在于对栈上分配的对象进行标量替换。**
 
-#### 3.合理配置堆内存
+#### 3.内存溢出排查方案
 
-依据的原则是根据Java Performance里面的推荐公式来进行设置。
+1. 获取堆内存快照dump（dump文件是进程的内存镜像。可以把程序的执行状态通过调试器保存到dump文件中）
 
-![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1704724054137-385b3191-2044-4cd7-9a42-ab37cbcefe0c.png)
+   - 使用jmap命令获取运行中程序的dump文件
 
-- Java整个堆大小设置，Xmx 和 Xms设置为老年代存活对象的3-4倍，即FullGC之后的老年代内存占用的3-4倍。
-- 方法区（永久代 PermSize和MaxPermSize 或 元空间 MetaspaceSize 和 MaxMetaspaceSize）设置为老年代存活对象的1.2-1.5倍。
-- 年轻代Xmn的设置为老年代存活对象的1-1.5倍。
-- 老年代的内存大小设置为老年代存活对象的2-3倍。
+     ```bash
+     jmap -dump:format=b,file=heap.hprof pid
+     ```
 
-老年代存活对象计算方式：
+   - 使用vm参数获取dump文件
 
-1. 查看日志
-2. 强制触发FullGC
+     有的情况是内存溢出之后程序则会直接中断，而jmap只能打印在运行中的程序，所以建议通过参数的方式的生成dump文件
 
-   - jmap -dump:live,format=b,file=heap.bin \<pid\> 将当前的存活对象dump到文件，此时会触发FullGC
+     ```
+     -XX:+HeapDumpOnOutOfMemoryError
+     -XX:HeapDumpPath=/home/app/dumps/ 
+     ```
 
-   - jmap -histo:live pid 打印每个class的实例数目,内存占用,类全名信息.live子参数加上后,只统计活的对象数量. 此时会触发FullGC
+2. VisualVM 去分析dump文件
 
-   - 在性能测试环境，可以通过Java监控工具来触发FullGC，比如使用VisualVM和JConsole，VisualVM集成了JConsole，VisualVM或者JConsole上面有一个触发GC的按钮。
-
+3. 通过查看堆信息的情况，定位内存溢出问题
 
 #### 4.CPU占用率很高的排查方案
 
-1. ps aux | grep java 查看到当前java进程使用cpu、内存、磁盘的情况获取使用量异常的进程
-2. top -Hp 进程pid 检查当前使用异常线程的pid
-3. 把线程pid变为16进制如 31695 - 》 7bcf 然后得到0x7bcf
-4. jstack 进程的pid | grep -A20  0x7bcf  得到相关进程的代码
+1. **ps aux | grep java** 查看到当前java进程使用cpu、内存、磁盘的情况获取使用量异常的进程
+2. **ps H -eo pid,tid,%cpu** 检查当前异常进程的所有线程以及对应cpu的占有率，找到异常的线程tid
+3. 使用linux 命令 **printf "%x\n" tid**，把线程tid变为16进制
+4. **jstack 进程的pid | grep tid(16进制)** 得到相关进程的代码
 
 ### 命令
 
