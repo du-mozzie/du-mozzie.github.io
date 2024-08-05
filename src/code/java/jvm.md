@@ -576,6 +576,10 @@ TLAB：线程专用的内存分配区域，可以解决内存分配冲突问题�
 
 > -XX:InitiatingHeapOccupancyPercent 设置触发并发GC周期的Java堆占用率阈值。超过此值，就触发GC。默认值是45。
 
+一些GC日志打印
+
+> -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintCommandLineFlags -XX:+PrintGCDateStamps -XX:+PrintGCTimeStamps -XX:+PrintHeapAtGC -XX:+PrintTenuringDistribution -XX:+PrintGCApplicationStoppedTime -XX:+PrintReferenceGC
+
 ### 查看运行时 JVM 参数
 
 > -XX:+PrintFlagsInitial 查看初始值
@@ -812,9 +816,16 @@ Point这个聚合量经过逃逸分析后，发现它并没有逃逸，就被替
 #### 4.CPU占用率很高的排查方案
 
 1. **ps aux | grep java** 查看到当前java进程使用cpu、内存、磁盘的情况获取使用量异常的进程
-2. **ps H -eo pid,tid,%cpu** 检查当前异常进程的所有线程以及对应cpu的占有率，找到异常的线程tid
-3. 使用linux 命令 **printf "%x\n" tid**，把线程tid变为16进制
-4. **jstack 进程的pid | grep tid(16进制)** 得到相关进程的代码
+2. **top -Hp  线程pid**  实时查看进程的所有线程运行信息，找到异常的线程id
+3. 使用linux 命令 **printf "%x\n" 线程id**，把线程id变为16进制
+4. **jstack 进程的pid | grep 线程id(16进制)** 得到相关进程的代码
+
+#### 5.频繁 GC
+
+1. 如果经常性的发生提前晋升情况，需要调整新生代大小和Survivor 区大小，或者调整 SurvivorRadio 比例
+2. 调整整个新生代比例，例如 -xmn=2g调整到 -xmn=6g，gc情况会大大改善
+3. 提前晋升会增加 younggc 耗时，因为跨代拷贝是很耗时的。
+4. 注意 Survivor 区幸存对象大小是否过大，这也是影响 younggc 耗时的因素。
 
 ### 命令
 
