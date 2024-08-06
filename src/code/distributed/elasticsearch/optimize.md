@@ -65,7 +65,7 @@ ElasticSearch的一些调优案例汇总
 > 创建索引时设置：
 
 ```json
-PUT /my_index
+PUT /index
 {
   "settings": {
     "index.store.preload": ["nvd", "tim", "doc"]
@@ -78,23 +78,22 @@ PUT /my_index
 1. 关闭索引
 
    ```json
-   POST /your_index/_close
+   POST /index/_close
    ```
 
 2. 添加预加载文件配置
 
    ```json
-   PUT /limited_resources_index/_settings
+   PUT /index/_settings
    {
      "index.store.preload": ["tim"]
    }
-   
    ```
-
+   
 3. 打开索引
 
    ```json
-   POST /your_index/_open
+   POST /index/_open
    ```
 
 **关闭索引时如果正在写入数据会被拒绝写入，需要进行处理**
@@ -105,8 +104,8 @@ PUT /my_index
 
 设置1：高查询频率索引
 
-```
-json复制代码PUT /high_frequency_index/_settings
+```json
+PUT /high_frequency_index/_settings
 {
   "index.store.preload": ["nvd", "tim", "doc", "dim"]
 }
@@ -114,8 +113,8 @@ json复制代码PUT /high_frequency_index/_settings
 
 设置2：部分字段查询索引
 
-```
-json复制代码PUT /partial_field_index/_settings
+```json
+PUT /partial_field_index/_settings
 {
   "index.store.preload": ["nvd", "tim"]
 }
@@ -123,8 +122,8 @@ json复制代码PUT /partial_field_index/_settings
 
 设置3：资源受限环境
 
-```
-json复制代码PUT /limited_resources_index/_settings
+```json
+PUT /limited_resources_index/_settings
 {
   "index.store.preload": ["tim"]
 }
