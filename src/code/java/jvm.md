@@ -806,7 +806,7 @@ Point这个聚合量经过逃逸分析后，发现它并没有逃逸，就被替
 
      ```
      -XX:+HeapDumpOnOutOfMemoryError
-     -XX:HeapDumpPath=/home/app/dumps/y'y
+     -XX:HeapDumpPath=/home/app/dumps/
      ```
 
 2. VisualVM 去分析dump文件
