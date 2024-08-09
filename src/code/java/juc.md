@@ -3803,6 +3803,8 @@ private ThreadLocalMap(ThreadLocalMap parentMap) {
 
 池化技术 (Pool) ：一种编程技巧，核心思想是资源复用，在请求量大时能优化应用性能，降低系统频繁建连的资源开销
 
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240809225651241.png)
+
 ### 阻塞队列
 
 #### 基本介绍
