@@ -17,28 +17,9 @@ article: true
 
 本文介绍一些 ElasticSearch 的基本概念
 
-## 基本结构
+## 主要结构
 
-- 索引（index）：一个 ES 索引包含一个或多个物理分片，它只是这些分片的逻辑命名空间
-- 文档（document）：最基础的可被索引的数据单元，如一个 JSON 串
-- 分片（shards）：一个分片是一个底层的工作单元，它仅保存全部数据中的一部分，它是一个 Lucence 实例 (一个 lucene 索引最大包含 2,147,483,519 (= Integer.MAX_VALUE - 128)个文档数量)
-- 分片备份（replicas）：分片备份，用于保障数据安全与分担检索压力
-
-ES 依赖一个重要的组件 Lucene，关于数据结构的优化通常来说是对 Lucene 的优化，它是集群的一个存储于检索工作单元，结构如下图：
-
-![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1696928010954-4d47c7be-f075-4325-841c-876c743c6591.png)
-
-在 Lucene 中，分为索引(录入)与检索(查询)两部分，索引部分包含分词器、过滤器、字符映射器等，检索部分包含查询解析器等。
-
-一个 Lucene 索引包含多个 segments，一个 segment 包含多个文档，每个文档包含多个字段，每个字段经过分词后形成一个或多个 term。
-
-通过 Luke 工具查看 ES 的 lucene 文件如下，主要增加了\_id 和 _source 字段:
-
-![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1696928475614-f1e24e28-908a-456c-83fe-02e9fcf816d4.png)
-
-## Lucene
-
-### 主要结构
+### Lucene
 
 Lucene 索引文件结构主要如下
 
@@ -52,44 +33,60 @@ Lucene 索引文件结构主要如下
 | Field Data          | .fdt      | 文档值                                                       |
 | Per-Document Values | .dvd .dvm | .dvm 为 DocValues 元信息<br />.dvd 为 DocValue 值（默认情况下 Elasticsearch 开启该功能用于快速排序、聚合操作等） |
 
-1. Inverted Index（倒排索引）：
+#### Inverted Index（倒排索引）
 
-   一段文本进行分词后存储在 **Term dictionary** 按照顺序排列（可以二分查找），**Posting list** 存储对应的文档ID，由于 **Term dictionary** 数据量大所以不适合存储内存中。
+一段文本进行分词后存储在 **Term dictionary** 按照顺序排列（可以二分查找），**Posting list** 存储对应的文档ID，由于 **Term dictionary** 数据量大所以不适合存储内存中。
 
-   | Term dictionary | Posting list |
-   | --------------- | ------------ |
-   | follow          | 1            |
-   | forward         | 2            |
-   | link            | 0、1、2      |
-   | like            | 0            |
+| Term dictionary | Posting list |
+| --------------- | ------------ |
+| follow          | 1            |
+| forward         | 2            |
+| link            | 0、1、2      |
+| like            | 0            |
 
-2. Term Index
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240813215929319.png)
 
-   lucene 中出现了另外一个结构 **Term Index** 这是一个前缀树，通过提取  **Term dictionary** 的前缀减少存储的数据，记录 **Term dictionary** 中的偏移量， **Term Index** 该结构存在内存中。查询的时候先通过 **Term Index** 定位到大概的位置，在去 **Term dictionary** 中遍历，可以提升查找的效率
+#### Term Index
 
-   ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240627175528350.png)
+lucene 中出现了另外一个结构 **Term Index** 这是一个前缀树，通过提取  **Term dictionary** 的前缀减少存储的数据，记录 **Term dictionary** 中的偏移量， **Term Index** 该结构存在内存中。查询的时候先通过 **Term Index** 定位到大概的位置，在去 **Term dictionary** 中遍历，可以提升查找的效率
 
-3. Stored Fields：存储完整的文档内容
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240813211731724.png)
 
-4. Doc Values：按照某个字段排序的文档，功能类似MySQL的索引
+#### Stored Fields
 
-5. Segment：由上面四种结构组成，具备完整搜索功能的最小单元。Segment一旦生成就不能修改，只能进行合并 **Segment Merging**
+存储完整的文档内容
+
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240813212156052.png)
+
+通过 ID 可以从 Stored Fields 取出文档内容
+
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240813212230441.png)
+
+#### Doc Values
+
+按照某个字段排序的文档，功能类似MySQL的索引
+
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240813212643652.png)
+
+1. Segment：由上面四种结构组成，具备完整搜索功能的最小单元。
 
    ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240628003637291.png)
 
-   多个 Segment 就构成了Lucene
+   随着不断地插入数据会出现多个 segment，Segment一旦生成就不能修改，只能进行合并 **Segment Merging**（段合并）
+
+   [segment-merge 官方文档](https://www.elastic.co/guide/en/elasticsearch/guide/current/merge-process.html)
+
+   ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240813214043589.png)
+
+   上面提到的多个 segment，就共同构成了一个**单机文本检索库**，它其实就是非常有名的开源基础搜索库 **lucene**。
 
    ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240628003610415.png)
 
-ES 中一个索引由一个或多个 lucene 索引构成，一个 lucene 索引由一个或多个 segment 构成，其中 segment 是最小的检索域。数据具体被存储到哪个分片上：shard = hash(routing) % number_of_primary_shards
-
-默认情况下 routing 参数是文档 ID (murmurhash3), 可通过 URL 中的 \_routing 参数指定数据分布在同一个分片中，index 和 search 的时候都需要一致才能找到数据，如果能明确根据_routing 进行数据分区，则可减少分片的检索工作，以提高性能。
-
-### 结构示例
+#### 上述结构执行过程
 
 以下是一个插入文档和查询的例子，解释这些结构在背后是如何工作的。
 
-#### 插入文档示例
+##### 插入文档示例
 
 假设我们在 `library` 索引中插入一本书的信息：
 
@@ -112,8 +109,6 @@ POST /library/_doc/1
    - `Frequencies`：记录每个词项在文档中的出现频率。
 4. **存储字段值**：存储字段值用于后续的排序、聚合和返回结果。
 5. **Doc Values**：为 `published_year` 字段存储数值用于快速范围查询和排序。
-
-#### 查询文档示例
 
 ##### 查询所有文档
 
@@ -154,6 +149,91 @@ GET /library/_search
 5. **返回结果**：根据相关性得分排序并返回结果。
 
 通过这些步骤，可以看到 Elasticsearch 如何利用 Term Index、Term Dictionary、Frequencies、Fields、Field Index、Field Data 和 Per-Document Values 来实现高效的文档插入和查询。了解这些底层结构有助于优化索引和查询性能。
+
+### 高性能
+
+将数据分为多个 index，每个 index 可以有多个 shard，每个 shard 是一个独立的 lucene 库，这样可以将读写操作分摊到多个 分片 中去，大大降低了争抢，提升了系统性能。
+
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240813215046363.png)
+
+### 高扩展性
+
+可以通过增加机器来缓解 CPU 过高带来的性能问题，每一个机器就是一个 Node
+
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240813215246525.png)
+
+### 高可用
+
+我们可以给 分片 **多加几个副本**。将 分片 分为 **Primary shard** 和 **Replica shard**，也就是主分片和副本分片 。主分片会将数据同步给副本分片，副本分片**既可以**同时提供读操作，**还能**在主分片挂了的时候，升级成新的主分片让系统保持正常运行，**提高性能**的同时，还保证了系统的**高可用**。这样如果其中一个 Node 挂了，仍然可以对外提供服务。
+
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240813215428287.png)
+
+### Node 角色分化
+
+搜索架构需要支持的功能很多，既要负责**管理集群**，又要**存储管理数据**，还要**处理客户端的搜索请求**。如果每个 Node **都**支持这几类功能，那当集群有数据压力，需要扩容 Node 时，就会**顺带**把其他能力也一起扩容，但其实其他能力完全够用，不需要跟着扩容，这就有些**浪费**了。
+因此我们可以将这几类功能拆开，给集群里的 Node 赋予**角色身份**，不同的角色负责不同的功能。
+比如负责管理集群的，叫**主节点(Master Node)**， 负责存储管理数据的，叫**数据节点(Data Node)**， 负责接受客户端搜索查询请求的叫**协调节点(Coordinate Node)**。
+集群规模小的时候，一个 Node 可以**同时**充当多个角色，随着集群规模变大，可以让一个 Node 一个角色。
+
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240813215501299.png)
+
+### 去中心化
+
+上面提到了主节点，那就意味着还有个**选主**的过程，但现在每个 Node 都是独立的，需要有个机制协调 Node 间的数据。
+我们很容易想到，可以像 `kafka` 那样引入一个中心节点 `Zookeeper`，但如果不想引入新节点，还有其他更轻量的方案吗？
+有，**去中心化**。
+我们可以在 Node 间引入协调模块，用**类似一致性算法 Raft** 的方式，在节点间互相同步数据，让所有 Node 看到的集群数据状态都是一致的。这样，集群内的 Node 就能参与选主过程，还能了解到集群内某个 Node 是不是挂了等信息。
+
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240813215537861.png)
+
+到这里，当初那个简陋的 lucene，就成了一个高性能，高扩展性，高可用，支持持久化的分布式搜索引擎，它就是我们常说的 elastic search，简称 ES。它对外提供 http 接口，任何语言的客户端都可以通过 HTTP 接口接入 es，实现对数据的增删改查。
+从架构角度来看，es 给了一套方案，告诉我们如何让一个单机系统 lucene 变成一个分布式系统。
+
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240813215630368.png)
+
+按这个思路，是不是也可以将 lucene 改成其他单机系统，比如 mysql 数据库，或者专门做向量检索的单机引擎 faiss？
+那以后再来个 elastic mysql 或者 elastic faiss 是不是就不那么意外了，大厂内卷晋升或者下一个明星开源大项目的小提示就给到这里了。
+
+### ES 的写入流程
+
+- 当**客户端应用**发起数据**写入**请求，请求会先发到集群中**协调节点**。
+- 协调节点根据 hash 路由，判断数据该写入到哪个**数据节点**里的哪个**分片**(Shard)，找到**主分片**并写入。分片底层是 **lucene**，所以最终是将数据写入到 lucene 库里的 **segment** 内，将数据固化为**倒排索引**和 **Stored Fields** 以及 **Doc Values** 等多种结构。
+- 主分片 写入成功后会将数据同步给 **副本分片**。
+- 副本分片 写入完成后，**主分片**会响应协调节点一个 ACK，意思是写入完成。
+- 最后，**协调节点**响应**客户端应用**写入完成。
+
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240813220225940.png)
+
+### ES 的搜索流程
+
+ES 的搜索流程分为两个阶段：分别是**查询阶段（Query Phase）**和 **获取阶段（Fetch Phase）**
+我们分别看下。
+
+#### 查询阶段
+
+- 当**客户端应用**发起**搜索**请求，请求会先发到集群中的**协调节点**。
+- 协调节点根据 **index name** 的信息，可以了解到 index name 被分为了几个 **分片**，以及这些分片 分散哪个**数据节点**上，将请求转发到这些数据节点的 分片 上面。
+- 搜索请求到达分片后，分片 底层的 lucene 库会**并发**搜索多个 **segment**，利用每个 segment 内部的**倒排索引**获取到对应**文档 id**，并结合 **doc values** 获得**排序信息**。分片将结果聚合返回给**协调节点**。
+- **协调节点**对多个分片中拿到的数据进行**一次排序聚合**，**舍弃**大部分不需要的数据。
+
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240813220427724.png)
+
+#### 获取阶段
+
+- **协调节点**再次拿着**文档 id** 请求**数据节点**里的 **分片**，分片 底层的 lucene 库会从 segment 内的 **Stored Fields** 中取出**完整文档内容**，并返回给协调节点。
+- **协调节点**最终将数据结果返回给**客户端**。完成整个搜索过程。
+
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240813220500438.png)
+
+### 总结
+
+- lucene 是 es 底层的单机文本检索库，它由多个 segment 组成，每个 segment 其实是由倒排索引、Term Index、Stored Fields 和 Doc Values 组成的具备完整搜索功能的最小单元。
+- 将数据分类，存储在 es 内不同的 Index Name 中。
+- 为了防止 Index Name 内数据过多，引入了 Shard 的概念对数据进行分片。提升了性能。
+- 将多个 shard 分布在多个 Node 上，根据需要对 Node 进行扩容，提升扩展性。
+- 将 shard 分为主分片和副本分片，主分片挂了之后由副本分片顶上，提升系统的可用性。
+- 对 Node 进行角色分化，提高系统的性能和资源利用率，同时简化扩展和维护。
+- es 和 kafka 的架构非常像，可以类比学习。
 
 ## 基本数据类型
 
