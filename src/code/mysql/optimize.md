@@ -97,7 +97,7 @@ EXPLAIN SELECT * FROM student
 
 MySQL会给你反馈下面一个信息：
 
-```brainfuck
+```sql
     id  select_type  table    partitions  type    possible_keys  key       key_len  ref       rows  filtered  Extra        
 ------  -----------  -------  ----------  ------  -------------  --------  -------  ------  ------  --------  -------------
      1  SIMPLE       student  (NULL)      index   (NULL)         name_age  68       (NULL)      30    100.00  Using index  
@@ -140,7 +140,7 @@ JOIN student S ON S.id = SC.sid
 
 结果是这样：
 
-```pgsql
+```sql
     id  select_type  table   partitions  type    possible_keys        key      key_len  ref      
 ------  -----------  ------  ----------  ------  -------------------  -------  -------  ----------- 
      1  SIMPLE       SC      (NULL)      index   PRIMARY              PRIMARY  8        (NULL)     
@@ -171,7 +171,7 @@ WHERE C.`id` = (
 
 这条语句是查询结果是：一个叫安其拉的学生选的课里面，课程`id`最小的一门课的信息，然后来看一下`explain`的结果吧！
 
-```pgsql
+```sql
     id  select_type  table   partitions  type    possible_keys  key      key_len  ref    
 ------  -----------  ------  ----------  ------  -------------  -------  -------  ------  
      1  PRIMARY      C       (NULL)      const   PRIMARY        PRIMARY  4        const   
@@ -204,7 +204,7 @@ WHERE C.`id` IN (
 
 这个查询是：查询安其拉选课的课程信息
 
-```pgsql
+```sql
     id  select_type  table   partitions  type    possible_keys  key      key_len  ref           
 ------  -----------  ------  ----------  ------  -------------  -------  -------  ----------- 
      1  PRIMARY      SC      (NULL)      ref     PRIMARY        PRIMARY  4        const       
@@ -223,7 +223,7 @@ WHERE C.`id` IN (
   SELECT * FROM student JOIN stu_course ON student.`id` = sid
   ```
 
-  ```pgsql
+  ```sql
       id  select_type  table       partitions  type    possible_keys        key      
   ------  -----------  ----------  ----------  ------  -------------------  --------  
        1  SIMPLE       student     (NULL)      index   PRIMARY,id_name_age  name_age  
@@ -247,7 +247,7 @@ WHERE C.`id` IN (
   )
   ```
 
-  ```pgsql
+  ```sql
       id  select_type  table   partitions  type    possible_keys  key      key_len  ref      
   ------  -----------  ------  ----------  ------  -------------  -------  -------  ------ 
        1  PRIMARY      SC      (NULL)      ref     PRIMARY        PRIMARY  4        const  
@@ -298,15 +298,15 @@ WHERE C.`id` IN (
   ) AS SSC
   ```
 
-  ```pgsql
+  ```sql
       id  select_type  table       partitions  type    possible_keys        key       
   ------  -----------  ----------  ----------  ------  -------------------  -------- 
-       1  PRIMARY      <derived2>  (NULL)      ALL     (NULL)               (NULL)    
+       1  PRIMARY      \<derived2\>  (NULL)      ALL     (NULL)               (NULL)    
        2  DERIVED      S           (NULL)      index   PRIMARY,id_name_age  name_age 
        2  DERIVED      SC          (NULL)      ref     PRIMARY              PRIMARY  
   ```
 
-  上面我们观察，最外层的主查询的表是<derived2>,而S和SC表的`select_type`都是`DERIVED`,这说明S和SC都被用来做衍生查询，而这两张表查询的结果组成了名为<derived2>的衍生表，而衍生表的命名就是`<select_type + id>`。
+  上面我们观察，最外层的主查询的表是\<derived2\>,而S和SC表的`select_type`都是`DERIVED`,这说明S和SC都被用来做衍生查询，而这两张表查询的结果组成了名为\<derived2\>的衍生表，而衍生表的命名就是`<select_type + id>`。
 
 #### partitions字段
 
