@@ -40,17 +40,17 @@ ElasticSearch的一些调优案例汇总
 
 [ES详解 - 优化：ElasticSearch性能优化详解](https://www.pdai.tech/md/db/nosql-es/elasticsearch-y-peformance.html)
 
-[**elasticsearch三个重要的优化**](https://zhaoyanblog.com/archives/319.html)
+[elasticsearch三个重要的优化](https://zhaoyanblog.com/archives/319.html)
 
-[**Elasticsearch重要文章之五：预加载fielddata**](https://zhaoyanblog.com/archives/764.html)
+[Elasticsearch重要文章之五：预加载fielddata](https://zhaoyanblog.com/archives/764.html)
 
-[**万字长文：可能是最全面的 Elasticsearch 性能调优指南**](https://www.modb.pro/db/582082)
+[万字长文：可能是最全面的 Elasticsearch 性能调优指南](https://www.modb.pro/db/582082)
 
-[**【腾讯云ES】让你的ES查询性能起飞：Elasticsearch 查询优化攻略“一网打尽”**](https://cloud.tencent.com/developer/article/2175753)
+[【腾讯云ES】让你的ES查询性能起飞：Elasticsearch 查询优化攻略“一网打尽”](https://cloud.tencent.com/developer/article/2175753)
 
-[**博客【ES高手之路】**](https://xiaoxiami.gitbook.io/elasticsearch/)
+[博客【ES高手之路】](https://xiaoxiami.gitbook.io/elasticsearch/)
 
-[**写入调优**](https://www.modb.pro/db/541037)
+[ElasticSearch 写入调优](https://www.modb.pro/db/541037)
 
 ### 预加载
 
