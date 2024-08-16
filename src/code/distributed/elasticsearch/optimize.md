@@ -38,6 +38,8 @@ ElasticSearch的一些调优案例汇总
 
 **文档：**
 
+[ES详解 - 优化：ElasticSearch性能优化详解](https://www.pdai.tech/md/db/nosql-es/elasticsearch-y-peformance.html)
+
 [**elasticsearch三个重要的优化**](https://zhaoyanblog.com/archives/319.html)
 
 [**Elasticsearch重要文章之五：预加载fielddata**](https://zhaoyanblog.com/archives/764.html)
