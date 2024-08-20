@@ -234,6 +234,7 @@ ES 的搜索流程分为两个阶段：分别是**查询阶段（Query Phase）*
 - 将 shard 分为主分片和副本分片，主分片挂了之后由副本分片顶上，提升系统的可用性。
 - 对 Node 进行角色分化，提高系统的性能和资源利用率，同时简化扩展和维护。
 - es 和 kafka 的架构非常像，可以类比学习。
+- shard = hash(routing) % number_of_primary_shards，计算文档在哪个分片，routing 默认值是文档的 id，也可以采用自定义值，比如用户 ID
 
 ## 基本数据类型
 
