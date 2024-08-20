@@ -177,6 +177,12 @@ GET /library/_search
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240813215501299.png)
 
+
+
+- node.master:false和node.data:true，该node服务器只作为一个数据节点，只用于存储索引数据，使该node服务器功能单一，只用于数据存储和数据查询，降低其资源消耗率。
+- node.master:true和node.data:false，该node服务器只作为一个主节点，但不存储任何索引数据，该node服务器将使用自身空闲的资源，来协调各种创建索引请求或者查询请求，并将这些请求合理分发到相关的node服务器上。
+- node.master:false和node.data:false，该node服务器即不会被选作主节点，也不会存储任何索引数据，只作为一个协调节点。该服务器主要用于查询负载均衡。在查询的时候，通常会涉及到从多个node服务器上查询数据，并将请求分发到多个指定的node服务器，并对各个node服务器返回的结果进行一个汇总处理，最终返回给客户端
+
 ### 去中心化
 
 上面提到了主节点，那就意味着还有个**选主**的过程，但现在每个 Node 都是独立的，需要有个机制协调 Node 间的数据。
