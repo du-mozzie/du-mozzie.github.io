@@ -69,6 +69,9 @@ bootstrap.memory_lock: true
 # 进制swap需要修改linux配置/etc/security/limits.conf文件
 # es启动用户名 soft memlock unlimited
 # es启动用户名 hard memlock unlimited
+
+# 禁止自动创建索引
+action.auto_create_index: false
 ```
 
 默认安装的是一主分片、一副本分片

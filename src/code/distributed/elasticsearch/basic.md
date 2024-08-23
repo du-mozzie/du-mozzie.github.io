@@ -471,3 +471,38 @@ Mapping 类似于数据库中的表结构定义schema，它的主要作用是：
    - THU Lexucal Analyzer for Chinese, 清华大学自然语言处理和社会人文计算实验室的一套中文分词器
 
    - https://github.com/thunlp/THULAC-Java
+
+## 个人实践配置
+
+### 禁用自动创建索引
+
+```json
+PUT /_cluster/settings
+{
+  "persistent": {
+    "action.auto_create_index": "false"
+  }
+}
+```
+
+### 创建索引模板
+
+```json
+{
+  "settings": {
+    "number_of_shards": "3", // 数据分片数量
+    "number_of_replicas": "0", // 副本
+  	"index": {
+      "sort.field": "time", // 字段自定义
+      "sort.order": "desc" // 排序策略
+    }
+  },
+  "mappings": {
+  	"dynamic": false,
+    "properties": {
+ 			
+    	}
+    }
+}
+```
+
