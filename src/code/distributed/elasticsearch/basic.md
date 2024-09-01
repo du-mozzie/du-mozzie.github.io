@@ -491,7 +491,7 @@ PUT /_cluster/settings
 {
   "settings": {
     "number_of_shards": "3", // 数据分片数量
-    "number_of_replicas": "0", // 副本
+    "number_of_replicas": "0", // 副本分片
   	"index": {
       "sort.field": "time", // 字段自定义
       "sort.order": "desc" // 排序策略

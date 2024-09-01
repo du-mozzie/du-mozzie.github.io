@@ -46,11 +46,17 @@ ElasticSearch的一些调优案例汇总
 
 [万字长文：可能是最全面的 Elasticsearch 性能调优指南](https://www.modb.pro/db/582082)
 
-[【腾讯云ES】让你的ES查询性能起飞：Elasticsearch 查询优化攻略“一网打尽”](https://cloud.tencent.com/developer/article/2175753)
+[腾讯云ES：让你的ES查询性能起飞：Elasticsearch 查询优化攻略“一网打尽”](https://cloud.tencent.com/developer/article/2175753)
+
+[腾讯：腾讯万亿级 Elasticsearch 技术实践](https://www.pdai.tech/md/db/nosql-es/elasticsearch-z-tencent.html)
 
 [博客【ES高手之路】](https://xiaoxiami.gitbook.io/elasticsearch/)
 
 [ElasticSearch 写入调优](https://www.modb.pro/db/541037)
+
+[哈啰技术：记录一次ElasticSearch的查询性能优化](https://mp.weixin.qq.com/s?__biz=MzI3OTE3ODk4MQ==&mid=2247486047&idx=1&sn=b3ab21da891df124c03e628eb3851b4c&chksm=eb4af1d5dc3d78c3be8995c0e16674f47598f907185dac03919f0c4d0a26ea4a71a0543390bf&cur_album_id=2167592080448028675&scene=190#rd)
+
+[美团外卖搜索基于Elasticsearch的优化实践](https://tech.meituan.com/2022/11/17/elasicsearch-optimization-practice-based-on-run-length-encoding.html)
 
 ### 预加载
 
