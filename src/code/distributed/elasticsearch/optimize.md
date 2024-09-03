@@ -58,6 +58,8 @@ ElasticSearch的一些调优案例汇总
 
 [美团外卖搜索基于Elasticsearch的优化实践](https://tech.meituan.com/2022/11/17/elasicsearch-optimization-practice-based-on-run-length-encoding.html)
 
+[es在数据量很大的情况下（数十亿级别）如何提高查询效率](https://blog.csdn.net/cuiwjava/article/details/104341713/)
+
 ### 预加载
 
 设置 **index.store.preload** ，用于预加载索引数据到文件系统缓存中。通过预加载索引数据，可以提高搜索性能，尤其是在首次查询时。
