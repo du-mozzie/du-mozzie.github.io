@@ -30,7 +30,7 @@ export default defineUserConfig({
       "script",
       {
         // 百度统计
-        src: "//hm.baidu.com/hm.js?85e80625eddf91d81d9535565850722b",
+        src: "//hm.baidu.com/hm.js?062f74a68f105c60f10f2a0fc9cc9803",
       },
     ],
     [
