@@ -31,6 +31,10 @@ MySQL事务是为确保数据一致性而将多条SQL操作封装成的逻辑工
 6. **磁盘写入**：提交事务后，InnoDB会将Buffer Pool中的脏页异步写入磁盘，这个过程由后台线程控制，可能会有延迟。
 7. **Binlog记录**：在事务提交过程中，InnoDB会将事务信息记录到Binlog中，这是MySQL实现主从复制的关键机制。Binlog记录了事务的详细信息，如时间、数据库名、表名、事务ID和SQL语句等。
 
+在binlog和redolog的写入过程中，分成了2阶段的，通过2阶段提交的方式来保证一致性的。
+
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240918211556431.png)
+
 ## MySQL中的事务
 
   在默认情况下，MySQL每执行一条SQL语句，都是一个单独的事务。如果需要在一个事务中包含多条SQL语句，那么需要开启事务和结束事务。
