@@ -21,6 +21,16 @@ MySQL事务是为确保数据一致性而将多条SQL操作封装成的逻辑工
 -   **隔离性（Isolation）：**事务独立运行。一个事务处理后的结果，影响了其他事务，那么其他事务会撤回。事务的100%隔离，需要牺牲速度。
 -   **持久性（Durability）：**软、硬件崩溃后，InnoDB数据表驱动会利用日志文件重构修改。可靠性和高速度不可兼得， innodb_flush_log_at_trx_commit 选项 决定什么时候吧事务保存到日志里。
 
+> InnoDB存储引擎在MySQL数据库中执行一次update操作的完整过程，以及涉及到的关键组件和步骤。
+
+1. **Buffer Pool读取**：InnoDB首先在Buffer Pool中查找需要更新的记录。如果记录不在内存中，它会从物理磁盘读取到Buffer Pool。
+2. **UndoLog记录**：在实际修改数据之前，InnoDB会记录Undo Log，这是一种用于保证事务原子性和一致性的机制。Undo Log最初写入内存，然后由后台线程定期刷新到磁盘。
+3. **Buffer Pool更新**：执行update操作时，InnoDB会在Buffer Pool中更新数据，并将修改后的数据页标记为“脏页”，表示需要写入磁盘。
+4. **RedoLog Buffer记录**：同时，InnoDB会将修改操作记录到Redo Log Buffer中。
+5. **事务提交**：所有修改操作完成后，事务被提交。此时，Redo Log会被写入磁盘，确保事务的持久性。
+6. **磁盘写入**：提交事务后，InnoDB会将Buffer Pool中的脏页异步写入磁盘，这个过程由后台线程控制，可能会有延迟。
+7. **Binlog记录**：在事务提交过程中，InnoDB会将事务信息记录到Binlog中，这是MySQL实现主从复制的关键机制。Binlog记录了事务的详细信息，如时间、数据库名、表名、事务ID和SQL语句等。
+
 ## MySQL中的事务
 
   在默认情况下，MySQL每执行一条SQL语句，都是一个单独的事务。如果需要在一个事务中包含多条SQL语句，那么需要开启事务和结束事务。
