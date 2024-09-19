@@ -743,6 +743,8 @@ TLAB：线程专用的内存分配区域，可以解决内存分配冲突问题�
 - 堆太小，可能会频繁的导致年轻代和老年代的垃圾回收，会产生stw，暂停用户线程
 - 堆内存大肯定是好的，存在风险，假如发生了full gc,它会扫描整个堆空间，暂停用户线程的时间长
 
+
+
 #### 2.JIT编译器优化
 
 1. 逃逸分析：如果一个引用的对象的使用是否只会在一个方法中，如果在其他方法还会使用，说明该对象发生逃逸；如果一个对象没有发生逃逸（作用域只在一个方法中），JIT编译器根据逃逸分析的结构，可能将该对象优化成**栈上分配**，分配完成后，继续在调用栈内执行，最后线程结束，栈空间被回收，局部变量对象也被回收。这样就无须进行垃圾回收了。
@@ -805,6 +807,8 @@ Point这个聚合量经过逃逸分析后，发现它并没有逃逸，就被替
 
 **结论：Java中的逃逸分析，其实优化的点就在于对栈上分配的对象进行标量替换。**
 
+
+
 #### 3.内存溢出排查方案
 
 1. 获取堆内存快照dump（dump文件是进程的内存镜像。可以把程序的执行状态通过调试器保存到dump文件中）
@@ -821,12 +825,56 @@ Point这个聚合量经过逃逸分析后，发现它并没有逃逸，就被替
 
      ```
      -XX:+HeapDumpOnOutOfMemoryError
-     -XX:HeapDumpPath=/home/app/dumps/
+     -XX:HeapDumpPath=/home/app/dumps/heapdump.hprof
      ```
 
 2. VisualVM 去分析dump文件
 
 3. 通过查看堆信息的情况，定位内存溢出问题
+
+> 如果定位不到问题，可以在记录一下GC日志
+
+1. **输出 GC 日志**
+
+为了监控 GC 活动，可以通过以下参数输出 GC 日志：
+
+```bash
+-XX:+PrintGCDetails
+-XX:+PrintGCDateStamps
+-XX:+PrintTenuringDistribution
+-Xloggc:/path/to/gc.log
+```
+
+- -XX:+PrintGCDetails：输出详细的 GC 日志信息。
+- -XX:+PrintGCDateStamps：在 GC 日志中附加时间戳。
+- -XX:+PrintTenuringDistribution：输出对象晋升年龄分布信息。
+- -Xloggc：指定 GC 日志文件的存放路径。
+
+2. **配置 GC 日志滚动**
+
+​	为了避免 GC 日志过大，你可以配置日志滚动：
+
+```bash
+-XX:+UseGCLogFileRotation
+-XX:NumberOfGCLogFiles=10
+-XX:GCLogFileSize=100M
+```
+
+- -XX:+UseGCLogFileRotation：启用 GC 日志滚动。
+- -XX:NumberOfGCLogFiles=10：设置保留的日志文件个数。
+- -XX:GCLogFileSize=100M：设置单个 GC 日志文件的大小。
+
+3. **配置崩溃日志**
+
+如果 JVM 崩溃了，你可以启用错误日志：
+
+```bash
+-XX:ErrorFile=/path/to/hs_err_pid%p.log
+```
+
+- -XX:ErrorFile：指定 JVM 崩溃日志的保存路径，%p 表示进程 ID。
+
+
 
 #### 4.CPU占用率很高的排查方案
 
@@ -834,6 +882,8 @@ Point这个聚合量经过逃逸分析后，发现它并没有逃逸，就被替
 2. **top -Hp  线程pid**  实时查看进程的所有线程运行信息，找到异常的线程id
 3. 使用linux 命令 **printf "%x\n" 线程id**，把线程id变为16进制
 4. **jstack 进程的pid | grep 线程id(16进制)** 得到相关进程的代码
+
+
 
 #### 5.频繁 GC
 
