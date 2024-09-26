@@ -500,7 +500,10 @@ PUT /_cluster/settings
   "mappings": {
   	"dynamic": false,
     "properties": {
- 			
+ 			"filed" : {
+                "type" : "xxxx",
+                "doc_values" : true // 设置doc_values
+            }
     	}
     }
 }
