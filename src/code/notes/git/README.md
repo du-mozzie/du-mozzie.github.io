@@ -1,6 +1,6 @@
 ---
 index: false
-title: 常见问题
+title: Git的一些问题
 article: false
 ---
 
