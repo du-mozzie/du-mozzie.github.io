@@ -799,7 +799,10 @@ Monitor 被翻译为监视器或管程
 
 每个 Java 对象都可以关联一个 Monitor 对象，Monitor 也是 class，其**实例存储在堆中**，如果使用 synchronized 给对象上锁（重量级）之后，该对象头的 Mark Word 中就被设置指向 Monitor 对象的指针，这就是重量级锁
 
+  [结构参考](https://gist.github.com/arturmkrtchyan/43d6135e8a15798cc46c)
+
 -  Mark Word 结构：最后两位是**锁标志位**
+
   ![](https://seazean.oss-cn-beijing.aliyuncs.com/img/Java/JUC-Monitor-MarkWord结构32位.png)
 -  64 位虚拟机 Mark Word：
   ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/JUC-Monitor-MarkWord%E7%BB%93%E6%9E%8464%E4%BD%8D.png)
