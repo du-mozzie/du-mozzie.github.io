@@ -873,6 +873,10 @@ LocalVariableTable:
 
 #### 锁升级
 
+关于 synchronized 锁🔒升级有一张非常完整的图，可以参考：
+
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/interview-15-07.png)
+
 ##### 升级过程
 
 **synchronized 是可重入、不公平的重量级锁**，所以可以对其进行优化
