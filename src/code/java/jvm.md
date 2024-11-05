@@ -911,7 +911,7 @@ Point这个聚合量经过逃逸分析后，发现它并没有逃逸，就被替
 
 [官方文档](https://docs.oracle.com/javase/8/docs/technotes/tools/windows/toc.html)
 
-1. [**jps**](https://docs.oracle.com/javase/8/docs/technotes/tools/windows/jps.html#CHDCGECD)
+#### [jps 虚拟机进程状况](https://docs.oracle.com/javase/8/docs/technotes/tools/windows/jps.html#CHDCGECD) 
 
 > jps，查看正在运行的Java进程
 
@@ -919,19 +919,19 @@ Point这个聚合量经过逃逸分析后，发现它并没有逃逸，就被替
 
 
 
-2. [**jstat**](https://docs.oracle.com/javase/8/docs/technotes/tools/windows/jstat.html#BEHHGFAE)
+#### [jstat 收集虚拟机运行数据](https://docs.oracle.com/javase/8/docs/technotes/tools/windows/jstat.html#BEHHGFAE)
 
 >  jstat -gc 进程号 打印周期(ms) 打印次数，查看JVM统计信息
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1705372236245-d42c4444-ba3e-4bc8-a289-b5a2e355e3aa.png)
 
-3. [**jinfo**](https://docs.oracle.com/javase/8/docs/technotes/tools/windows/jinfo.html#BCGEBFDD)
+#### [jinfo Java配置信息工具](https://docs.oracle.com/javase/8/docs/technotes/tools/windows/jinfo.html#BCGEBFDD)
 
 >  jinfo -flag 相关垃圾回收器参数 进程ID，实时查看和修改JVM配置参数（+表示在使用，-未使用）
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1704207097037-e17da0c3-19d8-44ac-92d5-9bd79029650a.png)
 
-4. [**jmap**](https://docs.oracle.com/javase/8/docs/technotes/tools/windows/jmap.html#CEGCECJB)
+#### [jmap 内存映射工具](https://docs.oracle.com/javase/8/docs/technotes/tools/windows/jmap.html#CEGCECJB)
 
 > jmap -dump:live,format=b,file=heapdump.hprof \<pid>，生成堆转储文件，包含 JVM 内存中的所有对象及其详细信息（信息最完整，通常配合 Eclipse MAT 或 VisualVM 进行分析）
 
@@ -947,25 +947,68 @@ Point这个聚合量经过逃逸分析后，发现它并没有逃逸，就被替
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240701110942786.png)
 
-5. [**jhat**](https://docs.oracle.com/javase/8/docs/technotes/tools/windows/jhat.html#CIHHJAGE)
+#### [jhat 堆转储快照分析工具](https://docs.oracle.com/javase/8/docs/technotes/tools/windows/jhat.html#CIHHJAGE)
 
-JDK自带堆分析工具
+jhat（JVM Heap Analysis Tool），与jmap配合使用，用于分析jmap生成的堆转储快照。
 
-6. [**jstack**](https://docs.oracle.com/javase/8/docs/technotes/tools/windows/jstack.html#BABGJDIF)
+jhat内置了一个小型的http/web服务器，可以把堆转储快照分析的结果，展示在浏览器中查看。不过用途不大，基本大家都会使用其他第三方工具。
+
+**命令格式**
+
+```
+jhat [-stack <bool>] [-refs <bool>] [-port <port>] [-baseline <file>] [-debug <int>] [-version] [-h|-help] <file>
+```
+
+**命令使用**
+
+```java
+E:\Code\myself\interview>jhat -port 8090 E:\Code\myself\interview\interview-26\heap.bin
+Reading from E:\Code\myself\interview\interview-26\heap.bin...
+Dump file created Wed Jan 13 16:53:47 CST 2021
+Snapshot read, resolving...
+Resolving 246455 objects...
+Chasing references, expect 49 dots.................................................
+Eliminating duplicate references.................................................
+Snapshot resolved.
+Started HTTP server on port 8090
+Server is ready.
+```
+
+http://localhost:8090/
+
+![image-20241105201150848](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20241105201150848.png)
+
+#### [jstack Java堆栈跟踪工具](https://docs.oracle.com/javase/8/docs/technotes/tools/windows/jstack.html#BABGJDIF)
 
 > jstack 进程ID，打印JVM中线程快照
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1705372426504-0d317319-6105-44e9-8937-3c55fb075b3d.png)
 
-7. [**jcmd**](https://docs.oracle.com/javase/8/docs/technotes/tools/windows/jcmd.html#CIHEEDIB)
+#### [jcmd 虚拟机诊断命令](https://docs.oracle.com/javase/8/docs/technotes/tools/windows/jcmd.html#CIHEEDIB)
 
 多功能命令行
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1705372447216-f8284e21-6894-4d29-afa1-dbb91b3ece46.png)
 
-8. [**jstatd**](https://docs.oracle.com/javase/8/docs/technotes/tools/windows/jstatd.html#BABEHFHF)
+#### [jstatd 远程主机信息收集](https://docs.oracle.com/javase/8/docs/technotes/tools/windows/jstatd.html#BABEHFHF)
 
-远程主机信息收集
+jstatd，即虚拟机的jstat守护进程，主要用于监控JVM的创建与终止，并提供一个接口允许远程监控工具依附到在本地主机上运行的JVM。
+
+**用法**
+
+```
+jstatd [ options ]
+```
+
+- options
+
+  命令行选项。这些选项可以是任意顺序。如果存在多余的或者自相矛盾的选项，则优先考虑最后的选项。
+
+**描述**
+
+jstatd工具是一个RMI服务器应用程序，主要用于监控HotSpot Java 虚拟机的创建与终止，并提供一个接口以允许远程监控工具附加到本地主机上运行的JVM上。
+
+jstatd服务器需要在本地主机上存在一个RMI注册表。jstatd服务器将尝试在默认端口或-p port选项指定的端口附加到该RMI注册表上。如果RMI注册表不存在，jstatd应用程序将会自动创建一个，并绑定到-p port选项指定的端口上，如果省略了-p port选项，则绑定到默认的RMI注册表端口。你可以通过指定-nr选项来抑制内部RMI注册表的创建。
 
 ### 工具
 
