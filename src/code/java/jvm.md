@@ -687,7 +687,7 @@ TLAB：线程专用的内存分配区域，可以解决内存分配冲突问题�
 
 3. 性能分析
 
-   - 打印GC日志，通过GCviewer或者[gceasy](https://gceasy.ycrash.cn/)来分析日志信息
+   - 打印GC日志，通过[GCviewer](https://github.com/chewiebug/GCViewer)或者[gceasy](https://gceasy.io/)来分析日志信息
 
    - 命令行工具，jstack，jmap，jinfo等
 
