@@ -976,7 +976,7 @@ Server is ready.
 
 http://localhost:8090/
 
-![image-20241105201150848](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20241105201150848.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20241105201150848.png)
 
 #### [jstack Java堆栈跟踪工具](https://docs.oracle.com/javase/8/docs/technotes/tools/windows/jstack.html#BABGJDIF)
 
