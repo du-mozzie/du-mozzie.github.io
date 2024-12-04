@@ -925,25 +925,25 @@ Point这个聚合量经过逃逸分析后，发现它并没有逃逸，就被替
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1705372236245-d42c4444-ba3e-4bc8-a289-b5a2e355e3aa.png)
 
-| 指标 | 描述                                                         |
-| ---- | ------------------------------------------------------------ |
-| S0C  | S0 区的大小 (Young Generation 中的 Survivor Space 0)         |
-| S1C  | S1 区的大小 (Young Generation 中的 Survivor Space 1)         |
-| S0U  | S0 区已用空间 (Young Generation 中的 Survivor Space 0 已用空间) |
-| S1U  | S1 区已用空间 (Young Generation 中的 Survivor Space 1 已用空间) |
-| EC   | Eden 区的大小 (Young Generation 中的 Eden Space)             |
-| EU   | Eden 区已用空间 (Young Generation 中的 Eden Space 已用空间)  |
-| OC   | Old 区的大小 (Old Generation 中的空间)                       |
-| OU   | Old 区已用空间 (Old Generation 中的已用空间)                 |
-| MC   | Metaspace 区的大小 (Metaspace 区的空间大小)                  |
-| MU   | Metaspace 区已用空间 (Metaspace 区的已用空间)                |
-| CCSC | Compressed Class Space 的大小                                |
-| CCSU | Compressed Class Space 的已用空间                            |
-| YGC  | Young GC (年轻代垃圾回收) 的次数                             |
-| YGCT | 执行 Young GC 所用的时间 (单位：秒)                          |
-| FGC  | Full GC (完整垃圾回收) 的次数                                |
-| FGCT | 执行 Full GC 所用的时间 (单位：秒)                           |
-| GCT  | 总的垃圾回收时间 (单位：秒)                                  |
+| 指标 | 描述                                                         | 单位 |
+| ---- | ------------------------------------------------------------ | ---- |
+| S0C  | S0 区的大小 (Young Generation 中的 Survivor Space 0)         | KB   |
+| S1C  | S1 区的大小 (Young Generation 中的 Survivor Space 1)         | KB   |
+| S0U  | S0 区已用空间 (Young Generation 中的 Survivor Space 0 已用空间) | KB   |
+| S1U  | S1 区已用空间 (Young Generation 中的 Survivor Space 1 已用空间) | KB   |
+| EC   | Eden 区的大小 (Young Generation 中的 Eden Space)             | KB   |
+| EU   | Eden 区已用空间 (Young Generation 中的 Eden Space 已用空间)  | KB   |
+| OC   | Old 区的大小 (Old Generation 中的空间)                       | KB   |
+| OU   | Old 区已用空间 (Old Generation 中的已用空间)                 | KB   |
+| MC   | Metaspace 区的大小 (Metaspace 区的空间大小)                  | KB   |
+| MU   | Metaspace 区已用空间 (Metaspace 区的已用空间)                | KB   |
+| CCSC | Compressed Class Space 的大小                                | KB   |
+| CCSU | Compressed Class Space 的已用空间                            | KB   |
+| YGC  | Young GC (年轻代垃圾回收) 的次数                             | 次   |
+| YGCT | 执行 Young GC 所用的时间                                     | 秒   |
+| FGC  | Full GC (完整垃圾回收) 的次数                                | 次   |
+| FGCT | 执行 Full GC 所用的时间                                      | 秒   |
+| GCT  | 总的垃圾回收时间                                             | 秒   |
 
 #### [jinfo Java配置信息工具](https://docs.oracle.com/javase/8/docs/technotes/tools/windows/jinfo.html#BCGEBFDD)
 
