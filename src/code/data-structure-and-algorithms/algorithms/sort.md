@@ -91,17 +91,17 @@ private static void selectionSort(int[] arr){
 private static void insertionSort(int[] arr) {
     // 从数组的第二个元素开始遍历
     for (int i = 1; i < arr.length; i++) {
-        int key = arr[i];  // 当前元素
+        int curr = arr[i];  // 当前元素
         int j = i - 1;
 
-        // 将大于 key 的元素往右移动一位
-        while (j >= 0 && arr[j] > key) {
+        // 将大于 curr 的元素往右移动一位
+        while (j >= 0 && arr[j] > curr) {
             arr[j + 1] = arr[j];
             j--;
         }
 
-        // 插入 key
-        arr[j + 1] = key;
+        // 插入 curr
+        arr[j + 1] = curr;
     }
 }
 ```
@@ -132,7 +132,7 @@ private static void insertionSort(int[] arr) {
 > 代码
 
 ```java
-private void quickSort(int[] arr, int l, int r){
+private static void quickSort(int[] arr, int l, int r){
     if(l >= r) return;
     int left = l, right = r;
     // 选取一个pivot
