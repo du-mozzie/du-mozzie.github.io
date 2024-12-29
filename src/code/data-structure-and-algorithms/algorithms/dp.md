@@ -261,6 +261,17 @@ public class LeetCodeTest {
   - 内层循环遍历每个可能的背包容量 `W` 次。
 - **空间复杂度：** `O(W)`，因为我们只需要一个一维数组来存储当前背包容量下的最大价值。
 
+**注意点**：
+
+1. 一定是先物品后背包；不然每个背包只装一个物品
+2. 背包一定是倒叙的，不然会重复装同一个
+
+### 相关题目
+
+1. [力扣 416.分割等和子集](https://leetcode.cn/problems/partition-equal-subset-sum/description/)
+2. [力扣 1049.最后一块石头的重量Ⅱ](https://leetcode.cn/problems/last-stone-weight-ii/description/)
+3. [力扣 494.目标和](https://leetcode.cn/problems/target-sum/description/)
+
 ## 树形DP套路
 
 1. 以某个节点X为头节点的子树中，分析答案有哪些可能性，并且这种分析是以X的左子树、X的右子树和X整棵树的角度来考虑可能性的
