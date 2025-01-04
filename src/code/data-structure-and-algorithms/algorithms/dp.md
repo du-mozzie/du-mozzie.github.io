@@ -92,7 +92,135 @@ article: true
 
 #### 从左往右的尝试模型
 
+模型核心：遍历每一项尝试用该项，或者不用该项
 
+> 相关题目
+
+##### 背包问题
+
+**题目描述：**有N件物品和一个容量是V的背包。每件物品只能使用一次。第件物品的体积是，价值是W。求解将哪些物品装入背包，可使这些物品的总体积不超过背包容量，且总价值最大。输出最大价值。
+
+1. 递归写法，尝试函数（从左到右）
+
+   index表示从左到右开始一个一个的选择物品，来到的当前位置。 bag表示背包剩余的空间。
+
+   去尝试，按照正常的思维去想，首先来到了index位置，那么就会有两种选择，把index位置的货物放进背包，或者不选此货物。
+
+   递归函数解决将对当前位置index的最佳选择。
+
+   base情况： 当index == 数组长度时，表明越界了，所以会返回0
+   ```java
+   public static void main(String[] agas) {
+       // 伪代码
+       int[] weights = {...};
+       int[] values = {...};
+       int bag = N;
+       int maxValue = process(weights, values, 0, bag);
+   }
+   
+   
+   // 当前考虑到了index号货物，index...所有的货物可以自由选择
+   // 做的选择不能超过背包容量
+   // 返回最大价值
+   public static int process(int[] weights, int[] values, int index, int bag) {
+       // 没有背包可以装了，无效解
+       if(bag < 0) return -1;
+       // 遍历结束, 
+       if(index == weights.length) return 0;
+       
+       // index 当前物品索引
+       // 不要当前的货
+       int p1 = process(weights, values, index + 1, bag);
+       // 要当前的货
+       int p2 = process(weights, values, index + 1, bag - weights[i]);
+       // 要当前的货是否有效
+       if(next != -1) {
+           p2 += values[index];
+       }
+       // 不要跟要之间选择一个最大的
+       return Math.max(p1, p2);
+   }
+   ```
+
+   **注意此题还需要考虑一个无效解，此无效解的解法是通用的。**
+
+   如果当前货物weight是7，bag剩余承重是6，那么如果选择此物品，会导致背包超重，所以不能去选这个物品。
+
+2. 优化，N维数组
+
+   看看是否有重复递归，如果有用表格优化，递归有几个可变参就创建一个几维的数组
+
+   ![image-20250104164254125](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20250104164254125.png)
+
+   背包问题暴力尝试很明显会出现重复递归的问题，这个时候就可以用一个二维数组存储这些信息进行优化
+
+   ```java
+   public static void main(String[] agas) {
+       // 伪代码
+       int[] weights = {...};
+       int[] values = {...};
+       int bag = N;
+       int maxValue = process(weights, values, bag);
+   }
+   
+   
+   // 当前考虑到了index号货物，index...所有的货物可以自由选择
+   // 做的选择不能超过背包容量
+   // 返回最大价值
+   public static int process(int[] weights, int[] values, int bag) {
+       // N代表物品的数量
+       int N = weights.length;
+       // 物品0..N，在背包容量bag的情况下的最大价值
+       int[][] dp = new int[N + 1][bag + 1];
+   
+       // 遍历物品
+       for(int index = 1; index<= N; index++) {
+           // 遍历容量
+           for(int j = 0; j <= bag; j++) {
+               int p1 = dp[index + 1, bag];
+               // 要当前的货
+               int p2 = j - weights[index] < 0 ? -1 : dp[index + 1, bag - weights[i]];
+               // 要当前的货是否有效
+               if(next != -1) {
+                   p2 += values[index];
+               }
+               dp[index][j] = Math.max(p1, p2);
+           }
+       }
+       return dp[N][bag];
+   }
+   ```
+
+3. 可以打表然后观察依赖关系，会发现当前物品的最大价值依赖：上一个物品的最大价值、上一个物品背包容量减去当前物品重量，可以递推出下面公式，根据公式进行优化二维数组，转换成一维数组
+   $$
+   dp[i] = max(dp[i], dp[i - w[j]] + v[j])
+   $$
+
+   ```java
+   public static void main(String[] agas) {
+       // 伪代码
+       int[] weights = {...};
+       int[] values = {...};
+       int bag = N;
+       int maxValue = process(weights, values, bag);
+   }
+   
+   public static int process(int[] weights, int[] values, int bag) {
+       int N = weights.length; // 物品数量
+       int[] dp = new int[bag + 1]; // 一维数组，表示容量为j时的最大价值
+   
+       // 遍历物品
+       for (int index = 0; index < N; index++) {
+           // 遍历容量（从后往前遍历，确保当前状态只依赖上一层状态）
+           for (int j = bag; j >= weights[index]; j--) {
+               dp[j] = Math.max(dp[j], dp[j - weights[index]] + values[index]);
+           }
+       }
+   
+       return dp[bag];
+   }
+   
+   ```
 
 #### 范围上的尝试模型
 
