@@ -412,16 +412,18 @@ article: true
 
 1. **状态定义**：定义一个二维数组 `dp[i][j]`，表示从矩阵 `i` 到矩阵 `j` 的最小乘法次数。
 
-2. **状态转移**：考虑将矩阵链分割成两部分，假设第一个部分为 `i` 到 `k`，第二个部分为 `k+1` 到 `j`。那么状态转移为：
+2. **状态转移**：为了填充 `dp[i][j]`，我们需要选择一个切分点 `k`，将矩阵链 `[i, j]` 分成两部分：`[i, k]` 和 `[k+1, j]`。然后，`dp[i][j]` 就是从 `i` 到 `k` 和从 `k+1` 到 `j` 的最小乘法次数之和，再加上计算这两部分结果的乘法次数。
 
-   dp[i][j]=min⁡i≤k<j(dp[i][k]+dp[k+1][j]+pi×pk+1×pj+1)dp[i][j] = \min_{i \leq k < j} (dp[i][k] + dp[k+1][j] + p_i \times p_{k+1} \times p_{j+1})dp[i][j]=i≤k<jmin(dp[i][k]+dp[k+1][j]+pi×pk+1×pj+1)
-
-   其中，`p` 是矩阵的维度数组。
+   假设矩阵 `A[i]` 的维度为 `p[i-1] x p[i]`，那么计算矩阵链 `[i, j]` 的乘法次数就是：
+   $$
+   dp[i][j] = min(dp[i][j], dp[i][k] + dp[k+1][j] + p[i] * p[k+1] * p[j]);
+   $$
+   其中，`p[i-1]` 是矩阵 `A[i]` 的行数，`p[k]` 是矩阵 `A[k+1]` 的行数，`p[j]` 是矩阵 `A[j]` 的列数。
 
 3. **填表顺序**：一般从较小的子问题（区间长度为1的子问题）开始逐步向大问题推导。
 
-```
-java复制代码public static int matrixChainOrder(int[] p) {
+```java
+public static int matrixChainOrder(int[] p) {
     int n = p.length;
     int[][] dp = new int[n][n];
 
