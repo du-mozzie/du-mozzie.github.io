@@ -170,7 +170,7 @@ article: true
 
    看看是否有重复递归，如果有用表格优化，递归有几个可变参就创建一个几维的数组
 
-   ![image-20250104164254125](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20250104164254125.png)
+   ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20250104164254125.png)
 
    背包问题暴力尝试很明显会出现重复递归的问题，这个时候就可以用一个二维数组存储这些信息进行优化
 
@@ -782,7 +782,7 @@ public static int knightShortestPath(int N, int[] start, int[] end) {
 
 有这么一个问题：有n件物品和一个最多能背重量为w 的背包。第i件物品的重量是weight[i]，得到的价值是value[i] 。**每件物品只能用一次**，求解将哪些物品装入背包里物品价值总和最大。
 
-![image-20241229195752657](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20241229195752657.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20241229195752657.png)
 
 这个问题最先能够想到的就是暴力求解，每一件物品其实只有两个状态，取或者不取，所以可以使用回溯法搜索出所有的情况，那么时间复杂度就是O(2^n^)，这里的n表示物品数量。
 
