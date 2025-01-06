@@ -245,8 +245,8 @@ article: true
 
 **题目描述**：给定一个集合，求其所有子集。每个元素都有两种选择：选或者不选。
 
-[力扣 78 子集](https://leetcode.cn/submissions/detail/591325840/)
-[力扣 90 子集Ⅱ](https://leetcode.cn/submissions/detail/591396340/)
+[力扣 78.子集](https://leetcode.cn/submissions/detail/591325840/)
+[力扣 90.子集Ⅱ](https://leetcode.cn/submissions/detail/591396340/)
 
 1. 递归和回溯（基础解法）
 
@@ -459,6 +459,8 @@ public static int matrixChainOrder(int[] p) {
 ##### 模型解析：最长公共子序列问题
 
 假设我们有两个字符串 `X` 和 `Y`，目标是找出它们的最长公共子序列。
+
+[力扣 1143. 最长公共子序列](https://leetcode.cn/problems/longest-common-subsequence/description/)
 
 1. **状态定义**：定义 `dp[i][j]` 为字符串 `X[0..i-1]` 和 `Y[0..j-1]` 的最长公共子序列的长度。
 
