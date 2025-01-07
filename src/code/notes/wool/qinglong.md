@@ -89,11 +89,24 @@ prev: ./
 
    ```
    bizCode
-   bizMsg  
+   bizMsg
    lxml
    ```
 
-等待一会依赖安装完成，如果安装太慢可以自己配置一下镜像加速
+等待一会依赖安装完成，如果安装太慢可以自己配置一下镜像加速，有安装失败的可以查看安装日志解决一下
+
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20250107162238752.png)
+
+```
+# Node 软件包镜像源
+https://registry.npmmirror.com
+
+# Python 软件包镜像源
+https://mirrors.aliyun.com/pypi/simple/
+
+# Linux 软件包镜像源
+https://mirrors.aliyun.com
+```
 
 ## 拉取Faker仓库并配置
 
@@ -112,7 +125,7 @@ Faker4 纯净版 仅包含少量日常内部助力任务 防止运行过多任�
 ql repo https://git.metauniverse-cn.com/https://github.com/shufflewzc/faker4.git "jd_|jx_|gua_|jddj_|jdCookie" "activity|backUp" "^jd[^_]|USER|function|utils|sendNotify|ZooFaker_Necklace.js|JDJRValidator_|sign_graphics_validate|ql|JDSignValidator|magic|depend|h5sts" "main"
 ```
 
-> 配置Faker
+**配置Faker**
 
 1. 订阅任务
 
@@ -134,13 +147,13 @@ ql repo https://git.metauniverse-cn.com/https://github.com/shufflewzc/faker4.git
 
    ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20250107144203125.png)
 
-> 配置京东 Cookie
+**配置京东 Cookie**
 
-1. 浏览器打开[m.jd.com](m.jd.com) 登录账号
+1. 浏览器打开[m.jd.com](https://m.jd.com/) 登录账号
 
    ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20250107144321487.png)
 
-2. 登陆后按F12打开浏览器的控制台，选择`Application` -> `Cookies` -> `my.m.jd.com` 这个域，找到 `pt_key`、`pt_pin`
+2. 登录后按F12打开浏览器的控制台，选择`Application` -> `Cookies` -> `my.m.jd.com` 这个域，找到 `pt_key`、`pt_pin`
 
    ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20250107144533325.png)
 
@@ -150,4 +163,4 @@ ql repo https://git.metauniverse-cn.com/https://github.com/shufflewzc/faker4.git
 
    ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20250107144752360.png)
 
-到这一步，基本上的配置就已经完成了，青龙面板本质上是一个任务管理平台，我们也可以去GitHub找一些其他的脚本来执行
+到这一步，基本上的配置就已经完成了，青龙面板本质上是一个任务管理平台，我们也可以去GitHub找一些其他的脚本来执行。
