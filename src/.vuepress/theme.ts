@@ -28,6 +28,7 @@ export default hopeTheme({
 
   // 侧边栏
   sidebar,
+  headerDepth: 6,
 
   // 页脚
   footer: "",
