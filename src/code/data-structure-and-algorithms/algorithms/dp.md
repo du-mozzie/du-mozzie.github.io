@@ -570,15 +570,15 @@ public static int longestCommonSubsequence(String X, String Y) {
 
 ##### 模型解析：编辑距离问题（Levenshtein Distance）
 
-编辑距离问题的目标是计算将字符串 `X` 转换成字符串 `Y` 所需的最小操作次数，操作包括插入、删除和替换。这个问题也可以使用多样本位置全对应的尝试模型来解决。
+编辑距离问题的目标是计算将字符串 `word1` 转换成字符串 `word2` 所需的最小操作次数，操作包括插入、删除和替换。这个问题也可以使用多样本位置全对应的尝试模型来解决。
 
 1. **状态定义**：
-   - 定义一个二维数组 `dp[i][j]`，表示将字符串 `X[0..i-1]` 转换为字符串 `Y[0..j-1]` 所需的最小编辑操作数。
+   - 定义一个二维数组 `dp[i][j]`，表示将字符串 `word1[0..i]` 转换为字符串 `word2[0..j]` 所需的最小编辑操作数。
 2. **状态转移**：
-   - 如果 `X[i-1] == Y[j-1]`，则 `dp[i][j] = dp[i-1][j-1]`，表示不需要任何操作。
-   - 如果 `X[i-1] != Y[j-1]`，则：
-     - 删除操作：`dp[i-1][j] + 1`。
-     - 插入操作：`dp[i][j-1] + 1`。
+   - 如果 `word1[i-1] == word2[j-1]`，则 `dp[i][j] = dp[i-1][j-1]`，表示不需要任何操作。
+   - 如果 `word1[i-1] != word2[j-1]`，则：
+     - 插入操作：`dp[i-1][j] + 1`。
+     - 删除操作：`dp[i][j-1] + 1`。
      - 替换操作：`dp[i-1][j-1] + 1`。
    - 取三者的最小值。
 3. **填表顺序**：
@@ -588,34 +588,44 @@ public static int longestCommonSubsequence(String X, String Y) {
 ###### 代码实现
 
 ```java
-public static int minDistance(String word1, String word2) {
-    int m = word1.length();
-    int n = word2.length();
-    int[][] dp = new int[m + 1][n + 1];
+public int minDistance(String word1, String word2) {
+    int n = word1.length();
+    int m = word2.length();
 
-    // 初始化边界条件
-    for (int i = 0; i <= m; i++) {
-        for (int j = 0; j <= n; j++) {
-            if (i == 0) {
-                dp[i][j] = j; // 需要j次插入
-            } else if (j == 0) {
-                dp[i][j] = i; // 需要i次删除
-            }
-        }
+    // 有一个字符串为空串
+    if (n * m == 0) {
+        return n + m;
     }
 
-    // 填表
-    for (int i = 1; i <= m; i++) {
-        for (int j = 1; j <= n; j++) {
+    // dp含义字符0..i 编辑成 0..j 需要的最少操作次数
+    int[][] dp = new int[n + 1][m + 1];
+
+    // 初始化第一行和第一列
+    for (int i = 0; i <= n; i++) {
+        dp[i][0] = i; // 从空串到word1的i个字符，需要i次操作（删除）
+    }
+    for (int j = 0; j <= m; j++) {
+        dp[0][j] = j; // 从空串到word2的j个字符，需要j次操作（插入）
+    }
+
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= m; j++) {
             if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
-                dp[i][j] = dp[i - 1][j - 1]; // 字符相同，不需要操作
+                // 如果 i == j 说明无需操作
+                dp[i][j] = dp[i - 1][j - 1];
             } else {
-                dp[i][j] = Math.min(Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1), dp[i - 1][j - 1] + 1);
+                // 插入
+                int p1 = dp[i - 1][j];
+                // 删除
+                int p2 = dp[i][j - 1];
+                // 替换
+                int p3 = dp[i - 1][j - 1];
+                dp[i][j] = Math.min(p1, Math.min(p2, p3)) + 1;
             }
         }
     }
 
-    return dp[m][n]; // 返回最小编辑距离
+    return dp[n][m]; // 返回最小编辑距离
 }
 ```
 
