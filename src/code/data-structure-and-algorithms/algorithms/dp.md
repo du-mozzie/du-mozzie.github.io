@@ -589,27 +589,27 @@ public static int longestCommonSubsequence(String X, String Y) {
 
 ```java
 public int minDistance(String word1, String word2) {
-    int n = word1.length();
-    int m = word2.length();
+    int m = word1.length();
+    int n = word2.length();
 
     // 有一个字符串为空串
-    if (n * m == 0) {
-        return n + m;
+    if (m * n == 0) {
+        return m + n;
     }
 
     // dp含义字符0..i 编辑成 0..j 需要的最少操作次数
-    int[][] dp = new int[n + 1][m + 1];
+    int[][] dp = new int[m + 1][n + 1];
 
     // 初始化第一行和第一列
-    for (int i = 0; i <= n; i++) {
+    for (int i = 0; i <= m; i++) {
         dp[i][0] = i; // 从空串到word1的i个字符，需要i次操作（删除）
     }
-    for (int j = 0; j <= m; j++) {
+    for (int j = 0; j <= n; j++) {
         dp[0][j] = j; // 从空串到word2的j个字符，需要j次操作（插入）
     }
 
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= m; j++) {
+    for (int i = 1; i <= m; i++) {
+        for (int j = 1; j <= n; j++) {
             if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
                 // 如果 i == j 说明无需操作
                 dp[i][j] = dp[i - 1][j - 1];
@@ -625,7 +625,7 @@ public int minDistance(String word1, String word2) {
         }
     }
 
-    return dp[n][m]; // 返回最小编辑距离
+    return dp[m][n]; // 返回最小编辑距离
 }
 ```
 
