@@ -24,6 +24,6 @@ head:
 
 ## 联系方式
 
-- 邮件：[du.mozzie@outlook](mailto:du.mozzie@outlook)
+- 邮件：[du.mozzie@outlook.com](mailto:du.mozzie@outlook.com)
 - WeChat：[\_\_mozzie\_\_](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/wechat.jpg)
 - GitHub: [https://github.com/du-mozzie/du-mozzie.github.io](https://github.com/du-mozzie/du-mozzie.github.io)
