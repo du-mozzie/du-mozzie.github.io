@@ -1,6 +1,6 @@
 ---
 order: 2
-title: Charles抓安卓Https接口
+title: Charles抓安卓HTTPS接口
 date: 2025-01-09
 category: 
     - 羊毛
@@ -112,7 +112,7 @@ Charles 是一个抓包工具，可以用来抓手机的包
 
          ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20250109114747898.png)
 
-**上面的步骤是安卓手机的配置，如果是IOS也是类似的操作，核心就是将WiFi的数据包通过代理端口转发给Charles，配置证书是因为需要抓取Https协议的接口，如果不用不需要Https也可以不用配置**
+**上面的步骤是安卓手机的配置，如果是IOS也是类似的操作，核心就是将WiFi的数据包通过代理端口转发给Charles，配置证书是因为需要抓取HTTPS协议的接口，如果不用不需要HTTPS也可以不用配置**
 
 ## 测试
 
