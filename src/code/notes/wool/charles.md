@@ -1,7 +1,7 @@
 ---
 order: 2
-title: Charles抓包安卓Https接口
-date: 2025-01-07
+title: Charles抓安卓Https接口
+date: 2025-01-09
 category: 
     - 羊毛
     - 抓包
@@ -106,7 +106,7 @@ Charles 是一个抓包工具，可以用来抓手机的包
 
        - 选择前面保存的证书进行安装
 
-         ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20250109114636583.png)
+         ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20250109124934547.png)
 
        - 提示 “已安装CA证书”，到这一步证书的安装已经成功了
 
@@ -116,4 +116,6 @@ Charles 是一个抓包工具，可以用来抓手机的包
 
 ## 测试
 
-通过前面的准备工作证书已经安装成功，已经能够使用Charles进行抓包了，可以在手机上随便浏览一个网站试试
+通过前面的准备工作证书已经安装成功，已经能够使用Charles进行抓包了，可以在手机上随便浏览一个网站试试，Charles能够正常解析Https数据
+
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20250109124833494.png)
