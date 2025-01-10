@@ -47,12 +47,14 @@ export default defineUserConfig({
       },
     ],
     [
-        "script",
-        {
-            // 谷歌广告
-            src: "/assets/js/google-ads.js"
-        }
-    ]
+      "script",
+      {
+        // 谷歌广告
+        "data-ad-client": "ca-pub-2273796902744859",
+        async: true,
+        src: "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",
+      },
+    ],
   ],
 
   // vuepress-plugin-pwa2:  ⚠ The plugin will register service worker to handle assets,
