@@ -46,6 +46,13 @@ export default defineUserConfig({
         src: "/assets/js/clarity.js",
       },
     ],
+    [
+        "script",
+        {
+            // 谷歌广告
+            src: "/assets/js/google-ads.js"
+        }
+    ]
   ],
 
   // vuepress-plugin-pwa2:  ⚠ The plugin will register service worker to handle assets,
