@@ -1041,6 +1041,56 @@ public class LeetCodeTest {
    $$
    其中 `zero` 和 `one` 分别为每个字符串中0和1的价值与重量。最终结果为 `dp[m][n]`，`m` 和 `n` 分别为0和1的容量限制。
 
+## 子序列问题
+
+### 最长递增子序列
+
+[力扣 300. 最长递增子序列](https://leetcode.cn/problems/longest-increasing-subsequence/)
+
+给你一个整数数组 `nums` ，找到其中最长严格递增子序列的长度。
+
+**子序列** 是由数组派生而来的序列，删除（或不删除）数组中的元素而不改变其余元素的顺序。例如，`[3,6,2,7]` 是数组 `[0,3,1,6,2,2,7]` 的子序列。
+
+```java
+class Solution {
+    public int lengthOfLIS(int[] nums) {
+        int n = nums.length;
+        // 最小长度为1
+        int ans = 1;
+        // dp[i] 以i结尾的最长的递增子序列长度
+        int[] dp = new int[n];
+        dp[0] = 1;
+
+        // dp记住之前每个数的最长递增子序列，当前的数i跟0..i-1(j)进行比较，如果>j说明可以组成递增序列，找到最大的进行更新
+        for (int i = 1; i < n; i++) {
+            int max = 0;
+            for (int j = 0; j < i; j++) {
+                if (nums[i] > nums[j]) {
+                    max = Math.max(max, dp[j]);
+                }
+            }
+            dp[i] = max + 1;
+            ans = Math.max(ans, dp[i]);
+        }
+
+        return ans;
+    }
+}
+```
+
+### 最长连续递增序列
+
+[力扣 674. 最长连续递增序列](https://leetcode.cn/problems/longest-continuous-increasing-subsequence/)
+
+给定一个未经排序的整数数组，找到最长且 **连续递增的子序列**，并返回该序列的长度。
+
+**连续递增的子序列** 可以由两个下标 `l` 和 `r`（`l < r`）确定，如果对于每个 `l <= i < r`，都有 `nums[i] < nums[i + 1]` ，那么子序列 `[nums[l], nums[l + 1], ..., nums[r - 1], nums[r]]` 就是连续递增子序列。
+
+```java
+```
+
+
+
 ## 树形DP套路
 
 1. 以某个节点X为头节点的子树中，分析答案有哪些可能性，并且这种分析是以X的左子树、X的右子树和X整棵树的角度来考虑可能性的
