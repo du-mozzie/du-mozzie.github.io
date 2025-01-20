@@ -1087,9 +1087,21 @@ class Solution {
 **连续递增的子序列** 可以由两个下标 `l` 和 `r`（`l < r`）确定，如果对于每个 `l <= i < r`，都有 `nums[i] < nums[i + 1]` ，那么子序列 `[nums[l], nums[l + 1], ..., nums[r - 1], nums[r]]` 就是连续递增子序列。
 
 ```java
+class Solution {
+    public int findLengthOfLCIS(int[] nums) {
+        int n = nums.length;
+        int ans = 1;
+        int[] dp = new int[n];
+        dp[0] = 1;
+        // i > i - 1, 说明是连续递增的
+        for(int i = 1; i < n; i++) {
+            dp[i] = nums[i] > nums[i - 1] ? dp[i - 1] + 1 : 1;
+            ans = Math.max(ans, dp[i]);
+        }
+        return ans;
+    }
+}
 ```
-
-
 
 ## 树形DP套路
 
