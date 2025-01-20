@@ -1103,6 +1103,68 @@ class Solution {
 }
 ```
 
+### 最长重复子数组
+
+[力扣 718. 最长重复子数组](https://leetcode.cn/problems/maximum-length-of-repeated-subarray/)
+
+给两个整数数组 `nums1` 和 `nums2` ，返回 *两个数组中 **公共的** 、长度最长的子数组的长度* 。
+
+```java
+class Solution {
+    public int findLength(int[] nums1, int[] nums2) {
+        // nums1从0..i-1, nums2从0..j-1, 最长重复子数组长度为dp[i][j]
+        int[][] dp = new int[nums1.length + 1][nums2.length + 1];
+        int maxLength = 0; // 记录最长重复子数组的长度
+
+        // 遍历 nums1 和 nums2
+        for (int i = 1; i <= nums1.length; i++) {
+            for (int j = 1; j <= nums2.length; j++) {
+                // 如果两个元素相同，继续更新 dp 数组
+                if (nums1[i - 1] == nums2[j - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                    maxLength = Math.max(maxLength, dp[i][j]); // 更新最大值
+                } else {
+                    dp[i][j] = 0; // 不相等时长度为 0
+                }
+            }
+        }
+        return maxLength; // 返回最长重复子数组的长度
+    }
+}
+```
+
+优化一维数组，每一行都是通过左上角递推过来，所以只需要一维数组记录上一行，遍历nums2需要从后往前，否则会出现覆盖。
+
+```java
+class Solution {
+    public int findLength(int[] nums1, int[] nums2) {
+        int[] dp = new int[nums2.length + 1];
+        int maxLength = 0;
+
+        // 遍历 nums1 和 nums2
+        for (int i = 1; i <= nums1.length; i++) {
+            for (int j = nums2.length; j > 0; j--) {
+                dp[j] = nums1[i - 1] == nums2[j - 1] ? dp[j - 1] + 1 : 0;
+                maxLength = Math.max(maxLength, dp[j]);
+            }
+        }
+        return maxLength;
+    }
+}
+```
+
+### 最长公共子序列
+
+[力扣 1143. 最长公共子序列](https://leetcode.cn/problems/longest-common-subsequence/)
+
+给定两个字符串 `text1` 和 `text2`，返回这两个字符串的最长 **公共子序列** 的长度。如果不存在 **公共子序列** ，返回 `0` 。
+
+一个字符串的 **子序列** 是指这样一个新的字符串：它是由原字符串在不改变字符的相对顺序的情况下删除某些字符（也可以不删除任何字符）后组成的新字符串。
+
+- 例如，`"ace"` 是 `"abcde"` 的子序列，但 `"aec"` 不是 `"abcde"` 的子序列。
+
+两个字符串的 **公共子序列** 是这两个字符串所共同拥有的子序列。
+
 ## 树形DP套路
 
 1. 以某个节点X为头节点的子树中，分析答案有哪些可能性，并且这种分析是以X的左子树、X的右子树和X整棵树的角度来考虑可能性的
