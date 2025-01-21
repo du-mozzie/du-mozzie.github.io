@@ -54,7 +54,9 @@ public class WebConfig {
 }
 ```
 
-运行 main() 方法，控制台打印出：![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1709389629919-4f1d9565-f160-4656-a438-c10bd194f7b0.png)
+运行 main() 方法，控制台打印出：
+
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/1709389629919-4f1d9565-f160-4656-a438-c10bd194f7b0.png)
 
 Tomcat 容器初始化成功，Spring 容器初始化成功，但 DispatcherServlet 还未被初始化。
 
