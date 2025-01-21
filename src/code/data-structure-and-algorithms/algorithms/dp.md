@@ -1165,6 +1165,47 @@ class Solution {
 
 两个字符串的 **公共子序列** 是这两个字符串所共同拥有的子序列。
 
+### 不相交的线
+
+[力扣 1035. 不相交的线](https://leetcode.cn/problems/uncrossed-lines/)
+
+在两条独立的水平线上按给定的顺序写下 `nums1` 和 `nums2` 中的整数。
+
+现在，可以绘制一些连接两个数字 `nums1[i]` 和 `nums2[j]` 的直线，这些直线需要同时满足：
+
+-  `nums1[i] == nums2[j]`
+- 且绘制的直线不与任何其他连线（非水平线）相交。
+
+请注意，连线即使在端点也不能相交：每个数字只能属于一条连线。
+
+以这种方法绘制线条，并返回可以绘制的最大连线数。
+
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20250121204152904.png)
+
+**这个问题其实就是最长子序列问题**
+
+```java
+class Solution {
+    public int maxUncrossedLines(int[] nums1, int[] nums2) {
+        int m = nums1.length, n = nums2.length;
+
+        int[][] dp = new int[m + 1][n + 1];
+
+        for(int i = 1; i <= m; i++) {
+            for(int j = 1; j <= n; j++) {
+                if(nums1[i - 1] == nums2[j - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                }else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+
+        return dp[m][n];
+    }
+}
+```
+
 ## 树形DP套路
 
 1. 以某个节点X为头节点的子树中，分析答案有哪些可能性，并且这种分析是以X的左子树、X的右子树和X整棵树的角度来考虑可能性的
