@@ -1364,7 +1364,40 @@ class Solution {
 - 替换一个字符
 
 ```java
+class Solution {
+    public int minDistance(String word1, String word2) {
+        int m = word1.length(), n = word2.length();
+        // word1以i-1为结尾, word2以i-2为结尾, word1转换成word2锁使用的最少操作数为dp[i][j]
+        int[][] dp = new int[m + 1][n + 1];
 
+        for (int i = 1; i <= m; i++) {
+            dp[i][0] = i;
+        }
+
+        for (int j = 1; j <= n; j++) {
+            dp[0][j] = j;
+        }
+
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if(word1.charAt(i - 1) == word2.charAt(j - 1)) {
+                    // 无需操作
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    // 删除word1(等效插入word2)
+                    int p1 = dp[i - 1][j];
+                    // 插入word1(等效删除word2)
+                    int p2 = dp[i][j - 1];
+                    // 在dp[i - 1][j - 1]的基础上替换,dp[i - 1][j - 1]说明0..i-1已经是等于0..j-1了
+                    int p3 = dp[i - 1][j - 1];                 
+                    dp[i][j] = Math.min(p1, Math.min(p2, p3)) + 1;
+                }
+            }
+        }
+
+        return dp[m][n];
+    }
+}
 ```
 
 ### 回文子串
