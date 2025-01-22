@@ -1310,6 +1310,47 @@ class Solution {
 }
 ```
 
+### 两个字符串的删除操作
+
+[力扣 583. 两个字符串的删除操作](https://leetcode.cn/problems/delete-operation-for-two-strings/)
+
+给定两个单词 `word1` 和 `word2` ，返回使得 `word1` 和 `word2` **相同**所需的**最小步数**。
+
+**每步** 可以删除任意一个字符串中的一个字符。
+
+```java
+class Solution {
+    public int minDistance(String word1, String word2) {
+        int m = word1.length(), n = word2.length();
+        // word1以i-1为结尾, word2以j-1为结尾相同需要dp[i][j]步
+        int[][] dp = new int[m + 1][n + 1];
+
+        // 初始化
+        for (int i = 1; i <= m; i++) {
+            dp[i][0] = i;
+        }
+
+        for (int j = 1; j <= n; j++) {
+            dp[0][j] = j;
+        }
+
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
+                    // 相同无需删除
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    // 不同选择删除word1或者word2任意一个字符
+                    dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - 1]) + 1;
+                }
+            }
+        }
+
+        return dp[m][n];
+    }
+}
+```
+
 
 
 ## 树形DP套路
