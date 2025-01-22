@@ -1264,7 +1264,53 @@ class Solution {
 }
 ```
 
-### 
+### 不同的子序列
+
+[力扣 115. 不同的子序列](https://leetcode.cn/problems/distinct-subsequences/)
+
+给你两个字符串 `s` 和 `t` ，统计并返回在 `s` 的 **子序列** 中 `t` 出现的个数，结果需要对 109 + 7 取模。
+
+**示例 1：**
+
+> 输入：s = "rabbbit", t = "rabbit"
+> 输出：3
+> 解释：
+> 如下所示, 有 3 种可以从 s 中得到 "rabbit" 的方案。
+> **rabb**b**it**
+> **ra**b**b**b**it**
+> **ra**bb**bit**
+
+```java
+class Solution {
+    public int numDistinct(String s, String t) {
+        int m = s.length(), n = t.length();
+        // 以i-1为结尾的s子序列中出现以j-1为结尾的t的个数为dp[i][j]。
+        int[][] dp = new int[m + 1][n + 1];
+
+        // 初始化
+        for(int i = 0; i <= m; i++) {
+            // t为空字符串的时候永远为1
+            dp[i][0] = 1;
+        }
+
+        for(int i = 1; i <= m; i++) {
+            for(int j = 1; j <= n; j++) {
+                // 当前位置只从它的左上角和上方递推过来
+                if(s.charAt(i - 1) == t.charAt(j - 1)) {
+                    // (不考虑s, t最后一位) + (不考虑s[i - 1]考虑t最后一位)
+                    dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j];
+                }else{
+                    // 不考虑s[i - 1]考虑t最后一位
+                    dp[i][j] = dp[i - 1][j];
+                }
+            }
+        }
+        return dp[m][n];
+    }
+}
+```
+
+
 
 ## 树形DP套路
 
