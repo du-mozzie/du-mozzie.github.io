@@ -1411,7 +1411,37 @@ class Solution {
 **子字符串** 是字符串中的由连续字符组成的一个序列。
 
 ```java
+class Solution {
+    public int countSubstrings(String s) {
+        int n = s.length();
+        // 区间范围[i,j]的字串是否是回文子串
+        boolean[][] dp = new boolean[n][n];
+        // 初始化默认都是false
 
+        int ans = 0;
+        // 从下往上 从左往右
+        for (int i = n - 1; i >= 0; i--) {
+            for (int j = i; j < n; j++) {
+                // 如果 s(i) == (j)
+                if (s.charAt(i) == s.charAt(j)) {
+                    // j - i == 0 j - i == 1
+                    if (j - i <= 1) {
+                        ans++;
+                        dp[i][j] = true;
+                    } else {
+                        // > 1要根据要一个区间来
+                        boolean flag = dp[i + 1][j - 1];
+                        if (flag) {
+                            ans++;
+                            dp[i][j] = true;
+                        }
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+}
 ```
 
 ### 最长回文子序列
