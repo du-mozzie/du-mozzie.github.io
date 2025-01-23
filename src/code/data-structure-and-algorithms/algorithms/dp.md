@@ -1421,6 +1421,7 @@ class Solution {
         int ans = 0;
         // 从下往上 从左往右
         for (int i = n - 1; i >= 0; i--) {
+            // j 肯定是 > i的，只会遍历表格右上角
             for (int j = i; j < n; j++) {
                 // 如果 s(i) == (j)
                 if (s.charAt(i) == s.charAt(j)) {
@@ -1453,7 +1454,27 @@ class Solution {
 子序列定义为：不改变剩余字符顺序的情况下，删除某些字符或者不删除任何字符形成的一个序列。
 
 ```java
+class Solution {
+    public int longestPalindromeSubseq(String s) {
+        int n = s.length();
+        // s(i) ~ s(j) 最长回文子序列长度为dp[i][j]
+        int[][] dp = new int[n + 1][n + 1];
 
+        // 从下往上 从左往右 只遍历右上角区域
+        for (int i = n - 1; i >= 0; i--) {
+            dp[i][i] = 1; // 初始化 对角线长度为1
+            for (int j = i + 1; j < n; j++) {
+                // i == j的时候 dp[i + 1][j - 1] + 2
+                if (s.charAt(i) == s.charAt(j)) {
+                    dp[i][j] = dp[i + 1][j - 1] + 2;
+                } else {
+                    dp[i][j] = Math.max(dp[i + 1][j], Math.max(dp[i][j], dp[i][j - 1]));
+                }
+            }
+        }
+        return dp[0][n - 1];
+    }
+}
 ```
 
 ## 树形DP套路
