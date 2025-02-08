@@ -16,9 +16,9 @@ Java注解（Annotation）是Java中的一种元数据机制，用于向代码�
 
 注解可以检查跟约束
 
-@Override重写
-
 ## 内置注解
+
+@Override重写
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20201021172409599.png)
 
