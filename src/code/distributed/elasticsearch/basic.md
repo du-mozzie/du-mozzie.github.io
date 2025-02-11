@@ -509,3 +509,8 @@ PUT /_cluster/settings
 }
 ```
 
+### 避坑实践
+
+- 禁用`_all`字段节省25%存储空间
+- 设置`index.mapping.total_fields.limit=2000`防止mapping爆炸
+- 采用`@timestamp`替代自动生成`_id`，减少写入开销
