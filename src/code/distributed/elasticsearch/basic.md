@@ -192,8 +192,8 @@ GET /library/_search
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240813215537861.png)
 
-到这里，当初那个简陋的 lucene，就成了一个高性能，高扩展性，高可用，支持持久化的分布式搜索引擎，它就是我们常说的 elastic search，简称 ES。它对外提供 http 接口，任何语言的客户端都可以通过 HTTP 接口接入 es，实现对数据的增删改查。
-从架构角度来看，es 给了一套方案，告诉我们如何让一个单机系统 lucene 变成一个分布式系统。
+到这里，当初那个简陋的 lucene，就成了一个高性能，高扩展性，高可用，支持持久化的分布式搜索引擎，它就是我们常说的 ElasticSearch，简称 ES。它对外提供 HTTP 接口，任何语言的客户端都可以通过 HTTP 接口接入 es，实现对数据的增删改查。
+从架构角度来看，ES 给了一套方案，告诉我们如何让一个单机系统 lucene 变成一个分布式系统。
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240813215630368.png)
 
