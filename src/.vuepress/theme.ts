@@ -15,7 +15,7 @@ export default hopeTheme({
 
   iconPrefix: "iconfont icon-",
 
-  logo: "/assets/images/mozzie.png",
+  logo: "/assets/images/dog.png",
 
   repo: "https://github.com/du-mozzie/du-mozzie.github.io",
 

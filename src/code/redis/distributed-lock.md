@@ -113,7 +113,7 @@ Redisson是Redis服务器上的分布式可伸缩Java数据结构----驻内存�
    import java.io.IOException;
    
    /**
-    * @author Du
+    * @author mozzie
     */
    @Configuration
    public class RedissonConfig {

@@ -5,12 +5,12 @@ title: 关于我
 heroImage: /assets/images/about.svg
 heroText: 关于我
 tagline: 爱瞎折腾的码农
-description: 关于Du
+description: 关于mozzie
 
 head:
   - - meta
     - name: description
-      content: 关于Du
+      content: 关于mozzie
 ---
 
 ## 个人介绍

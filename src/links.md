@@ -7,7 +7,7 @@ heroText: 链接
 tagline: 工具链接，友情链接
 description: 链接
 
-containerClass: Du links
+containerClass: mozzie links
 
 tools:
   - name: vuepress-theme-hope
