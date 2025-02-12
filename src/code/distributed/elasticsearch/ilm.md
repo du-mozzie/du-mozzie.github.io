@@ -15,7 +15,11 @@ article: true
 
 ---
 
-[索引生命周期管理 (ILM)](https://www.elastic.co/guide/en/elasticsearch/reference/7.0/index-lifecycle-management.html) 是在 Elasticsearch 6.6（公测版）首次引入并在 6.7 版正式推出的一项功能。ILM 是 Elasticsearch 的一部分，主要用来帮助您管理索引。
+[索引生命周期管理 (ILM)](https://www.elastic.co/guide/en/elasticsearch/reference/7.0/index-lifecycle-management.html) 是在 Elasticsearch 6.6（公测版）首次引入并在 6.7 版正式推出的一项功能。ILM 是 Elasticsearch 的一部分，主要用来帮助您管理索引。我们可以使用ILM实现如下需求：
+
+- 当索引达到一定的大小或者一定的文档数量时生成一个新的索引
+- 每天、每周或者每个月创建一个新索引、并把之前的索引归档
+- 删除历史索引、按照数据保留标准执行是否保留索引
 
 ## 基础理论
 
@@ -330,4 +334,23 @@ ILM可以很轻松的管理索引的各个阶段，常见的就是处理日志�
    }
    ```
 
-4. 
+4. 创建一个索引，按照索引模板命名规则
+
+   ```json
+   PUT bash-test
+   {
+     "settings": {
+       "number_of_shards": 3,
+       "number_of_replicas": 0
+     },
+     "aliases": {
+       "zuiyu-index": {}
+     }
+   }
+   ```
+
+**除了使用api创建还可以使用kibana提供的界面创建**
+
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/202502121006580.png)
+
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/202502121007482.png)
