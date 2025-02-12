@@ -152,7 +152,7 @@ GET /library/_search
 
 ### 高性能
 
-将数据分为多个 index，每个 index 可以有多个 shard，每个 shard 是一个独立的 lucene 库，这样可以将读写操作分摊到多个 分片 中去，大大降低了争抢，提升了系统性能。
+将数据分为多个 index，每个 index 可以有多个 shard，每个 shard 是一个独立的 lucene 库，这样可以将读写操作分摊到多个分片中去，大大降低了争抢，提升了系统性能。
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240813215046363.png)
 
