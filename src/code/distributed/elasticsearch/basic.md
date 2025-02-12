@@ -212,8 +212,7 @@ GET /library/_search
 
 ### ES 的搜索流程
 
-ES 的搜索流程分为两个阶段：分别是**查询阶段（Query Phase）**和 **获取阶段（Fetch Phase）**
-我们分别看下。
+ES 的搜索流程分为两个阶段：分别是查询阶段（Query Phase）和 获取阶段（Fetch Phase）我们分别看下。
 
 #### 查询阶段
 
