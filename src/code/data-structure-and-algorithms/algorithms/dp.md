@@ -1165,6 +1165,28 @@ class Solution {
 
 两个字符串的 **公共子序列** 是这两个字符串所共同拥有的子序列。
 
+```java
+class Solution {
+    public int longestCommonSubsequence(String text1, String text2) {
+        int m = text1.length(), n = text2.length();
+        // text1以0..i-1结尾, text2以0..j-1结尾的最长公共子序列是dp[i][j]
+        int[][] dp = new int[m + 1][n + 1];
+
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (text1.charAt(i - 1) == text2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+
+        return dp[m][n];
+    }
+}
+```
+
 ### 不相交的线
 
 [力扣 1035. 不相交的线](https://leetcode.cn/problems/uncrossed-lines/)
@@ -1414,25 +1436,22 @@ class Solution {
 class Solution {
     public int countSubstrings(String s) {
         int n = s.length();
-        // 区间范围[i,j]的字串是否是回文子串
+        // 以i..j为区间的字串是否是回文, 默认都是false
         boolean[][] dp = new boolean[n][n];
-        // 初始化默认都是false
-
         int ans = 0;
-        // 从下往上 从左往右
+        // 因为需要依赖到左下角的值 从下往上 从左往右
         for (int i = n - 1; i >= 0; i--) {
-            // j 肯定是 > i的，只会遍历表格右上角
+            // j永远是>=i
             for (int j = i; j < n; j++) {
-                // 如果 s(i) == (j)
+                // 如果s(i) == s(j)
                 if (s.charAt(i) == s.charAt(j)) {
-                    // j - i == 0 j - i == 1
+                    // 如果当前字串长度 <= 1 说明i..j最多长度为1, 肯定是回文串
                     if (j - i <= 1) {
                         ans++;
                         dp[i][j] = true;
                     } else {
-                        // > 1要根据要一个区间来
-                        boolean flag = dp[i + 1][j - 1];
-                        if (flag) {
+                        // 如果> 1需要看i+1..j-1区间是否是回文
+                        if (dp[i + 1][j - 1]) {
                             ans++;
                             dp[i][j] = true;
                         }
