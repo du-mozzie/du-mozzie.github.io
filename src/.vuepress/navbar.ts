@@ -38,6 +38,11 @@ export default navbar([
         link: "distributed/",
       },
       {
+        text: "AI",
+        icon: "/assets/images/navbar/ai.svg",
+        link: "ai/",
+      },
+      {
         text: "杂记",
         icon: "/assets/images/navbar/notes.svg",
         link: "notes/",

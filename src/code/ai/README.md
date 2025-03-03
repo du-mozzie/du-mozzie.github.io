@@ -1,12 +1,12 @@
 ---
 index: false
-title: 分布式
+title: AI
 article: false
 dir:
-    order: 5
+    order: 6
 ---
 
-关于分布式的一些笔记
+关于AI的一些笔记
 
 <!--more-->
 
