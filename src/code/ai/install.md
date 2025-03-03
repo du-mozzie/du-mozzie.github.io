@@ -123,21 +123,21 @@ Ollama 提供了多种蒸馏的模型让我们部署，我们可以根据自己�
 
 **Ollama命令大全**：
 
-| 命令                                        | 描述                             | 示例                                             |
-| ------------------------------------------- | -------------------------------- | ------------------------------------------------ |
-| ollama run <model-name>                     | 启动模型并与之交互               | ollama run llama2                                |
-| ollama list                                 | 列出本地已下载的模型             | ollama list                                      |
-| ollama pull <model-name>                    | 从模型库中下载一个模型           | ollama pull llama2                               |
-| ollama rm <model-name>                      | 删除本地的一个模型               | ollama rm llama2                                 |
-| ollama show <model-name>                    | 查看某个模型的详细信息           | ollama show llama2                               |
-| ollama serve                                | 启动 Ollama 服务                 | ollama serve                                     |
-| ollama stop                                 | 停止 Ollama 服务                 | ollama stop                                      |
-| ollama logs                                 | 查看 Ollama 的日志信息           | ollama logs                                      |
-| ollama create <model-name> -f <config-file> | 使用自定义的模型配置文件创建模型 | ollama create my-model -f ./my-model-config.yaml |
-| ollama export <model-name> <output-file>    | 导出模型为文件                   | ollama export llama2 ./llama2-model.tar          |
-| ollama import <input-file>                  | 从文件导入模型                   | ollama import ./llama2-model.tar                 |
-| ollama version                              | 查看 Ollama 的版本信息           | ollama version                                   |
-| ollama --help                               | 查看所有可用的命令及其说明       | ollama --help                                    |
+| 命令                                            | 描述                             | 示例                                             |
+| ----------------------------------------------- | -------------------------------- | ------------------------------------------------ |
+| ollama run \<model-name\>                       | 启动模型并与之交互               | ollama run llama2                                |
+| ollama list                                     | 列出本地已下载的模型             | ollama list                                      |
+| ollama pull \<model-name\>                      | 从模型库中下载一个模型           | ollama pull llama2                               |
+| ollama rm \<model-name\>                        | 删除本地的一个模型               | ollama rm llama2                                 |
+| ollama show \<model-name\>                      | 查看某个模型的详细信息           | ollama show llama2                               |
+| ollama serve                                    | 启动 Ollama 服务                 | ollama serve                                     |
+| ollama stop                                     | 停止 Ollama 服务                 | ollama stop                                      |
+| ollama logs                                     | 查看 Ollama 的日志信息           | ollama logs                                      |
+| ollama create \<model-name\> -f \<config-file\> | 使用自定义的模型配置文件创建模型 | ollama create my-model -f ./my-model-config.yaml |
+| ollama export \<model-name> \<output-file\>     | 导出模型为文件                   | ollama export llama2 ./llama2-model.tar          |
+| ollama import \<input-file\>                    | 从文件导入模型                   | ollama import ./llama2-model.tar                 |
+| ollama version                                  | 查看 Ollama 的版本信息           | ollama version                                   |
+| ollama --help                                   | 查看所有可用的命令及其说明       | ollama --help                                    |
 
 ## 最后
 
