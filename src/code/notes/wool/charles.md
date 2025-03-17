@@ -70,7 +70,7 @@ Charles 是一个抓包工具，可以用来抓手机的包
      
        ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20250109113615642.png)
      
-     - 下载好后点击安装，提示：\_\_\_\_\_\_\_  你自定义一个证书名称，点击保存
+     - 下载好后点击安装，你自定义一个证书名称，点击保存
      
        提示证书安装成功即可
      
