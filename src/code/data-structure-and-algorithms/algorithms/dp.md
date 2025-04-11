@@ -1023,10 +1023,16 @@ public class LeetCodeTest {
 
    该问题是求给定一个整数数组`nums`和一个目标数`target`，求有多少种方法使得数组中某些数的和等于目标数，根据题意可以分为一个正数集合与一个负数集合，设数组和为`sum`，负数集合为`neg`，正数集合为`sum - neg`，则有如下公式：
    $$
-   (sum - neg) - neg = target\\
-   sum - 2neg = target\\
+   (sum - neg) - neg = target
+   $$
+   $$
+   sum - 2neg = target
+   $$
+
+   $$
    neg = (sum - target) / 2
    $$
+
    通过上面公式可以得到背包容量`neg`，要求`neg`必须是非负偶数，因为要求数量和，设`dp[i]`表示容量为`i`时有几种方法能装满背包，`dp[0]`有一种方法，所以状态转移方程为：
    $$
    dp[i] += dp[i - num]
