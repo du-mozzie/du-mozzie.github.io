@@ -1060,25 +1060,27 @@ public class LeetCodeTest {
 ```java
 class Solution {
     public int lengthOfLIS(int[] nums) {
-        int n = nums.length;
-        // 最小长度为1
-        int ans = 1;
-        // dp[i] 以i结尾的最长的递增子序列长度
-        int[] dp = new int[n];
+        // 下标为i的最长递增子序列长度为dp[i]
+        int[] dp = new int[nums.length];
         dp[0] = 1;
 
-        // dp记住之前每个数的最长递增子序列，当前的数i跟0..i-1(j)进行比较，如果>j说明可以组成递增序列，找到最大的进行更新
-        for (int i = 1; i < n; i++) {
+        // 最长肯定有1
+        int ans = 1;
+
+        for (int i = 1; i < nums.length; i++) {
+            // 找每个数的最长递增子序列
             int max = 0;
+            // 0..i-1
             for (int j = 0; j < i; j++) {
-                if (nums[i] > nums[j]) {
+                // 如果i比当前的数大说明可以以该数继续递增
+                if(nums[i] > nums[j]) {
                     max = Math.max(max, dp[j]);
                 }
             }
+            // 加上当前数
             dp[i] = max + 1;
             ans = Math.max(ans, dp[i]);
         }
-
         return ans;
     }
 }
@@ -1095,12 +1097,12 @@ class Solution {
 ```java
 class Solution {
     public int findLengthOfLCIS(int[] nums) {
-        int n = nums.length;
-        int ans = 1;
-        int[] dp = new int[n];
+        // 以i结尾的最长连续递增子序列为 dp[i]
+        int[] dp = new int[nums.length];
         dp[0] = 1;
-        // i > i - 1, 说明是连续递增的
-        for(int i = 1; i < n; i++) {
+        int ans = 1;
+        for (int i = 1; i < nums.length; i++) {
+            // 如果大于前一个数就递增+1 否则从1开始计数
             dp[i] = nums[i] > nums[i - 1] ? dp[i - 1] + 1 : 1;
             ans = Math.max(ans, dp[i]);
         }
