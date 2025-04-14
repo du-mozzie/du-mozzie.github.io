@@ -1,4 +1,4 @@
-name: AI Code Review (Standard)
+name: AI Code Review
 
 on:
   push:
