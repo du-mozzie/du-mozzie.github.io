@@ -64,7 +64,12 @@ lucene 中出现了另外一个结构 **Term Index** 这是一个前缀树，通
 #### Stored Fields
 
 - 存储原始文档的字段值，用于搜索结果中直接返回原始内容（如 `_source`）。
-- 存储方式：按文档存储（行式存储），适合按 DocID 快速读取。
+- 存储方式：按文档存储（行式存储），适合按 Doc ID 快速读取。
+
+- **默认行为**：
+  默认情况下，`stored` 属性为 `false`，这意味着 Elasticsearch 不会单独存储该字段的原始值。但用户仍然可以通过 `_source` 字段获取原始值（因为整个文档的原始 JSON 存储在 `_source` 中）。
+- **显式启用 `stored`**：
+  如果显式设置 `"store": true`，则 Elasticsearch 会将该字段的原始值（如 `"192.168.1.1"`）独立存储在 Lucene 的存储字段中。此时可以通过 `fields` API（如 `fields["ip_field"]`）直接获取该值，无需解析 `_source`。
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240813212156052.png)
 
@@ -84,19 +89,29 @@ lucene 中出现了另外一个结构 **Term Index** 这是一个前缀树，通
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240813212643652.png)
 
-1. Segment：由上面四种结构组成，具备完整搜索功能的最小单元。
+- **默认行为**：
+  `doc_values` 默认启用（`true`）。对于 `ip` 类型字段，Elasticsearch 会将其转换为一种高效的数值形式（如 IPv4 转换为 `long`，IPv6 转换为 `binary` 或 `两个 long`），并以列式结构存储在磁盘上。这种优化支持以下操作：
+  - **快速排序**（`sort`）
+  - **聚合**（`terms`、`ip_range` 聚合等）
+  - **脚本访问**（如 Painless 脚本中的 `doc['client_ip'].value`）
+- **禁用 Doc Values**：
+  如果手动设置 `"doc_values": false`，将无法进行排序、聚合或脚本访问，但可能会略微减少磁盘占用（通常不建议禁用）
 
-   ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240628003637291.png)
+#### Segment
 
-   随着不断地插入数据会出现多个 segment，Segment一旦生成就不能修改，只能进行合并 **Segment Merging**（段合并）
+由上面四种结构组成，具备完整搜索功能的最小单元。
 
-   [segment-merge 官方文档](https://www.elastic.co/guide/en/elasticsearch/guide/current/merge-process.html)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240628003637291.png)
 
-   ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240813214043589.png)
+随着不断地插入数据会出现多个 segment，Segment一旦生成就不能修改，只能进行合并 **Segment Merging**（段合并）
 
-   上面提到的多个 segment，就共同构成了一个**单机文本检索库**，它其实就是非常有名的开源基础搜索库 **lucene**。
+[segment-merge 官方文档](https://www.elastic.co/guide/en/elasticsearch/guide/current/merge-process.html)
 
-   ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240628003610415.png)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240813214043589.png)
+
+上面提到的多个 segment，就共同构成了一个**单机文本检索库**，它其实就是非常有名的开源基础搜索库 **lucene**。
+
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240628003610415.png)
 
 #### Analysis（分词与分析）
 
