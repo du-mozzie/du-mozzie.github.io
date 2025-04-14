@@ -35,7 +35,16 @@ Lucene 索引文件结构主要如下
 
 #### Inverted Index（倒排索引）
 
-一段文本进行分词后存储在 **Term dictionary** 按照顺序排列（可以二分查找），**Posting list** 存储对应的文档ID，由于 **Term dictionary** 数据量大所以不适合存储内存中。
+倒排索引是 Lucene 的核心，用于快速定位文档中的关键词。其结构包括：
+
+- **Term Dictionary（词项字典）**：所有文档中出现过的唯一词项（Term）的集合，按字典序排序。
+- **Postings List（倒排列表）**：每个词项对应的文档列表（DocID 列表），包含以下信息：
+  - **DocID**：文档的唯一标识。
+  - **Term Frequency（TF）**：词项在文档中出现的次数。
+  - **Positions**：词项在文档中的位置（用于短语查询）。
+  - **Payloads**（可选）：附加的元数据（如权重）。
+
+一段文本进行分词后存储在 **Term dictionary** 按照顺序排列（可以二分查找），**Postings list** 存储对应的文档ID，由于 **Term dictionary** 数据量大所以不适合存储内存中。
 
 | Term dictionary | Posting list |
 | --------------- | ------------ |
@@ -54,7 +63,8 @@ lucene 中出现了另外一个结构 **Term Index** 这是一个前缀树，通
 
 #### Stored Fields
 
-存储完整的文档内容
+- 存储原始文档的字段值，用于搜索结果中直接返回原始内容（如 `_source`）。
+- 存储方式：按文档存储（行式存储），适合按 DocID 快速读取。
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240813212156052.png)
 
@@ -65,6 +75,12 @@ lucene 中出现了另外一个结构 **Term Index** 这是一个前缀树，通
 #### Doc Values
 
 按照某个字段排序的文档，功能类似MySQL的索引
+
+- **列式存储**：按字段存储所有文档的值，用于排序、聚合、脚本计算等。
+- 文件格式：
+  - `.dvd`：数据文件（压缩存储）。
+  - `.dvm`：元数据文件（记录数据格式、偏移量）。
+- 支持类型：数值（Numeric）、二进制（Binary）、SortedSet 等。
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240813212643652.png)
 
@@ -81,6 +97,12 @@ lucene 中出现了另外一个结构 **Term Index** 这是一个前缀树，通
    上面提到的多个 segment，就共同构成了一个**单机文本检索库**，它其实就是非常有名的开源基础搜索库 **lucene**。
 
    ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/image-20240628003610415.png)
+
+#### Analysis（**分词与分析**）
+
+- **Tokenizer**：将文本拆分为词项（Token），如空格分词、中文分词。
+- **TokenFilter**：对词项进行处理，如转小写、停用词过滤、同义词扩展。
+- **Analyzer**：组合 Tokenizer 和 TokenFilter 的管道，如 `StandardAnalyzer`
 
 #### 上述结构执行过程
 
