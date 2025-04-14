@@ -1,0 +1,76 @@
+name: AI Code Review (Standard)
+
+on:
+  push:
+    branches:
+      - master
+      - main
+
+jobs:
+  code-review:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      # --- 环境变量获取步骤保持不变 ---
+      - name: Get repository name
+        run: echo "PROJECT_NAME=${GITHUB_REPOSITORY##*/}" >> $GITHUB_ENV
+
+      - name: Get commit message
+        run: echo "COMMIT_MESSAGE=$(git log -1 --pretty=format:'%s')" >> $GITHUB_ENV
+
+      - name: Get commit hash
+        run: echo "COMMIT_HASH=$(git log -1 --pretty=format:'%H')" >> $GITHUB_ENV
+
+      - name: Get commit datetime
+        run: echo "COMMIT_DATETIME=$(git log -1 --date=format:'%Y-%m-%d %H:%M:%S' --pretty=format:'%cd')" >> $GITHUB_ENV
+
+      - name: Get commit author info
+        run: |
+          echo "AUTHOR_NAME=$(git log -1 --pretty=format:'%an')" >> $GITHUB_ENV
+          echo "AUTHOR_EMAIL=$(git log -1 --pretty=format:'%ae')" >> $GITHUB_ENV
+
+      - name: Get branch name
+        run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+
+      # --- 修改后的Diff获取和发送步骤 ---
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
+      - name: Get Code Diff
+        id: diff
+        run: |
+          # 获取规范的父提交（正确处理合并提交）
+          PARENT_COMMIT=$(git rev-parse ${{ env.COMMIT_HASH }}^)
+          git diff $PARENT_COMMIT ${{ env.COMMIT_HASH }} > diff.txt
+
+      - name: Generate JSON payload
+        run: |
+          jq -n \
+            --arg projectName "${{ env.PROJECT_NAME }}" \
+            --arg commitMessage "${{ env.COMMIT_MESSAGE }}" \
+            --arg commitHash "${{ env.COMMIT_HASH }}" \
+            --arg commitDateTime "${{ env.COMMIT_DATETIME }}" \
+            --arg authorName "${{ env.AUTHOR_NAME }}" \
+            --arg authorEmail "${{ env.AUTHOR_EMAIL }}" \
+            --rawfile diffContent diff.txt \
+            '{
+              projectName: $projectName,
+              commitMessage: $commitMessage,
+              commitHash: $commitHash,
+              commitDateTime: $commitDateTime,
+              authorName: $authorName,
+              authorEmail: $authorEmail,
+              diff: $diffContent
+            }' > payload.json
+
+      - name: Send to Review Service
+        run: |
+          curl -X POST \
+            -H "Content-Type: application/json" \
+            -d @payload.json \
+            "http://121.36.71.64:1741/api/v1/code-review/exec-review/${{ secrets.ACCESS_TOKEN }}"

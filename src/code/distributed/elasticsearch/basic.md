@@ -239,6 +239,8 @@ GET /library/_search
 
 ### ES 的写入流程
 
+[参考文章：ES原理之索引文档流程详解](https://pdai.tech/md/db/nosql-es/elasticsearch-y-th-3.html)
+
 - 当**客户端应用**发起数据**写入**请求，请求会先发到集群中**协调节点**。
 - 协调节点根据 hash 路由，判断数据该写入到哪个**数据节点**里的哪个**分片**(Shard)，找到**主分片**并写入。分片底层是 **lucene**，所以最终是将数据写入到 lucene 库里的 **segment** 内，将数据固化为**倒排索引**和 **Stored Fields** 以及 **Doc Values** 等多种结构。
 - 主分片 写入成功后会将数据同步给 **副本分片**。
@@ -254,6 +256,8 @@ GET /library/_search
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/202502121630791.png)
 
 ### ES 的搜索流程
+
+[参考文章：ES原理之读取文档流程详解](https://pdai.tech/md/db/nosql-es/elasticsearch-y-th-4.html)
 
 Elasticsearch 的搜索流程分为 **查询阶段（Query Phase）** 和 **获取阶段（Fetch Phase）**，核心设计目标是减少网络传输并提升性能。
 
