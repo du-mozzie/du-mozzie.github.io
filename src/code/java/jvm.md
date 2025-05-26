@@ -290,7 +290,7 @@ jdk1.8及以后：无永久代，类型信息、字段、方法、常量保存�
 
 1. **分代假设驱动堆划分**
 
-传统垃圾回收器（如Serial、Parallel Scavenge、CMS）基于**分代假设（Generational Hypothesis）**设计：
+传统垃圾回收器（如Serial、Parallel Scavenge、CMS）基于**分代假设**（Generational Hypothesis）设计：
 
 - **年轻代**：对象生命周期短（朝生夕死），适合**复制算法**（如Eden + Survivor区）。
 
