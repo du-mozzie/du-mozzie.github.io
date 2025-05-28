@@ -10,6 +10,8 @@ timeline: true
 article: true
 ---
 
+遇到项目中使用Feign远程调用时，请求头丢失，导致服务调用失败。
+
 ```java
 @Component
 public class FeignAuthRequestInterceptor implements RequestInterceptor {

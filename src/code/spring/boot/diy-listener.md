@@ -10,6 +10,8 @@ timeline: true
 article: true
 ---
 
+Spring Boot 自定义事件监听器
+
 ```java
 实现接口
 ApplicationContextInitializer

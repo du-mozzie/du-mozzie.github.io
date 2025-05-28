@@ -10,6 +10,8 @@ timeline: true
 article: true
 ---
 
+Spring Boot 默认支持的注解
+
 ## 参数注解
 
 |        | 获取url模板上数据的（/{id}）@DefaultValue，RestFul风格 | 获取请求参数的（包括post表单提交）键值对（?param1=10&param2=20）、可以设置defaultValue | 接收前端传递给后端的json字符串中的数据(Get请求不能使用) |

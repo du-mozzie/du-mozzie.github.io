@@ -11,7 +11,7 @@ article: true
 prev: ./
 ---
 
-# SpringBoot自动配置原理
+## SpringBoot自动配置原理
 
 ```java
 //核心源码
@@ -23,11 +23,11 @@ public @interface SpringBootApplication {
 }
 ```
 
-## @SpringBootConfiguration
+### @SpringBootConfiguration
 
 代表当前是一个配置类
 
-## @EnableAutoConfiguration
+### @EnableAutoConfiguration
 
 ```java
 @AutoConfigurationPackage
@@ -104,11 +104,11 @@ public @interface AutoConfigurationPackage {}
 
    xxxAutoConfiguration ---> 组件 ---> xxxProperties获取参数 \<--`绑定`--> Application.properties
 
-## @ComponentScan
+### @ComponentScan
 
 包扫描，指定我们要扫描哪些
 
-## 自动装配第三方依赖
+### 自动装配第三方依赖
 
 一、需求描述
 写了一个maven项目封装一套组件可以给第三方使用，如果第三方直接引用依赖，Spring Boot不会对引用的jar中的配置类（如带有@Configuration的类）
@@ -124,7 +124,7 @@ public @interface AutoConfigurationPackage {}
 3. Spring Boot 主动加载
    这三种方式友好程度依次递增
 
-### 1、使用@ComponentScan
+#### 1、使用@ComponentScan
 
 只需在SpringBoot启动类或自定义的配置类中添加 **@ComponentScan** 注解即可
 
@@ -149,7 +149,7 @@ public @interface AutoConfigurationPackage {}
   }
   ```
 
-### 2、通过配置开关
+#### 2、通过配置开关
 
 - 在自定义组件中添加配置类
 
@@ -181,7 +181,7 @@ public @interface AutoConfigurationPackage {}
 
   或者直接在启动类中添加 **@EnableTestConfig** 注解。
 
-### 3、Spring 自动配置
+#### 3、Spring 自动配置
 
 在自定义配置类的resources中新建META-INF目录并添加spring.factories配置文件
 
@@ -198,7 +198,7 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration\
 
 从第二行开始都是一个配置类，需要填写该配置类的全限定名
 
-## 总结
+### 总结
 
 1. 在 Spring Boot 项目中的引导类上有一个注解 @SpringBootApplication，这个注解是对三个注解进行了封装，分别是：
    - @SpringBootConfiguration

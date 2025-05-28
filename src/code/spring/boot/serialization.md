@@ -10,6 +10,8 @@ timeline: true
 article: true
 ---
 
+序列化问题统一处理
+
 ```java
 package com.du.config;
 

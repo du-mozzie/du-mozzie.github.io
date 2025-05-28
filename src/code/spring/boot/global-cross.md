@@ -10,6 +10,8 @@ timeline: true
 article: true
 ---
 
+SpringBoot 跨域配置
+
 ```java
 @Configuration
 public class CorsConfig {

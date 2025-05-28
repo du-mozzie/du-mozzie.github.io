@@ -10,6 +10,8 @@ timeline: true
 article: true
 ---
 
+项目中封装的统一返回对象
+
 ```java
 @Data
 public class Resp {

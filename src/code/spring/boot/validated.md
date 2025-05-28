@@ -10,6 +10,8 @@ timeline: true
 article: true
 ---
 
+SpringBoot 校验器使用方法
+
 ## @Validated参数合法性
 
 1. 在实体类添加校验规则
