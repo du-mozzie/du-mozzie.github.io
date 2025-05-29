@@ -16,5 +16,13 @@ RAG（retrieval-augmented generation）直译为检索增强生成，简单来�
 
 主要使用的计算是嵌入大模型，将用户上传的文本资料进行文件切割、打标最后转为向量数据存储在向量数据库，进行提问的时候去向量数据库进行检索，这样问的信息能够更加正确，并且可以让大模型读取到公司内部的资料。
 
-![1748426977924](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/202505281809286.jpg)
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/202505281809286.jpg)
+
+本教程使用的嵌入模型是[nomic-embed-text](https://ollama.com/library/nomic-embed-text)，使用ollama可以一键安装
+
+<img src="https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/202505291107693.png" style="zoom:70%;" />
+
+使用[Spring AI对接大模型](https://spring.io/projects/spring-ai)
+
+<img src="https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/202505291110739.png" style="zoom:67%;" />
 
