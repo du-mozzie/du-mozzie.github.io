@@ -1,5 +1,5 @@
 ---
-order: 1
+order: 2
 title: Git忽略文件
 date: 2021-08-20
 category: 
