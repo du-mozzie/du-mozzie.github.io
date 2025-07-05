@@ -1,4 +1,5 @@
 ---
+order: 3
 title: 大模型参数说明
 date: 2025-06-30
 category: 大模型开发
