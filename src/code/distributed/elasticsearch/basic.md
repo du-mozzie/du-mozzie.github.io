@@ -526,7 +526,7 @@ Mapping 类似于数据库中的表结构定义schema，它的主要作用是：
 
 - fields：可以对一个字段设置多种索引类型，例如text类型用来做全文检索，再加一个keyword来用于做聚合和排序。
 
-- format：用于date类型。设置时间的格式。具体见https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-date-format.html
+- format：用于date类型。设置时间的格式。具体见[文档-format](https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-date-format.html)
 
 - ignore_above：默认值为256，作用于keyword类型。指示该字段的最大索引长度（即超过该长度的内容将不会被索引分析），对于超过ignore_above长度的字符串，analyzer不会进行索引分析，所以超过该长度的内容将不会被搜索到。注意：keyword类型的字段的最大长度限制为32766个UTF-8字符，text类型的字段对字符长度没有限制
 
