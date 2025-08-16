@@ -833,9 +833,9 @@ jstatd服务器需要在本地主机上存在一个RMI注册表。jstatd服务�
 
    分析快照文件的思路或者方法论：
 
-   - 内存占用过大的对象是什么？`histogram`
-   - 这个对象被谁引用？`dominator Tree`
-   - 定位到具体的代码？`thread_overview`
+   - 内存占用过大的对象是什么？`histogram`，按照占用的内存倒序进行排序的。
+   - 这个对象被谁引用？`dominator Tree`，用来分析对象的调用链
+   - 定位到具体的代码？`thread_overview`，线程简介图，这个里面有方法的调用链信息和堆栈信息
 
 4. [JProfiler](https://www.ej-technologies.com/products/jprofiler/overview.html)
 
