@@ -97,6 +97,8 @@ export default hopeTheme({
       tasklist: true,
       vPre: true,
       mathjax: true,
+      // https://theme-hope.vuejs.press/zh/guide/markdown/chart/mermaid.html
+      mermaid: true,
     },
   },
 });
