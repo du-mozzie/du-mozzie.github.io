@@ -888,7 +888,7 @@ public ThreadPoolExecutor(int corePoolSize,
    RejectedExecutionHandler 下有 4 个实现类： 
 
 -  AbortPolicy：让调用者抛出 RejectedExecutionException 异常，**默认策略**
--  CallerRunsPolicy：让调用者运行的调节机制，将某些任务回退到调用者，从而降低新任务的流量
+-  CallerRunsPolicy：当线程池饱和时，该策略不会丢弃任务，也不会抛出异常，而是让提交该任务的线程（调用 execute 方法的线程）自己来执行这个任务
 -  DiscardPolicy：直接丢弃任务，不予任何处理也不抛出异常
 -  DiscardOldestPolicy：放弃队列中最早的任务，把当前任务加入队列中尝试再次提交当前任务
 
