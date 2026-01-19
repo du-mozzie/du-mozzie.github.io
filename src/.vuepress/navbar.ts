@@ -18,6 +18,11 @@ export default navbar([
         link: "java/",
       },
       {
+        text: "Netty",
+        icon: "/assets/images/navbar/netty.svg",
+        link: "netty/",
+      },
+      {
         text: "MySQL",
         icon: "/assets/images/navbar/mysql.svg",
         link: "mysql/",
