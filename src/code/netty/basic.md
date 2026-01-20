@@ -37,9 +37,43 @@ Buffer 是 Netty 的核心组件，它是 Netty 的核心抽象，是所有 Nett
 - FloatBuffer：浮点缓冲区，用于浮点读写
 - DoubleBuffer：双精度缓冲区，用于双精度读写
 
+### ByteBuffer
+
+> 关键属性
+
+- capacity：缓冲区容量，表示缓冲区可以存储的最大字节数
+- limit：缓冲区限制，表示缓冲区可以读取的最大字节数
+- position：缓冲区位置，表示缓冲区可以读取的字节数
+
+
+```mermaid
+%%{init: {"flowchart": {"nodeSpacing": 0, "rankSpacing": 36}}}%%
+flowchart LR
+    classDef filled fill:#19d08a,stroke:#0b6b4f,color:#0b2a1c;
+    classDef empty fill:#ffffff,stroke:#333,stroke-width:1.5px,color:#333;
+    classDef label fill:#58c890,stroke:#2f9c63,color:#0b2a1c;
+
+    c1["a"]:::filled
+    c2["b"]:::filled
+    c3["c"]:::filled
+    c4["d"]:::filled
+    e1[" "]:::empty
+    e2[" "]:::empty
+    e3[" "]:::empty
+    e4[" "]:::empty
+
+    c1 --- c2 --- c3 --- c4 --- e1 --- e2 --- e3 --- e4
+
+    pos([Position]):::label --> e1
+    lim(["Limit 写入限制"]):::label --> e4
+    cap(["Capacity 容量"]):::label --> e4
+
+    linkStyle 0,1,2,3,4,5,6 stroke:#333,stroke-width:1.5px;
+```
+
 ## Selector
 
-Selector 是 Netty 的核心组件，它是 Netty 的核心抽象，是所有 Netty 组件的基础。Selector 是 Netty 的核心抽象，它定义了 Netty 的核心功能，如：注册、取消注册、选择、获取已注册通道、获取已注册通道数量、获取已注册通道类型、获取已注册通道属性等。
+Selector 是 Netty 的核心组件，定义了 Netty 的核心功能，如：注册、取消注册、选择、获取已注册通道、获取已注册通道数量、获取已注册通道类型、获取已注册通道属性等。
 
 ### 多线程模式
 
