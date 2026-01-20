@@ -46,6 +46,7 @@ Buffer 是 Netty 的核心组件，它是 Netty 的核心抽象，是所有 Nett
 - position：缓冲区位置，表示缓冲区可以读取的字节数
 
 > 主要方法
+- allocate()：指定缓冲区大小，分配一个缓冲区，返回一个缓冲区
 - flip()：将缓冲区从写模式切换到读模式，limit设置为position，position设置为0
 - clear()：清空缓冲区，将position设置为0，limit设置为capacity
 - compact()：压缩缓冲区，将未使用的空间移动到缓冲区的起始位置，将position设置为limit，limit设置为capacity
