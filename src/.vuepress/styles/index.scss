@@ -6,3 +6,20 @@
 .mermaid-preview {
   background-color: var(--mermaid-preview-bg, rgb(255 255 255 / 80%)) !important;
 }
+
+.vp-blog-mask {
+  background-color: #fff;
+}
+
+.vp-blog-mask::after {
+  background: transparent;
+  opacity: 0;
+}
+
+.vp-blog-hero-description {
+  background: linear-gradient(90deg, #5f6de0 0%, #c94b7a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-size: 2rem;
+}
