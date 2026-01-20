@@ -39,12 +39,42 @@ Buffer 是 Netty 的核心组件，它是 Netty 的核心抽象，是所有 Nett
 
 ### ByteBuffer
 
-> 关键属性
+> 主要属性
 
 - capacity：缓冲区容量，表示缓冲区可以存储的最大字节数
 - limit：缓冲区限制，表示缓冲区可以读取的最大字节数
 - position：缓冲区位置，表示缓冲区可以读取的字节数
 
+> 主要方法
+- flip()：将缓冲区从写模式切换到读模式，limit设置为position，position设置为0
+- clear()：清空缓冲区，将position设置为0，limit设置为capacity
+- compact()：压缩缓冲区，将未使用的空间移动到缓冲区的起始位置，将position设置为limit，limit设置为capacity
+
+空闲缓冲区
+
+```mermaid
+flowchart LR
+    classDef filled fill:#19d08a,stroke:#0b6b4f,color:#0b2a1c;
+    classDef empty fill:#ffffff,stroke:#333,stroke-width:1.5px,color:#333;
+    classDef label fill:#58c890,stroke:#2f9c63,color:#0b2a1c;
+
+    c1[" "]:::filled
+    c2[" "]:::filled
+    c3[" "]:::filled
+    c4[" "]:::filled
+    e1[" "]:::empty
+    e2[" "]:::empty
+    e3[" "]:::empty
+    e4[" "]:::empty
+
+    c1 --- c2 --- c3 --- c4 --- e1 --- e2 --- e3 --- e4
+
+    pos([Position]):::label --> c1
+    lim(["Limit 写入限制"]):::label --> e4
+    cap(["Capacity 容量"]):::label --> e4
+```
+
+写入数据后position指针移动
 
 ```mermaid
 flowchart LR
