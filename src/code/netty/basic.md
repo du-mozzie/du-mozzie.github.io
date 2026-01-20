@@ -47,7 +47,6 @@ Buffer 是 Netty 的核心组件，它是 Netty 的核心抽象，是所有 Nett
 
 
 ```mermaid
-%%{init: {"flowchart": {"nodeSpacing": 0, "rankSpacing": 36}}}%%
 flowchart LR
     classDef filled fill:#19d08a,stroke:#0b6b4f,color:#0b2a1c;
     classDef empty fill:#ffffff,stroke:#333,stroke-width:1.5px,color:#333;
@@ -67,8 +66,6 @@ flowchart LR
     pos([Position]):::label --> e1
     lim(["Limit 写入限制"]):::label --> e4
     cap(["Capacity 容量"]):::label --> e4
-
-    linkStyle 0,1,2,3,4,5,6 stroke:#333,stroke-width:1.5px;
 ```
 
 ## Selector
