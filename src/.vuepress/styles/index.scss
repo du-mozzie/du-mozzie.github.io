@@ -1,1 +1,8 @@
 // place your custom styles here
+:root {
+  --mermaid-preview-bg: rgb(255 255 255 / 100%);
+}
+
+.mermaid-preview {
+  background-color: var(--mermaid-preview-bg, rgb(255 255 255 / 80%)) !important;
+}
