@@ -31,12 +31,54 @@ Channel 是NIO 的核心组件，定义了 NIO 的核心功能，如：打开、
 
 ByteBuffer 是 NIO 的核心组件，它是 NIO 的核心抽象，是所有 NIO 组件的基础。Buffer 是 NIO 的核心抽象，它定义了 NIO 的核心功能，如：读、写、获取数据、设置数据、获取数据长度、获取数据起始位置、获取数据结束位置、获取数据类型。
 
-> 关键属性
+> 主要属性
 
 - capacity：缓冲区容量，表示缓冲区可以存储的最大字节数
 - limit：缓冲区限制，表示缓冲区可以读取的最大字节数
 - position：缓冲区位置，表示缓冲区可以读取的字节数
+- mark：标记一个位置，后续使用reset()方法可恢复position
 
+> 主要方法
+- allocate()：指定缓冲区大小，分配一个缓冲区，返回一个缓冲区
+- flip()：将缓冲区从写模式切换到读模式，limit设置为position，position设置为0
+- clear()：清空缓冲区，将position设置为0，limit设置为capacity
+- compact()：压缩缓冲区，将未使用的空间移动到缓冲区的起始位置，将position设置为limit，limit设置为capacity
+- 向buffer写入数据
+  - channel.read(buffer) 通道写入缓冲区
+  - buffer.put(byte) 缓冲区写入一个字节
+- 向buffer读取数据
+  - channel.write(buffer) 获取缓冲区数据
+  - buffer.get() 获取缓冲区数据
+- get(i)：从指定位置读取一个字节，返回一个字节，不改变position
+- mark()：设置缓冲区的标记位置，后续使用reset()方法可恢复position
+- reset()：恢复缓冲区的位置，将position设置为mark，mark设置为-1
+- rewind()：将position设置为0，limit设置为capacity
+
+空闲缓冲区
+
+```mermaid
+flowchart LR
+    classDef filled fill:#19d08a,stroke:#0b6b4f,color:#0b2a1c;
+    classDef empty fill:#ffffff,stroke:#333,stroke-width:1.5px,color:#333;
+    classDef label fill:#58c890,stroke:#2f9c63,color:#0b2a1c;
+
+    c1[" "]:::filled
+    c2[" "]:::filled
+    c3[" "]:::filled
+    c4[" "]:::filled
+    e1[" "]:::empty
+    e2[" "]:::empty
+    e3[" "]:::empty
+    e4[" "]:::empty
+
+    c1 --- c2 --- c3 --- c4 --- e1 --- e2 --- e3 --- e4
+
+    pos([Position]):::label --> c1
+    lim(["Limit 写入限制"]):::label --> e4
+    cap(["Capacity 容量"]):::label --> e4
+```
+
+写入数据后position指针移动
 
 ```mermaid
 flowchart LR
