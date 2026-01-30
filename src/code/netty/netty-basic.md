@@ -85,3 +85,26 @@ EventLoop 是 Netty 的内部线程组件，主要用来处理相关IO事件，�
 - NioEventLoopGroup：NIO 线程组，用于处理 NIO 线程，继承了 AbstractEventLoopGroup 类
 - EpollEventLoopGroup：EPOLL 线程组，用于处理 EPOLL 线程，继承了 AbstractEventLoopGroup 类
 - DefaultEventLoopGroup：默认线程组，用于处理默认线程，继承了 AbstractEventLoopGroup 类
+
+handler 执行切换线程
+
+```java
+static void invokeChannelRead(final AbstractChannelHandlerContext next, Object msg) {
+    final Object m = next.pipeline.touch(ObjectUtil.checkNotNull(msg, "msg"), next);
+    // 获取下一个处理器（Handler）应该在哪个"工作线程"上运行
+    EventExecutor executor = next.executor();
+    // 判断当前handler所在的线程是否是下一个handler需要的线程
+    if (executor.inEventLoop()) {
+        // 如果当前线程是下一个handler需要的线程直接由当前线程执行
+        next.invokeChannelRead(m);
+    } else {
+        // 把任务放到下一个handler的执行线程中去
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                next.invokeChannelRead(m);
+            }
+        });
+    }
+}
+```
