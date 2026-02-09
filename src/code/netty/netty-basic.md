@@ -682,9 +682,753 @@ public class TestClient {
 }
 ```
 
+## 粘包与半包
+
+### 粘包现象
+
+服务端代码
+
+```java
+public class HelloWorldServer {
+    static final Logger log = LoggerFactory.getLogger(HelloWorldServer.class);
+    void start() {
+        NioEventLoopGroup boss = new NioEventLoopGroup(1);
+        NioEventLoopGroup worker = new NioEventLoopGroup();
+        try {
+            ServerBootstrap serverBootstrap = new ServerBootstrap();
+            serverBootstrap.channel(NioServerSocketChannel.class);
+            serverBootstrap.group(boss, worker);
+            serverBootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
+                @Override
+                protected void initChannel(SocketChannel ch) throws Exception {
+                    ch.pipeline().addLast(new LoggingHandler(LogLevel.DEBUG));
+                    ch.pipeline().addLast(new ChannelInboundHandlerAdapter() {
+                        @Override
+                        public void channelActive(ChannelHandlerContext ctx) throws Exception {
+                            log.debug("connected {}", ctx.channel());
+                            super.channelActive(ctx);
+                        }
+
+                        @Override
+                        public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+                            log.debug("disconnect {}", ctx.channel());
+                            super.channelInactive(ctx);
+                        }
+                    });
+                }
+            });
+            ChannelFuture channelFuture = serverBootstrap.bind(8080);
+            log.debug("{} binding...", channelFuture.channel());
+            channelFuture.sync();
+            log.debug("{} bound...", channelFuture.channel());
+            channelFuture.channel().closeFuture().sync();
+        } catch (InterruptedException e) {
+            log.error("server error", e);
+        } finally {
+            boss.shutdownGracefully();
+            worker.shutdownGracefully();
+            log.debug("stoped");
+        }
+    }
+
+    public static void main(String[] args) {
+        new HelloWorldServer().start();
+    }
+}
+```
+
+客户端代码希望发送 10 个消息，每个消息是 16 字节
+
+```java
+public class HelloWorldClient {
+    static final Logger log = LoggerFactory.getLogger(HelloWorldClient.class);
+    public static void main(String[] args) {
+        NioEventLoopGroup worker = new NioEventLoopGroup();
+        try {
+            Bootstrap bootstrap = new Bootstrap();
+            bootstrap.channel(NioSocketChannel.class);
+            bootstrap.group(worker);
+            bootstrap.handler(new ChannelInitializer<SocketChannel>() {
+                @Override
+                protected void initChannel(SocketChannel ch) throws Exception {
+                    log.debug("connetted...");
+                    ch.pipeline().addLast(new ChannelInboundHandlerAdapter() {
+                        @Override
+                        public void channelActive(ChannelHandlerContext ctx) throws Exception {
+                            log.debug("sending...");
+                            Random r = new Random();
+                            char c = 'a';
+                            for (int i = 0; i < 10; i++) {
+                                ByteBuf buffer = ctx.alloc().buffer();
+                                buffer.writeBytes(new byte[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15});
+                                ctx.writeAndFlush(buffer);
+                            }
+                        }
+                    });
+                }
+            });
+            ChannelFuture channelFuture = bootstrap.connect("127.0.0.1", 8080).sync();
+            channelFuture.channel().closeFuture().sync();
+
+        } catch (InterruptedException e) {
+            log.error("client error", e);
+        } finally {
+            worker.shutdownGracefully();
+        }
+    }
+}
+```
+
+服务器端的某次输出，可以看到一次就接收了 160 个字节，而非分 10 次接收
+
+```
+08:24:46 [DEBUG] [main] c.i.n.HelloWorldServer - [id: 0x81e0fda5] binding...
+08:24:46 [DEBUG] [main] c.i.n.HelloWorldServer - [id: 0x81e0fda5, L:/0:0:0:0:0:0:0:0:8080] bound...
+08:24:55 [DEBUG] [nioEventLoopGroup-3-1] i.n.h.l.LoggingHandler - [id: 0x94132411, L:/127.0.0.1:8080 - R:/127.0.0.1:58177] REGISTERED
+08:24:55 [DEBUG] [nioEventLoopGroup-3-1] i.n.h.l.LoggingHandler - [id: 0x94132411, L:/127.0.0.1:8080 - R:/127.0.0.1:58177] ACTIVE
+08:24:55 [DEBUG] [nioEventLoopGroup-3-1] c.i.n.HelloWorldServer - connected [id: 0x94132411, L:/127.0.0.1:8080 - R:/127.0.0.1:58177]
+08:24:55 [DEBUG] [nioEventLoopGroup-3-1] i.n.h.l.LoggingHandler - [id: 0x94132411, L:/127.0.0.1:8080 - R:/127.0.0.1:58177] READ: 160B
+         +-------------------------------------------------+
+         |  0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f |
++--------+-------------------------------------------------+----------------+
+|00000000| 00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f |................|
+|00000010| 00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f |................|
+|00000020| 00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f |................|
+|00000030| 00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f |................|
+|00000040| 00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f |................|
+|00000050| 00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f |................|
+|00000060| 00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f |................|
+|00000070| 00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f |................|
+|00000080| 00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f |................|
+|00000090| 00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f |................|
++--------+-------------------------------------------------+----------------+
+08:24:55 [DEBUG] [nioEventLoopGroup-3-1] i.n.h.l.LoggingHandler - [id: 0x94132411, L:/127.0.0.1:8080 - R:/127.0.0.1:58177] READ COMPLETE
+```
 
 
 
+### 半包现象
+
+客户端代码希望发送 1 个消息，这个消息是 160 字节，代码改为
+
+```java
+ByteBuf buffer = ctx.alloc().buffer();
+for (int i = 0; i < 10; i++) {
+    buffer.writeBytes(new byte[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15});
+}
+ctx.writeAndFlush(buffer);
+```
+
+为现象明显，服务端修改一下接收缓冲区，其它代码不变
+
+```java
+serverBootstrap.option(ChannelOption.SO_RCVBUF, 10);
+```
+
+服务器端的某次输出，可以看到接收的消息被分为两节，第一次 20 字节，第二次 140 字节
+
+```
+08:43:49 [DEBUG] [main] c.i.n.HelloWorldServer - [id: 0x4d6c6a84] binding...
+08:43:49 [DEBUG] [main] c.i.n.HelloWorldServer - [id: 0x4d6c6a84, L:/0:0:0:0:0:0:0:0:8080] bound...
+08:44:23 [DEBUG] [nioEventLoopGroup-3-1] i.n.h.l.LoggingHandler - [id: 0x1719abf7, L:/127.0.0.1:8080 - R:/127.0.0.1:59221] REGISTERED
+08:44:23 [DEBUG] [nioEventLoopGroup-3-1] i.n.h.l.LoggingHandler - [id: 0x1719abf7, L:/127.0.0.1:8080 - R:/127.0.0.1:59221] ACTIVE
+08:44:23 [DEBUG] [nioEventLoopGroup-3-1] c.i.n.HelloWorldServer - connected [id: 0x1719abf7, L:/127.0.0.1:8080 - R:/127.0.0.1:59221]
+08:44:24 [DEBUG] [nioEventLoopGroup-3-1] i.n.h.l.LoggingHandler - [id: 0x1719abf7, L:/127.0.0.1:8080 - R:/127.0.0.1:59221] READ: 20B
+         +-------------------------------------------------+
+         |  0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f |
++--------+-------------------------------------------------+----------------+
+|00000000| 00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f |................|
+|00000010| 00 01 02 03                                     |....            |
++--------+-------------------------------------------------+----------------+
+08:44:24 [DEBUG] [nioEventLoopGroup-3-1] i.n.h.l.LoggingHandler - [id: 0x1719abf7, L:/127.0.0.1:8080 - R:/127.0.0.1:59221] READ COMPLETE
+08:44:24 [DEBUG] [nioEventLoopGroup-3-1] i.n.h.l.LoggingHandler - [id: 0x1719abf7, L:/127.0.0.1:8080 - R:/127.0.0.1:59221] READ: 140B
+         +-------------------------------------------------+
+         |  0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f |
++--------+-------------------------------------------------+----------------+
+|00000000| 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f 00 01 02 03 |................|
+|00000010| 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f 00 01 02 03 |................|
+|00000020| 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f 00 01 02 03 |................|
+|00000030| 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f 00 01 02 03 |................|
+|00000040| 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f 00 01 02 03 |................|
+|00000050| 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f 00 01 02 03 |................|
+|00000060| 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f 00 01 02 03 |................|
+|00000070| 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f 00 01 02 03 |................|
+|00000080| 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f             |............    |
++--------+-------------------------------------------------+----------------+
+08:44:24 [DEBUG] [nioEventLoopGroup-3-1] i.n.h.l.LoggingHandler - [id: 0x1719abf7, L:/127.0.0.1:8080 - R:/127.0.0.1:59221] READ COMPLETE
+```
+
+> **注意**
+>
+> serverBootstrap.option(ChannelOption.SO_RCVBUF, 10) 影响的底层接收缓冲区（即滑动窗口）大小，仅决定了 netty 读取的最小单位，netty 实际每次读取的一般是它的整数倍
+
+### 现象分析
+
+粘包
+
+* 现象，发送 abc def，接收 abcdef
+* 原因
+  * 应用层：接收方 ByteBuf 设置太大（Netty 默认 1024）
+  * 滑动窗口：假设发送方 256 bytes 表示一个完整报文，但由于接收方处理不及时且窗口大小足够大，这 256 bytes 字节就会缓冲在接收方的滑动窗口中，当滑动窗口中缓冲了多个报文就会粘包
+  * Nagle 算法：会造成粘包
+
+半包
+
+* 现象，发送 abcdef，接收 abc def
+* 原因
+  * 应用层：接收方 ByteBuf 小于实际发送数据量
+  * 滑动窗口：假设接收方的窗口只剩了 128 bytes，发送方的报文大小是 256 bytes，这时放不下了，只能先发送前 128 bytes，等待 ack 后才能发送剩余部分，这就造成了半包
+  * MSS 限制：当发送的数据超过 MSS 限制后，会将数据切分发送，就会造成半包
+
+本质是因为 TCP 是流式协议，消息无边界
 
 
 
+> 滑动窗口
+
+- TCP 以一个段（segment）为单位，每发送一个段就需要进行一次确认应答（ack）处理，但如果这么做，缺点是包的往返时间越长性能就越差
+
+  ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/20260209220038743.png)
+
+- 为了解决此问题，引入了窗口概念，窗口大小即决定了无需等待应答而可以继续发送的数据最大值
+
+  ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/20260209220050842.png)
+
+- 窗口实际就起到一个缓冲区的作用，同时也能起到流量控制的作用
+
+  * 图中深色的部分即要发送的数据，高亮的部分即窗口
+  * 窗口内的数据才允许被发送，当应答未到达前，窗口必须停止滑动
+  * 如果 1001~2000 这个段的数据 ack 回来了，窗口就可以向前滑动
+  * 接收方也会维护一个窗口，只有落在窗口内的数据才能允许接收
+
+> MSS 限制
+
+* 链路层对一次能够发送的最大数据有限制，这个限制称之为 MTU（maximum transmission unit），不同的链路设备的 MTU 值也有所不同，例如
+ * 以太网的 MTU 是 1500
+ * FDDI（光纤分布式数据接口）的 MTU 是 4352
+ * 本地回环地址的 MTU 是 65535 - 本地测试不走网卡
+* MSS 是最大段长度（maximum segment size），它是 MTU 刨去 tcp 头和 ip 头后剩余能够作为数据传输的字节数
+ * ipv4 tcp 头占用 20 bytes，ip 头占用 20 bytes，因此以太网 MSS 的值为 1500 - 40 = 1460
+ * TCP 在传递大量数据时，会按照 MSS 大小将数据进行分割发送
+ * MSS 的值在三次握手时通知对方自己 MSS 的值，然后在两者之间选择一个小值作为 MSS
+
+<img src="https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/20260209220131275.png" style="zoom:50%;" />
+
+> Nagle 算法
+
+* 即使发送一个字节，也需要加入 tcp 头和 ip 头，也就是总字节数会使用 41 bytes，非常不经济。因此为了提高网络利用率，tcp 希望尽可能发送足够大的数据，这就是 Nagle 算法产生的缘由
+* 该算法是指发送端即使还有应该发送的数据，但如果这部分数据很少的话，则进行延迟发送
+  * 如果 SO_SNDBUF 的数据达到 MSS，则需要发送
+  * 如果 SO_SNDBUF 中含有 FIN（表示需要连接关闭）这时将剩余数据发送，再关闭
+  * 如果 TCP_NODELAY = true，则需要发送
+  * 已发送的数据都收到 ack 时，则需要发送
+  * 上述条件不满足，但发生超时（一般为 200ms）则需要发送
+  * 除上述情况，延迟发送
+
+### 解决方案
+
+1. 短链接，发一个包建立一次连接，这样连接建立到连接断开之间就是消息的边界，缺点效率太低
+2. 每一条消息采用固定长度，缺点浪费空间
+3. 每一条消息采用分隔符，例如 \n，缺点需要转义
+4. 每一条消息分为 head 和 body，head 中包含 body 的长度
+
+#### 方法1，短链接
+
+以解决粘包为例
+
+```java
+public class HelloWorldClient {
+    static final Logger log = LoggerFactory.getLogger(HelloWorldClient.class);
+
+    public static void main(String[] args) {
+        // 分 10 次发送
+        for (int i = 0; i < 10; i++) {
+            send();
+        }
+    }
+
+    private static void send() {
+        NioEventLoopGroup worker = new NioEventLoopGroup();
+        try {
+            Bootstrap bootstrap = new Bootstrap();
+            bootstrap.channel(NioSocketChannel.class);
+            bootstrap.group(worker);
+            bootstrap.handler(new ChannelInitializer<SocketChannel>() {
+                @Override
+                protected void initChannel(SocketChannel ch) throws Exception {
+                    log.debug("conneted...");
+                    ch.pipeline().addLast(new LoggingHandler(LogLevel.DEBUG));
+                    ch.pipeline().addLast(new ChannelInboundHandlerAdapter() {
+                        @Override
+                        public void channelActive(ChannelHandlerContext ctx) throws Exception {
+                            log.debug("sending...");
+                            ByteBuf buffer = ctx.alloc().buffer();
+                            buffer.writeBytes(new byte[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15});
+                            ctx.writeAndFlush(buffer);
+                            // 发完即关
+                            ctx.close();
+                        }
+                    });
+                }
+            });
+            ChannelFuture channelFuture = bootstrap.connect("localhost", 8080).sync();
+            channelFuture.channel().closeFuture().sync();
+
+        } catch (InterruptedException e) {
+            log.error("client error", e);
+        } finally {
+            worker.shutdownGracefully();
+        }
+    }
+}
+```
+
+输出，略
+
+> 半包用这种办法还是不好解决，因为接收方的缓冲区大小是有限的
+
+#### 方法2，固定长度
+
+让所有数据包长度固定（假设长度为 8 字节），服务器端加入
+
+```java
+ch.pipeline().addLast(new FixedLengthFrameDecoder(8));
+```
+
+客户端测试代码，注意, 采用这种方法后，客户端什么时候 flush 都可以
+
+```java
+public class HelloWorldClient {
+    static final Logger log = LoggerFactory.getLogger(HelloWorldClient.class);
+
+    public static void main(String[] args) {
+        NioEventLoopGroup worker = new NioEventLoopGroup();
+        try {
+            Bootstrap bootstrap = new Bootstrap();
+            bootstrap.channel(NioSocketChannel.class);
+            bootstrap.group(worker);
+            bootstrap.handler(new ChannelInitializer<SocketChannel>() {
+                @Override
+                protected void initChannel(SocketChannel ch) throws Exception {
+                    log.debug("connetted...");
+                    ch.pipeline().addLast(new LoggingHandler(LogLevel.DEBUG));
+                    ch.pipeline().addLast(new ChannelInboundHandlerAdapter() {
+                        @Override
+                        public void channelActive(ChannelHandlerContext ctx) throws Exception {
+                            log.debug("sending...");
+                            // 发送内容随机的数据包
+                            Random r = new Random();
+                            char c = 'a';
+                            ByteBuf buffer = ctx.alloc().buffer();
+                            for (int i = 0; i < 10; i++) {
+                                byte[] bytes = new byte[8];
+                                for (int j = 0; j < r.nextInt(8); j++) {
+                                    bytes[j] = (byte) c;
+                                }
+                                c++;
+                                buffer.writeBytes(bytes);
+                            }
+                            ctx.writeAndFlush(buffer);
+                        }
+                    });
+                }
+            });
+            ChannelFuture channelFuture = bootstrap.connect("192.168.0.103", 9090).sync();
+            channelFuture.channel().closeFuture().sync();
+
+        } catch (InterruptedException e) {
+            log.error("client error", e);
+        } finally {
+            worker.shutdownGracefully();
+        }
+    }
+}
+```
+
+缺点是，数据包的大小不好把握
+
+* 长度定的太大，浪费
+* 长度定的太小，对某些数据包又显得不够
+
+#### 方法3，固定分隔符
+
+服务端加入，默认以 \n 或 \r\n 作为分隔符，如果超出指定长度仍未出现分隔符，则抛出异常
+
+```java
+ch.pipeline().addLast(new LineBasedFrameDecoder(1024));
+```
+
+客户端在每条消息之后，加入 \n 分隔符
+
+```java
+public class HelloWorldClient {
+    static final Logger log = LoggerFactory.getLogger(HelloWorldClient.class);
+
+    public static void main(String[] args) {
+        NioEventLoopGroup worker = new NioEventLoopGroup();
+        try {
+            Bootstrap bootstrap = new Bootstrap();
+            bootstrap.channel(NioSocketChannel.class);
+            bootstrap.group(worker);
+            bootstrap.handler(new ChannelInitializer<SocketChannel>() {
+                @Override
+                protected void initChannel(SocketChannel ch) throws Exception {
+                    log.debug("connetted...");
+                    ch.pipeline().addLast(new LoggingHandler(LogLevel.DEBUG));
+                    ch.pipeline().addLast(new ChannelInboundHandlerAdapter() {
+                        @Override
+                        public void channelActive(ChannelHandlerContext ctx) throws Exception {
+                            log.debug("sending...");
+                            Random r = new Random();
+                            char c = 'a';
+                            ByteBuf buffer = ctx.alloc().buffer();
+                            for (int i = 0; i < 10; i++) {
+                                for (int j = 1; j <= r.nextInt(16)+1; j++) {
+                                    buffer.writeByte((byte) c);
+                                }
+                                buffer.writeByte(10);
+                                c++;
+                            }
+                            ctx.writeAndFlush(buffer);
+                        }
+                    });
+                }
+            });
+            ChannelFuture channelFuture = bootstrap.connect("192.168.0.103", 9090).sync();
+            channelFuture.channel().closeFuture().sync();
+
+        } catch (InterruptedException e) {
+            log.error("client error", e);
+        } finally {
+            worker.shutdownGracefully();
+        }
+    }
+}
+```
+
+缺点，处理字符数据比较合适，但如果内容本身包含了分隔符（字节数据常常会有此情况），那么就会解析错误
+
+#### 方法4，预设长度
+
+在发送消息前，先约定用定长字节表示接下来数据的长度
+
+```java
+// 最大长度，长度偏移，长度占用字节，长度调整，剥离字节数
+ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(1024, 0, 1, 0, 1));
+```
+
+客户端代码
+
+```java
+public class HelloWorldClient {
+    static final Logger log = LoggerFactory.getLogger(HelloWorldClient.class);
+
+    public static void main(String[] args) {
+        NioEventLoopGroup worker = new NioEventLoopGroup();
+        try {
+            Bootstrap bootstrap = new Bootstrap();
+            bootstrap.channel(NioSocketChannel.class);
+            bootstrap.group(worker);
+            bootstrap.handler(new ChannelInitializer<SocketChannel>() {
+                @Override
+                protected void initChannel(SocketChannel ch) throws Exception {
+                    log.debug("connetted...");
+                    ch.pipeline().addLast(new LoggingHandler(LogLevel.DEBUG));
+                    ch.pipeline().addLast(new ChannelInboundHandlerAdapter() {
+                        @Override
+                        public void channelActive(ChannelHandlerContext ctx) throws Exception {
+                            log.debug("sending...");
+                            Random r = new Random();
+                            char c = 'a';
+                            ByteBuf buffer = ctx.alloc().buffer();
+                            for (int i = 0; i < 10; i++) {
+                                byte length = (byte) (r.nextInt(16) + 1);
+                                // 先写入长度
+                                buffer.writeByte(length);
+                                // 再
+                                for (int j = 1; j <= length; j++) {
+                                    buffer.writeByte((byte) c);
+                                }
+                                c++;
+                            }
+                            ctx.writeAndFlush(buffer);
+                        }
+                    });
+                }
+            });
+            ChannelFuture channelFuture = bootstrap.connect("192.168.0.103", 9090).sync();
+            channelFuture.channel().closeFuture().sync();
+
+        } catch (InterruptedException e) {
+            log.error("client error", e);
+        } finally {
+            worker.shutdownGracefully();
+        }
+    }
+}
+```
+
+## 协议设计与解析
+
+### 为什么需要协议？
+
+TCP/IP 中消息传输基于流的方式，没有边界。
+
+协议的目的就是划定消息的边界，制定通信双方要共同遵守的通信规则
+
+例如：在网络上传输
+
+```
+下雨天留客天留我不留
+```
+
+是中文一句著名的无标点符号句子，在没有标点符号情况下，这句话有数种拆解方式，而意思却是完全不同，所以常被用作讲述标点符号的重要性
+
+一种解读
+
+```
+下雨天留客，天留，我不留
+```
+
+另一种解读
+
+```
+下雨天，留客天，留我不？留
+```
+
+如何设计协议呢？其实就是给网络传输的信息加上“标点符号”。但通过分隔符来断句不是很好，因为分隔符本身如果用于传输，那么必须加以区分。因此，下面一种协议较为常用
+
+``` 
+定长字节表示内容长度 + 实际内容
+```
+
+例如，假设一个中文字符长度为 3，按照上述协议的规则，发送信息方式如下，就不会被接收方弄错意思了
+
+```
+0f下雨天留客06天留09我不留
+```
+
+### redis 协议举例
+
+```java
+NioEventLoopGroup worker = new NioEventLoopGroup();
+byte[] LINE = {13, 10};
+try {
+    Bootstrap bootstrap = new Bootstrap();
+    bootstrap.channel(NioSocketChannel.class);
+    bootstrap.group(worker);
+    bootstrap.handler(new ChannelInitializer<SocketChannel>() {
+        @Override
+        protected void initChannel(SocketChannel ch) {
+            ch.pipeline().addLast(new LoggingHandler());
+            ch.pipeline().addLast(new ChannelInboundHandlerAdapter() {
+                // 会在连接 channel 建立成功后，会触发 active 事件
+                @Override
+                public void channelActive(ChannelHandlerContext ctx) {
+                    set(ctx);
+                    get(ctx);
+                }
+                private void get(ChannelHandlerContext ctx) {
+                    ByteBuf buf = ctx.alloc().buffer();
+                    buf.writeBytes("*2".getBytes());
+                    buf.writeBytes(LINE);
+                    buf.writeBytes("$3".getBytes());
+                    buf.writeBytes(LINE);
+                    buf.writeBytes("get".getBytes());
+                    buf.writeBytes(LINE);
+                    buf.writeBytes("$3".getBytes());
+                    buf.writeBytes(LINE);
+                    buf.writeBytes("aaa".getBytes());
+                    buf.writeBytes(LINE);
+                    ctx.writeAndFlush(buf);
+                }
+                private void set(ChannelHandlerContext ctx) {
+                    ByteBuf buf = ctx.alloc().buffer();
+                    buf.writeBytes("*3".getBytes());
+                    buf.writeBytes(LINE);
+                    buf.writeBytes("$3".getBytes());
+                    buf.writeBytes(LINE);
+                    buf.writeBytes("set".getBytes());
+                    buf.writeBytes(LINE);
+                    buf.writeBytes("$3".getBytes());
+                    buf.writeBytes(LINE);
+                    buf.writeBytes("aaa".getBytes());
+                    buf.writeBytes(LINE);
+                    buf.writeBytes("$3".getBytes());
+                    buf.writeBytes(LINE);
+                    buf.writeBytes("bbb".getBytes());
+                    buf.writeBytes(LINE);
+                    ctx.writeAndFlush(buf);
+                }
+
+                @Override
+                public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+                    ByteBuf buf = (ByteBuf) msg;
+                    System.out.println(buf.toString(Charset.defaultCharset()));
+                }
+            });
+        }
+    });
+    ChannelFuture channelFuture = bootstrap.connect("localhost", 6379).sync();
+    channelFuture.channel().closeFuture().sync();
+} catch (InterruptedException e) {
+    log.error("client error", e);
+} finally {
+    worker.shutdownGracefully();
+}
+```
+
+### http 协议举例
+
+```java
+NioEventLoopGroup boss = new NioEventLoopGroup();
+NioEventLoopGroup worker = new NioEventLoopGroup();
+try {
+    ServerBootstrap serverBootstrap = new ServerBootstrap();
+    serverBootstrap.channel(NioServerSocketChannel.class);
+    serverBootstrap.group(boss, worker);
+    serverBootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
+        @Override
+        protected void initChannel(SocketChannel ch) throws Exception {
+            ch.pipeline().addLast(new LoggingHandler(LogLevel.DEBUG));
+            ch.pipeline().addLast(new HttpServerCodec());
+            ch.pipeline().addLast(new SimpleChannelInboundHandler<HttpRequest>() {
+                @Override
+                protected void channelRead0(ChannelHandlerContext ctx, HttpRequest msg) throws Exception {
+                    // 获取请求
+                    log.debug(msg.uri());
+
+                    // 返回响应
+                    DefaultFullHttpResponse response =
+                            new DefaultFullHttpResponse(msg.protocolVersion(), HttpResponseStatus.OK);
+
+                    byte[] bytes = "<h1>Hello, world!</h1>".getBytes();
+
+                    response.headers().setInt(CONTENT_LENGTH, bytes.length);
+                    response.content().writeBytes(bytes);
+
+                    // 写回响应
+                    ctx.writeAndFlush(response);
+                }
+            });
+            /*ch.pipeline().addLast(new ChannelInboundHandlerAdapter() {
+                @Override
+                public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+                    log.debug("{}", msg.getClass());
+
+                    if (msg instanceof HttpRequest) { // 请求行，请求头
+
+                    } else if (msg instanceof HttpContent) { //请求体
+
+                    }
+                }
+            });*/
+        }
+    });
+    ChannelFuture channelFuture = serverBootstrap.bind(8080).sync();
+    channelFuture.channel().closeFuture().sync();
+} catch (InterruptedException e) {
+    log.error("server error", e);
+} finally {
+    boss.shutdownGracefully();
+    worker.shutdownGracefully();
+}
+```
+
+### 自定义协议要素
+
+* 魔数，用来在第一时间判定是否是无效数据包
+* 版本号，可以支持协议的升级
+* 序列化算法，消息正文到底采用哪种序列化反序列化方式，可以由此扩展，例如：json、protobuf、hessian、jdk
+* 指令类型，是登录、注册、单聊、群聊... 跟业务相关
+* 请求序号，为了双工通信，提供异步能力
+* 正文长度
+* 消息正文
+
+#### 编解码器
+
+根据上面的要素，设计一个登录请求消息和登录响应消息，并使用 Netty 完成收发
+
+```java
+@Slf4j
+public class MessageCodec extends ByteToMessageCodec<Message> {
+
+    @Override
+    protected void encode(ChannelHandlerContext ctx, Message msg, ByteBuf out) throws Exception {
+        // 1. 4 字节的魔数
+        out.writeBytes(new byte[]{1, 2, 3, 4});
+        // 2. 1 字节的版本,
+        out.writeByte(1);
+        // 3. 1 字节的序列化方式 jdk 0 , json 1
+        out.writeByte(0);
+        // 4. 1 字节的指令类型
+        out.writeByte(msg.getMessageType());
+        // 5. 4 个字节
+        out.writeInt(msg.getSequenceId());
+        // 无意义，对齐填充
+        out.writeByte(0xff);
+        // 6. 获取内容的字节数组
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(bos);
+        oos.writeObject(msg);
+        byte[] bytes = bos.toByteArray();
+        // 7. 长度
+        out.writeInt(bytes.length);
+        // 8. 写入内容
+        out.writeBytes(bytes);
+    }
+
+    @Override
+    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+        int magicNum = in.readInt();
+        byte version = in.readByte();
+        byte serializerType = in.readByte();
+        byte messageType = in.readByte();
+        int sequenceId = in.readInt();
+        in.readByte();
+        int length = in.readInt();
+        byte[] bytes = new byte[length];
+        in.readBytes(bytes, 0, length);
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytes));
+        Message message = (Message) ois.readObject();
+        log.debug("{}, {}, {}, {}, {}, {}", magicNum, version, serializerType, messageType, sequenceId, length);
+        log.debug("{}", message);
+        out.add(message);
+    }
+}
+```
+
+测试
+
+```java
+EmbeddedChannel channel = new EmbeddedChannel(
+    new LoggingHandler(),
+    new LengthFieldBasedFrameDecoder(
+        1024, 12, 4, 0, 0),
+    new MessageCodec()
+);
+// encode
+LoginRequestMessage message = new LoginRequestMessage("zhangsan", "123", "张三");
+//        channel.writeOutbound(message);
+// decode
+ByteBuf buf = ByteBufAllocator.DEFAULT.buffer();
+new MessageCodec().encode(null, message, buf);
+
+ByteBuf s1 = buf.slice(0, 100);
+ByteBuf s2 = buf.slice(100, buf.readableBytes() - 100);
+s1.retain(); // 引用计数 2
+channel.writeInbound(s1); // release 1
+channel.writeInbound(s2);
+```
+
+解读
+
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/20260209220500907.png)
+
+> @Sharable
+
+Sharable是 `io.netty.channel` 包下面的一个注解，用来定义一个 handler 是否是线程安全的
+
+* 当 handler 不保存状态时，就可以安全地在多线程下被共享
+* 但要注意对于编解码器类，不能继承 ByteToMessageCodec 或 CombinedChannelDuplexHandler 父类，他们的构造方法对 @Sharable 有限制
+* 如果能确保编解码器不会保存状态，可以继承 MessageToMessageCodec 父类
