@@ -363,11 +363,7 @@ ByteBuf buffer = ByteBufAllocator.DEFAULT.directBuffer(10);
 
 ByteBuf 由四部分组成
 
-![](img/0010.png)
-
 最开始读写指针都在 0 位置
-
-
 
 #### 写入
 

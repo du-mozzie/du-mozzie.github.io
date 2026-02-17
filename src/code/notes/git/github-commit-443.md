@@ -3,10 +3,10 @@ order: 1
 title: GitHub提交代码443
 date: 2021-08-17
 category: 
-    - 杂记
+    - 其他
     - Git
 tag: 
-    - 杂记
+    - 其他
     - Git
 timeline: true
 article: true

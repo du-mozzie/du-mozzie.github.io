@@ -1,6 +1,6 @@
 ---
 index: false
-title: 杂记
+title: 其他
 article: false
 dir:
     order: -1

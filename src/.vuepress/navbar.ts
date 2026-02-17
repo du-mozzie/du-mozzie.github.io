@@ -48,7 +48,7 @@ export default navbar([
         link: "ai/",
       },
       {
-        text: "杂记",
+        text: "其他",
         icon: "/assets/images/navbar/notes.svg",
         link: "notes/",
       },

@@ -3,10 +3,10 @@ order: 3
 title: Git使用规范
 date: 2021-08-20
 category: 
-    - 杂记
+    - 其他
     - Git
 tag: 
-    - 杂记
+    - 其他
     - Git
 timeline: true
 article: true
