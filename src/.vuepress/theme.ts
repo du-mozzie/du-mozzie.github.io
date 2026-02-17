@@ -99,6 +99,8 @@ export default hopeTheme({
       mathjax: true,
       // https://theme-hope.vuejs.press/zh/guide/markdown/chart/mermaid.html
       mermaid: true,
+      //  https://theme-hope.vuejs.press/zh/guide/markdown/chart/markmap.html
+      markmap: true,
     },
   },
 });

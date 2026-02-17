@@ -13,10 +13,17 @@
   "devDependencies": {
     "@vuepress/bundler-vite": "2.0.0-rc.9",
     "@vuepress/plugin-search": "^2.0.0-rc.26",
+    "markmap-common": "0.17.1",
+    "markmap-lib": "^0.17.2",
+    "markmap-toolbar": "^0.17.2",
+    "markmap-view": "^0.17.2",
     "mermaid": "^10.9.5",
     "vue": "^3.4.23",
     "vuepress": "2.0.0-rc.9",
     "vuepress-theme-hope": "2.0.0-rc.38"
+  },
+  "overrides": {
+    "markmap-common": "0.17.1"
   },
   "dependencies": {
     "mathjax-full": "^3.2.2"
