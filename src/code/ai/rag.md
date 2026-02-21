@@ -2,8 +2,8 @@
 order: 2
 title: RAG知识库
 date: 2025-05-28
-category: 大模型开发
-tag: 大模型开发
+category: AI
+tag: AI
 timeline: true
 article: true
 ---

@@ -2,8 +2,8 @@
 order: 3
 title: 大模型参数说明
 date: 2025-06-30
-category: 大模型开发
-tag: 大模型开发
+category: AI
+tag: AI
 timeline: true
 article: true
 ---

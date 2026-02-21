@@ -2,8 +2,8 @@
 order: 4
 title: Windows下安装Claude Code
 date: 2025-07-04
-category: AI工具
-tag: AI工具
+category: AI
+tag: AI
 timeline: true
 article: true
 ---

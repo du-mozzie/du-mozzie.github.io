@@ -2,8 +2,8 @@
 order: 1
 title: 本地部署DeepSeek
 date: 2025-03-03
-category: 大模型开发
-tag: 大模型开发
+category: AI
+tag: AI
 timeline: true
 article: true
 ---
