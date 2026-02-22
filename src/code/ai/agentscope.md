@@ -150,6 +150,8 @@ AgentScope提供了两种集成模式
 
 `.ragMode(RAGMode.GENERIC)`
 
+<img src="https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/20260222170937245.png" style="zoom: 50%;" />
+
 #### Agentic 模式
 
 通过Tool 机制由 Agent主动调用
@@ -163,6 +165,8 @@ AgentScope提供了两种集成模式
 5. Agent 使用检索到的信息再次推理
 
 `.ragMode(RAGMode.AGENTIC`
+
+<img src="https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/20260222171242297.png" style="zoom:50%;" />
 
 ## 最佳实践
 
