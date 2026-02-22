@@ -108,6 +108,76 @@ class SimpleTools {
 | `seed`           | Long       | 随机种子            |
 | `toolChoice`     | ToolChoice | 工具选择策略        |
 
+## Tool、MCP
+
+LLM本质上是基于历史数据的概率预测系统，只能依赖训练时学到的旧知识来生成回答，无法获取训练之后的数据
+
+### Tool
+
+Tool（工具）：本质上是模型可以调用的外部接口，使得模型的能力得以延伸至其静态训练数据之外。
+
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/202602221048475.png)
+
+### MCP
+
+MCP（Model ContextProtocol，模型上下文协议），使用统一的客户端-服务器架构实现LLM和外部数据源及工具的调用
+
+<img src="https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/202602221054732.png" style="zoom:50%;" />
+
+<img src="https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/202602221056161.png" style="zoom: 50%;" />
+
+## RAG
+
+### 集成模式
+
+AgentScope提供了两种集成模式
+
+| 模式             | 描述                                 | 优点                 | 缺点               |
+| ---------------- | ------------------------------------ | -------------------- | ------------------ |
+| **Generic 模式** | 在每个推理步骤之前自动检索和注入知识 | 简单，适用于任何 LLM | 即使不需要也会检索 |
+| **Agentic 模式** | Agent 使用工具决定何时检索           | 灵活，只在需要时检索 | 需要强大的推理能力 |
+
+#### Generic 模式
+
+通过Hook机制在推理前自动注入
+
+**工作原理**：
+
+1. 用户发送查询
+2. 知识库自动检索相关文档
+3. 检索到的文档被添加到用户消息之前
+4. Agent 处理增强后的消息并响应
+
+`.ragMode(RAGMode.GENERIC)`
+
+#### Agentic 模式
+
+通过Tool 机制由 Agent主动调用
+
+**工作原理**：
+
+1. 用户发送查询
+2. Agent 推理并决定是否检索知识
+3. 如果需要，Agent 调用 `retrieve_knowledge(query="...")`
+4. 检索到的文档作为工具结果返回
+5. Agent 使用检索到的信息再次推理
+
+`.ragMode(RAGMode.AGENTIC`
+
+## 最佳实践
+
+1. **分块大小**：根据模型的上下文窗口和使用场景选择分块大小。典型值：256-1024 个字符。
+2. **重叠**：使用 10-20% 的重叠以保持块之间的上下文连续性。
+3. **分数阈值**：从 0.3-0.5 开始，根据检索质量调整。
+4. **Top-K**：初始检索 3-5 个文档，根据上下文窗口限制调整。
+5. **模式选择**：
+   - 使用 **Generic 模式**：简单问答、一致的检索模式、较弱的 LLM
+   - 使用 **Agentic 模式**：复杂任务、选择性检索、强大的 LLM
+6. **向量存储选择**：
+   - 使用 **InMemoryStore**：开发、测试、小型数据集（<10K 文档）
+   - 使用 **QdrantStore**：生产环境、大型数据集、需要持久化
+   - 使用 **ElasticsearchStore**: 生产环境、大型数据集、私有部署服务。
+
 ## 可观测能力
 
 Agent Scope Studio：https://java.agentscope.io/zh/task/studio.html
