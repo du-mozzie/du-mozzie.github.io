@@ -207,7 +207,7 @@ AgentScope提供了两种集成模式
 
 
 
-## 最佳实践
+### 最佳实践
 
 1. **分块大小**：根据模型的上下文窗口和使用场景选择分块大小。典型值：256-1024 个字符。
 2. **重叠**：使用 10-20% 的重叠以保持块之间的上下文连续性。
@@ -220,6 +220,52 @@ AgentScope提供了两种集成模式
    - 使用 **InMemoryStore**：开发、测试、小型数据集（<10K 文档）
    - 使用 **QdrantStore**：生产环境、大型数据集、需要持久化
    - 使用 **ElasticsearchStore**: 生产环境、大型数据集、私有部署服务。
+
+## 结构化输出
+
+结构化输出让 Agent 生成符合预定义 Schema 的类型化数据，实现从自然语言到结构化数据的可靠转换。
+
+> 使用方式
+
+1. 定义需要的schema
+
+   ```java
+   public class ProductInfo {
+       public String name;
+       public Double price;
+       public List<String> features;
+   
+       public ProductInfo() {}  // 必须有无参构造函数
+   }
+   ```
+
+2. 请求结构化输出
+
+   ```java
+   // 发送查询，指定输出类型
+   Msg response = agent.call(userMsg, ProductInfo.class).block();
+   
+   // 提取类型化数据
+   ProductInfo data = response.getStructuredData(ProductInfo.class);
+   
+   System.out.println("产品: " + data.name);
+   System.out.println("价格: $" + data.price);
+   ```
+
+### 两种模式
+
+| 模式                  | 特点                        | 适用场景                                    |
+| --------------------- | --------------------------- | ------------------------------------------- |
+| `TOOL_CHOICE`（默认） | 强制调用工具，一次 API 调用 | 支持 tool_choice 的模型（qwen3-max, gpt-4） |
+| `PROMPT`              | 提示词引导，可能多次调用    | 兼容老模型                                  |
+
+```
+ReActAgent agent = ReActAgent.builder()
+    .name("Agent")
+    .model(model)
+    .structuredOutputReminder(StructuredOutputReminder.TOOL_CHOICE)  // 或 PROMPT
+    .build();
+```
 
 ## 可观测能力
 
@@ -307,3 +353,65 @@ ReActAgent agent = ReActAgent.builder()
 ```
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/202602212215540.png)
+
+## Plan
+
+PlanNotebook 为智能体提供计划管理能力，帮助智能体将复杂任务分解为结构化的子任务并逐步执行。
+
+### 启用计划功能
+
+1. 使用默认配置
+
+```
+ReActAgent agent = ReActAgent.builder()
+        .name("Assistant")
+        .model(model)
+        .toolkit(toolkit)
+        .enablePlan()  // 启用计划功能
+        .build();
+```
+
+2. 自定义配置
+
+```
+PlanNotebook planNotebook = PlanNotebook.builder()
+        .maxSubtasks(10)  // 限制子任务数量
+        .build();
+
+ReActAgent agent = ReActAgent.builder()
+        .name("Assistant")
+        .model(model)
+        .toolkit(toolkit)
+        .planNotebook(planNotebook)
+        .build();
+```
+
+### 为什么要使用 PlanNotebook
+
+1. 对抗上下文噪声，锁定原始目标
+
+   痛点：中间迷失(Lost in the Middle)
+
+   解法：规划锚点
+
+<img src="https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/202602231950671.png" style="zoom: 67%;" />
+
+2. 逻辑预演（Dry Run），避免高昂试错
+
+   痛点：后期高耗损
+
+   解法：提前校验
+
+   <img src="https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/202602231952655.png" style="zoom:67%;" />
+
+### PlanNotebook实现原理
+
+- 模型通过工具操作PlanNotebook
+- 用户可以直接操作PlanNotebook
+- PlanNotebook 通过 hint message 提示模型
+
+<img src="https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/202602231955471.png" style="zoom:67%;" />
+
+#### 默认的提示实现：DefaultPlanToHint
+
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/202602232008290.png)
