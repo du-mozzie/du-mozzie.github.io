@@ -110,23 +110,75 @@ class SimpleTools {
 | `seed`           | Long       | 随机种子            |
 | `toolChoice`     | ToolChoice | 工具选择策略        |
 
-## Tool、MCP
+## 工具系统
 
-LLM本质上是基于历史数据的概率预测系统，只能依赖训练时学到的旧知识来生成回答，无法获取训练之后的数据
+LLM本质上是基于历史数据的概率预测系统，只能依赖训练时学到的旧知识来生成回答，无法获取训练之后的数据，工具系统让智能体能够执行 API 调用、数据库查询、文件操作等外部操作。
 
-### Tool
+使用 `Toolkit` 管理代理工具的注册、检索和执行
+
+### 核心特性
+
+- **注解驱动**：使用 `@Tool` 和 `@ToolParam` 快速定义工具
+- **响应式编程**：原生支持 `Mono`/`Flux` 异步执行
+- **自动 Schema**：自动生成 JSON Schema 供 LLM 理解
+- **工具组管理**：动态激活/停用工具集合
+- **预设参数**：隐藏敏感参数（如 API Key）
+- **并行执行**：支持多工具并行调用
+
+> Tool
 
 Tool（工具）：本质上是模型可以调用的外部接口，使得模型的能力得以延伸至其静态训练数据之外。
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/202602221048475.png)
 
-### MCP
+> MCP
 
 MCP（Model ContextProtocol，模型上下文协议），使用统一的客户端-服务器架构实现LLM和外部数据源及工具的调用
 
 <img src="https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/202602221054732.png" style="zoom:50%;" />
 
 <img src="https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/202602221056161.png" style="zoom: 50%;" />
+
+> 快速开始
+
+1. 定义工具
+
+```java
+public static class WeatherService {
+    @Tool(description = "获取指定城市的天气")
+    public String getWeather(
+            @ToolParam(name = "city", description = "城市名称") String city) {
+        // 模拟获取天气数据
+        return city + " 的天气：晴天，25°C";
+    }
+}
+```
+
+**注意**：`@ToolParam` 的 `name` 属性必须指定，因为 Java 默认不保留参数名。
+
+2. 注册和使用
+
+```java
+Toolkit toolkit = new Toolkit();
+toolkit.registerTool(new WeatherService());
+
+ReActAgent agent = ReActAgent.builder()
+    .name("助手")
+    .model(model)
+    .toolkit(toolkit)
+    .build();
+
+Msg msg = Msg.builder()
+        .textContent("你好！北京的天气怎么样")
+        .build();
+
+Msg response = agent.call(msg).block();
+System.out.println(response.getTextContent());
+```
+
+```
+您好！根据最新的天气信息，北京今天的天气是晴天，气温为25°C。天气很不错，适合外出活动！
+```
 
 ## Memory
 
