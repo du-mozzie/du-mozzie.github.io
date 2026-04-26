@@ -56,9 +56,9 @@ public class HelloReActAgent {
                 .name("Jarvis")
                 .sysPrompt("你是一个名为 Jarvis 的助手")
                 .model(DashScopeChatModel.builder()
-                        .apiKey(ApiKeyConfigUtil.getKey(ProviderEnums.DASHSCOPE))
-                        .modelName(ApiKeyConfigUtil.getModels(ProviderEnums.DASHSCOPE).get(0).get("chat"))
-                        .build())
+                    .apiKey(System.getenv("DASHSCOPE_API_KEY"))
+                    .modelName("qwen3-max")
+                    .build())
                 .toolkit(toolkit)
                 .build();
 
@@ -110,23 +110,246 @@ class SimpleTools {
 | `seed`           | Long       | 随机种子            |
 | `toolChoice`     | ToolChoice | 工具选择策略        |
 
-## Tool、MCP
+## Hook
 
-LLM本质上是基于历史数据的概率预测系统，只能依赖训练时学到的旧知识来生成回答，无法获取训练之后的数据
+AgentScopeJava使用统一事件模型，所有Hook都需要实现onEvent（HookEvent）方法。Hook典型应用场景包括：监控、上下文压缩、日志、限流等。
 
-### Tool
+- **基于事件**：所有智能体活动生成事件
+- **类型安全**：对事件类型进行模式匹配
+- **优先级排序**：钩子按优先级执行（值越小优先级越高）
+- **可修改**：某些事件允许修改执行上下文
+
+### 支持的事件
+
+| 事件类型            | 时机         | 可修改 | 描述                                 |
+| ------------------- | ------------ | ------ | ------------------------------------ |
+| PreCallEvent        | 智能体调用前 | ❌      | 智能体开始处理之前（仅通知）         |
+| PostCallEvent       | 智能体调用后 | ✅      | 智能体完成响应之后（可修改最终消息） |
+| PreReasoningEvent   | 推理前       | ✅      | LLM 推理之前（可修改输入消息）       |
+| PostReasoningEvent  | 推理后       | ✅      | LLM 推理完成之后（可修改推理结果）   |
+| ReasoningChunkEvent | 推理流式期间 | ❌      | 流式推理的每个块（仅通知）           |
+| PreActingEvent      | 工具执行前   | ✅      | 工具执行之前（可修改工具参数）       |
+| PostActingEvent     | 工具执行后   | ✅      | 工具执行之后（可修改工具结果）       |
+| ActingChunkEvent    | 工具流式期间 | ❌      | 工具执行进度块（仅通知）             |
+| ErrorEvent          | 发生错误时   | ❌      | 发生错误时（仅通知）                 |
+
+### 使用教程
+
+1. 自定义一个hook
+
+   ```java
+   public class LoggingHook implements Hook {
+   
+       @Override
+       public <T extends HookEvent> Mono<T> onEvent(T event) {
+   
+           if (event instanceof PreCallEvent) {
+               System.out.println("智能体启动: " + event.getAgent().getName());
+               return Mono.just(event);
+           }
+   
+           if (event instanceof PostCallEvent) {
+               System.out.println("智能体完成: " + event.getAgent().getName());
+               return Mono.just(event);
+           }
+   
+           return Mono.just(event);
+       }
+   }
+   ```
+
+2. 使用
+
+   ```java
+   public static void main(String[] args) {
+       ReActAgent agent = ReActAgent.builder()
+               .name("ai_assistant")
+               .model(model)
+               .hooks(List.of(new LoggingHook()))
+               .build();
+   
+       Msg msg = Msg.builder()
+               .textContent("2022年世界杯冠军")
+               .build();
+   
+       Msg response = agent.call(msg).block();
+       System.out.println(response.getTextContent());
+   }
+   ```
+
+   ```
+   智能体启动: ai_assistant
+   智能体完成: ai_assistant
+   2022年卡塔尔世界杯的冠军是**阿根廷队**。
+   
+   在决赛中，阿根廷队与法国队在常规时间和加时赛战成3-3平，最终通过点球大战以4-2击败对手，夺得冠军。这也是莱昂内尔·梅西（Lionel Messi）职业生涯中首次捧起大力神杯。
+   ```
+
+## Tool
+
+LLM本质上是基于历史数据的概率预测系统，只能依赖训练时学到的旧知识来生成回答，无法获取训练之后的数据，工具系统让智能体能够执行 API 调用、数据库查询、文件操作等外部操作。
+
+使用 `Toolkit` 管理代理工具的注册、检索和执行
+
+### 核心特性
+
+- **注解驱动**：使用 `@Tool` 和 `@ToolParam` 快速定义工具
+- **响应式编程**：原生支持 `Mono`/`Flux` 异步执行
+- **自动 Schema**：自动生成 JSON Schema 供 LLM 理解
+- **工具组管理**：动态激活/停用工具集合
+- **预设参数**：隐藏敏感参数（如 API Key）
+- **并行执行**：支持多工具并行调用
 
 Tool（工具）：本质上是模型可以调用的外部接口，使得模型的能力得以延伸至其静态训练数据之外。
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/202602221048475.png)
 
-### MCP
+### 使用教程
+
+1. 定义工具
+
+```java
+public static class WeatherService {
+    @Tool(description = "获取指定城市的天气")
+    public String getWeather(
+            @ToolParam(name = "city", description = "城市名称") String city) {
+        // 模拟获取天气数据
+        return city + " 的天气：晴天，25°C";
+    }
+}
+```
+
+**注意**：`@ToolParam` 的 `name` 属性必须指定，因为 Java 默认不保留参数名。
+
+2. 注册和使用
+
+```java
+Toolkit toolkit = new Toolkit();
+toolkit.registerTool(new WeatherService());
+
+ReActAgent agent = ReActAgent.builder()
+    .name("助手")
+    .model(model)
+    .toolkit(toolkit)
+    .build();
+
+Msg msg = Msg.builder()
+        .textContent("你好！北京的天气怎么样")
+        .build();
+
+Msg response = agent.call(msg).block();
+System.out.println(response.getTextContent());
+```
+
+```
+您好！根据最新的天气信息，北京今天的天气是晴天，气温为25°C。天气很不错，适合外出活动！
+```
+
+### Tool Group
+
+#### 为什么需要工具组
+
+企业级智能体通常会有多个智能体，会存在如下问题
+
+- 工具决策正确率降低，Agent没法正确完成任务
+- token耗费增多、响应延迟变大
+- 错误的工具调用存在安全隐患
+
+<img src="https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/202602232022094.png" style="zoom:50%;" />
+
+#### 工具分组机制
+
+1. 默认分组不激活
+
+    - 所有工具按照类型分好组
+
+    - 给出每组工具的基础信息
+
+    - 默认情况下工具都不激活
+
+<img src="https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/202602232024696.png" style="zoom:50%;" />
+
+2. Mate Tool，`enableMetaTool(boolean enableMetaTool)` 发现未被激活的工具
+
+   - 初始态下只注册一个元工具
+
+   - LLM通过其来查询具体工具信息
+
+   - 模型按需决定激活哪些分组信息
+
+   - 激活工具后才会附带上工具信息
+   
+   <img src="https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/202602232027508.png" style="zoom:50%;" />
+
+
+#### 使用方式
+
+按场景管理工具，支持动态激活/停用：
+
+```java
+// 创建工具组
+toolkit.createToolGroup("basic", "基础工具", true);   // 默认激活
+toolkit.createToolGroup("admin", "管理工具", false);  // 默认停用
+
+// 注册到工具组
+toolkit.registration()
+    .tool(new BasicTools())
+    .group("basic")
+    .apply();
+
+// 动态切换
+toolkit.updateToolGroups(List.of("admin"), true);   // 激活
+toolkit.updateToolGroups(List.of("basic"), false);  // 停用
+
+ReActAgent agent = ReActAgent.builder()
+    .name("助手")
+    .model(model)
+    .toolkit(toolkit)
+    .enableMetaTool(true) // 通过元工具发现未被激活的工具
+    .build();
+```
+
+## MCP
 
 MCP（Model ContextProtocol，模型上下文协议），使用统一的客户端-服务器架构实现LLM和外部数据源及工具的调用
 
 <img src="https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/202602221054732.png" style="zoom:50%;" />
 
 <img src="https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/202602221056161.png" style="zoom: 50%;" />
+
+### 使用教程
+
+1. 创建一个MCP Client 注册到Toolkit
+
+   ```java
+   Toolkit toolkit = new Toolkit();
+   // 
+   McpClientBuilder builder = McpClientBuilder.create("mcp").sseTransport("https://mcp.higress.ai/mcp-calendar-holiday-helper/xxxx/sse");
+   McpClientWrapper client = builder.buildAsync().block();
+   // 注册到Toolkit
+   toolkit.registerMcpClient(client);
+   ```
+
+2. 使用
+
+   ```java
+   ReActAgent agent = ReActAgent.builder()
+           .name("mcp_assistant")
+           .model(model)
+           .toolkit(toolkit)
+           .build();
+   
+   Msg msg = Msg.builder()
+           .textContent("查询一下2026年的春节是几号")
+           .build();
+   
+   Msg response = agent.call(msg).block();
+   System.out.println(response.getTextContent());
+   ```
+
+   ```
+   2026年的春节是公历**2026年2月17日**（农历丙午年正月初一）
+   ```
 
 ## Memory
 
@@ -207,7 +430,7 @@ AgentScope提供了两种集成模式
 
 
 
-## 最佳实践
+### 最佳实践
 
 1. **分块大小**：根据模型的上下文窗口和使用场景选择分块大小。典型值：256-1024 个字符。
 2. **重叠**：使用 10-20% 的重叠以保持块之间的上下文连续性。
@@ -220,6 +443,52 @@ AgentScope提供了两种集成模式
    - 使用 **InMemoryStore**：开发、测试、小型数据集（<10K 文档）
    - 使用 **QdrantStore**：生产环境、大型数据集、需要持久化
    - 使用 **ElasticsearchStore**: 生产环境、大型数据集、私有部署服务。
+
+## 结构化输出
+
+结构化输出让 Agent 生成符合预定义 Schema 的类型化数据，实现从自然语言到结构化数据的可靠转换。
+
+> 使用方式
+
+1. 定义需要的schema
+
+   ```java
+   public class ProductInfo {
+       public String name;
+       public Double price;
+       public List<String> features;
+   
+       public ProductInfo() {}  // 必须有无参构造函数
+   }
+   ```
+
+2. 请求结构化输出
+
+   ```java
+   // 发送查询，指定输出类型
+   Msg response = agent.call(userMsg, ProductInfo.class).block();
+   
+   // 提取类型化数据
+   ProductInfo data = response.getStructuredData(ProductInfo.class);
+   
+   System.out.println("产品: " + data.name);
+   System.out.println("价格: $" + data.price);
+   ```
+
+### 两种模式
+
+| 模式                  | 特点                        | 适用场景                                    |
+| --------------------- | --------------------------- | ------------------------------------------- |
+| `TOOL_CHOICE`（默认） | 强制调用工具，一次 API 调用 | 支持 tool_choice 的模型（qwen3-max, gpt-4） |
+| `PROMPT`              | 提示词引导，可能多次调用    | 兼容老模型                                  |
+
+```
+ReActAgent agent = ReActAgent.builder()
+    .name("Agent")
+    .model(model)
+    .structuredOutputReminder(StructuredOutputReminder.TOOL_CHOICE)  // 或 PROMPT
+    .build();
+```
 
 ## 可观测能力
 
@@ -307,3 +576,361 @@ ReActAgent agent = ReActAgent.builder()
 ```
 
 ![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/202602212215540.png)
+
+## Plan
+
+PlanNotebook 为智能体提供计划管理能力，帮助智能体将复杂任务分解为结构化的子任务并逐步执行。
+
+### 启用计划功能
+
+1. 使用默认配置
+
+```
+ReActAgent agent = ReActAgent.builder()
+        .name("Assistant")
+        .model(model)
+        .toolkit(toolkit)
+        .enablePlan()  // 启用计划功能
+        .build();
+```
+
+2. 自定义配置
+
+```
+PlanNotebook planNotebook = PlanNotebook.builder()
+        .maxSubtasks(10)  // 限制子任务数量
+        .build();
+
+ReActAgent agent = ReActAgent.builder()
+        .name("Assistant")
+        .model(model)
+        .toolkit(toolkit)
+        .planNotebook(planNotebook)
+        .build();
+```
+
+### 为什么要使用 PlanNotebook
+
+1. 对抗上下文噪声，锁定原始目标
+
+   痛点：中间迷失(Lost in the Middle)
+
+   解法：规划锚点
+
+<img src="https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/202602231950671.png" style="zoom: 67%;" />
+
+2. 逻辑预演（Dry Run），避免高昂试错
+
+   痛点：后期高耗损
+
+   解法：提前校验
+
+   <img src="https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/202602231952655.png" style="zoom:67%;" />
+
+### PlanNotebook实现原理
+
+- 模型通过工具操作PlanNotebook
+- 用户可以直接操作PlanNotebook
+- PlanNotebook 通过 hint message 提示模型
+
+<img src="https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/202602231955471.png" style="zoom:67%;" />
+
+#### 默认的提示实现：DefaultPlanToHint
+
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/202602232008290.png)
+
+## A2A
+
+https://java.agentscope.io/zh/task/a2a.html#a2aagent
+
+### A2A（Agent2Agent）简介
+
+<img src="https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/202602232105101.png" style="zoom:80%;" />
+
+Nacos 3.1.0支持A2A注册中心
+
+https://nacos.io/docs/latest/manual/user/ai/agent-registry
+
+### 客户端
+
+将远程 A2A 服务作为本地 Agent 使用。
+
+```java
+import io.agentscope.core.a2a.agent.A2aAgent;
+import io.agentscope.core.a2a.agent.card.WellKnownAgentCardResolver;
+
+// 创建 A2A Agent
+A2aAgent agent = A2aAgent.builder()
+    .name("remote-agent")
+    .agentCardResolver(new WellKnownAgentCardResolver(
+        "http://127.0.0.1:8080",
+        "/.well-known/agent-card.json",
+        Map.of()))
+    .build();
+
+// 调用远程 Agent
+Msg response = agent.call(userMsg).block();
+```
+
+#### 配置选项
+
+| 参数                | 类型              | 描述                     |
+| ------------------- | ----------------- | ------------------------ |
+| `agentCard`         | AgentCard         | 直接提供 AgentCard       |
+| `agentCardResolver` | AgentCardResolver | 通过解析器获取 AgentCard |
+| `memory`            | Memory            | 记忆组件                 |
+| `hook` / `hooks`    | Hook              | 钩子函数                 |
+
+#### AgentCard 获取方式
+
+```java
+// 方式 1：直接提供
+A2aAgent.builder()
+    .agentCard(agentCard)
+    .build();
+
+// 方式 2：从 well-known 路径获取
+A2aAgent.builder()
+    .agentCardResolver(new WellKnownAgentCardResolver(url, path, headers))
+    .build();
+
+// 方式 3：从 Nacos 中发现
+A2aAgent.builder()
+    .agentCardResolver(new NacosAgentCardResolver(nacosClient))
+    .build();
+
+// 方式 4：自定义解析器
+A2aAgent.builder()
+    .agentCardResolver(agentName -> customGetAgentCard(agentName))
+    .build();
+```
+
+##### 从 Nacos 中自动发现 A2A 服务
+
+使用 Nacos 作为 A2A 注册中心，自动从 Nacos 中发现 A2A 服务进行调用。
+
+```java
+import io.agentscope.core.a2a.agent.A2aAgent;
+import io.agentscope.core.nacos.a2a.discovery.NacosAgentCardResolver;
+import com.alibaba.nacos.api.PropertyKeyConst;
+import com.alibaba.nacos.api.ai.AiFactory;
+import com.alibaba.nacos.api.ai.AiService;
+
+// 设置 Nacos 地址
+Properties properties = new Properties();
+properties.put(PropertyKeyConst.SERVER_ADDR, "localhost:8848");
+// 创建 Nacos Client
+AiService aiService = AiFactory.createAiService(properties);
+// 创建 Nacos 的 AgentCardResolver
+NacosAgentCardResolver nacosAgentCardResolver = new NacosAgentCardResolver(aiService);
+// 创建 A2A Agent
+A2aAgent agent = A2aAgent.builder()
+        .name("remote-agent")
+        .agentCardResolver(nacosAgentCardResolver)
+        .build();
+```
+
+### 服务端
+
+将本地 Agent 暴露为 A2A 服务。
+
+#### Spring Boot 方式（推荐）
+
+```xml
+<dependency>
+    <groupId>io.agentscope</groupId>
+    <artifactId>agentscope-a2a-spring-boot-starter</artifactId>
+    <version>${agentscope.version}</version>
+</dependency>
+```
+
+```yaml
+# application.yml
+agentscope:
+  dashscope:
+    api-key: your-api-key
+  agent:
+    name: my-assistant
+  a2a:
+    server:
+      enabled: true
+      card:
+        name: My Assistant
+        description: 基于 AgentScope 的智能助手
+```
+
+```java
+@SpringBootApplication
+public class A2aServerApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(A2aServerApplication.class, args);
+    }
+}
+```
+
+#### 手动创建方式
+
+```java
+import io.agentscope.core.a2a.server.AgentScopeA2aServer;
+import io.agentscope.core.a2a.server.transport.DeploymentProperties;
+
+// 创建 A2A Server
+AgentScopeA2aServer server = AgentScopeA2aServer.builder(
+        ReActAgent.builder()
+            .name("my-assistant")
+            .sysPrompt("你是一个有用的助手"))
+    .deploymentProperties(DeploymentProperties.builder()
+        .host("localhost")
+        .port(8080)
+        .build())
+    .build();
+
+// 获取传输处理器用于 Web 框架
+JsonRpcTransportWrapper transport =
+    server.getTransportWrapper("JSON-RPC", JsonRpcTransportWrapper.class);
+
+// Web 服务就绪后调用
+server.postEndpointReady();
+```
+
+#### 配置 AgentCard
+
+```java
+import io.agentscope.core.a2a.server.card.ConfigurableAgentCard;
+
+ConfigurableAgentCard agentCard = new ConfigurableAgentCard.Builder()
+    .name("My Assistant")
+    .description("智能助手")
+    .version("1.0.0")
+    .skills(List.of(
+        new AgentSkill("text-generation", "文本生成"),
+        new AgentSkill("question-answering", "问答")))
+    .build();
+
+AgentScopeA2aServer.builder(agentBuilder)
+    .agentCard(agentCard)
+    .build();
+```
+
+#### 自动注册 A2A 服务到 Nacos 注册中心
+
+使用 Nacos 作为 A2A 注册中心，将 AgentScope 所提供的 A2A 服务自动注册到 Nacos 中
+
+- 为`Spring Boot 方式`添加（推荐）
+
+```xml
+<dependency>
+    <groupId>io.agentscope</groupId>
+    <artifactId>agentscope-a2a-spring-boot-starter</artifactId>
+    <version>${agentscope.version}</version>
+</dependency>
+
+<!-- 额外添加 Nacos Spring Boot starter 的依赖 -->
+<dependency>
+    <groupId>io.agentscope</groupId>
+    <artifactId>agentscope-nacos-spring-boot-starter</artifactId>
+    <version>${agentscope.version}</version>
+</dependency>
+```
+
+```yaml
+# application.yml
+agentscope:
+  dashscope:
+    api-key: your-api-key
+  agent:
+    name: my-assistant
+  a2a:
+    server:
+      enabled: true
+      card:
+        name: My Assistant
+        description: An intelligent assistant based on AgentScope
+    # 在 `agentscope.a2a` 下添加Nacos相关配置
+    nacos:
+      server-addr: ${NACOS_SERVER_ADDRESS:127.0.0.1:8848}
+      username: ${NACOS_USERNAME:nacos}
+      password: ${NACOS_PASSWORD:nacos}
+```
+
+```java
+@SpringBootApplication
+public class A2aServerApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(A2aServerApplication.class, args);
+    }
+}
+```
+
+- 为`手动创建方式`添加
+
+```xml
+<dependency>
+    <groupId>io.agentscope</groupId>
+    <artifactId>agentscope-extensions-nacos-a2a</artifactId>
+    <version>${agentscope.version}</version>
+</dependency>
+```
+
+```java
+import com.alibaba.nacos.api.PropertyKeyConst;
+import com.alibaba.nacos.api.ai.AiFactory;
+import com.alibaba.nacos.api.ai.AiService;
+import io.agentscope.core.a2a.server.AgentScopeA2aServer;
+import io.agentscope.core.a2a.server.transport.DeploymentProperties;
+import io.agentscope.core.nacos.a2a.registry.NacosAgentRegistry;
+
+// 设置 Nacos 地址
+Properties properties = new Properties();
+properties.put(PropertyKeyConst.SERVER_ADDR, "localhost:8848");
+// 创建 Nacos Client
+AiService aiService = AiFactory.createAiService(properties);
+// 添加 Nacos 的 AgentRegistry
+AgentScopeA2aServer server = AgentScopeA2aServer.builder(
+        ReActAgent.builder()
+            .name("my-assistant")
+            .sysPrompt("你是一个有用的助手"))
+    .deploymentProperties(DeploymentProperties.builder()
+        .host("localhost")
+        .port(8080)
+        .build())
+    .withAgentRegistry(NacosAgentRegistry.builder(aiService).build())
+    .build();
+```
+
+##### 配置选项
+
+```java
+NacosA2aRegistryProperties registryProperties = NacosA2aRegistryProperties.builder()
+        .setAsLatest(true)
+        .enabledRegisterEndpoint(true)
+        .overwritePreferredTransport("http")
+        .build();
+
+NacosAgentRegistry agentRegistry = NacosAgentRegistry
+        .builder(aiService)
+        .nacosA2aProperties(registryProperties)
+        .build();
+```
+
+
+
+| 参数                          | 类型    | 描述                                                         |
+| ----------------------------- | ------- | ------------------------------------------------------------ |
+| `setAsLatest`                 | boolean | 注册的 A2A 服务始终为最新版本，默认为`false`。               |
+| `enabledRegisterEndpoint`     | boolean | 自动注册所有`Transport`作为此 A2A 服务的 Endpoint，默认为`true`，当设置为`false`时，仅会发布Agent Card。 |
+| `overwritePreferredTransport` | String  | 注册 A2A 服务时，使用此`Transport`覆盖 Agent Card 中的`preferredTranspor`和`url`，默认为`null`。 |
+
+------
+
+### 中断任务
+
+```java
+// 客户端中断
+agent.interrupt();
+
+// 带消息的中断
+agent.interrupt(Msg.builder()
+    .textContent("用户取消了操作")
+    .build());
+```
