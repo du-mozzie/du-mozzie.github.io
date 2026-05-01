@@ -1,14 +1,12 @@
 ---
-order: 2
-title: RAG知识库
+order: 1
+title: RAG概述
 date: 2025-05-28
 category: AI
 tag: AI
 timeline: true
 article: true
 ---
-
-开发一个自己的RAG知识库
 
 ## 什么是RAG
 
