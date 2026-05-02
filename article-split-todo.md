@@ -37,6 +37,7 @@ index: false
 - [x] `src/code/java/juc/no-lock/thread-local.md` -> `src/code/java/juc/no-lock/thread-local/`
 - [x] `src/code/java/juc/thread-pool/blocking-queue.md` -> `src/code/java/juc/thread-pool/blocking-queue/`
 - [x] `src/code/java/juc/thread-pool/task-scheduling.md` -> `src/code/java/juc/thread-pool/task-scheduling/`
+- [x] `src/code/java/juc/concurrent-util/concurrent-hash-map/member-method.md` -> `src/code/java/juc/concurrent-util/concurrent-hash-map/member-method/`
 
 ## Split Rules
 

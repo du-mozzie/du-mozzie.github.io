@@ -1,6 +1,6 @@
 ---
 order: 4
-title: '2.4 read 剖析'
+title: 'read 剖析'
 date: 2026-02-13
 category: Netty
 tag: Netty
@@ -8,7 +8,7 @@ timeline: true
 article: true
 ---
 
-# 2.4 read 剖析
+# read 剖析
 
 再来看可读事件 `io.netty.channel.nio.AbstractNioByteChannel.NioByteUnsafe#read`，注意发送的数据未必能够一次读完，因此会触发多次 nio read 事件，一次事件内会触发多次 pipeline read，一次事件会触发一次 pipeline read complete
 

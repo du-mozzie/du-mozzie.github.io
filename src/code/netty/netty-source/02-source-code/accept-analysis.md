@@ -1,6 +1,6 @@
 ---
 order: 3
-title: '2.3 accept 剖析'
+title: 'accept 剖析'
 date: 2026-02-13
 category: Netty
 tag: Netty
@@ -8,7 +8,7 @@ timeline: true
 article: true
 ---
 
-# 2.3 accept 剖析
+# accept 剖析
 
 nio 中如下代码，在 netty 中的流程
 

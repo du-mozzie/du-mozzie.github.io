@@ -1,6 +1,6 @@
 ---
 order: 2
-title: '2.2 NioEventLoop 剖析'
+title: 'NioEventLoop 剖析'
 date: 2026-02-13
 category: Netty
 tag: Netty
@@ -8,7 +8,7 @@ timeline: true
 article: true
 ---
 
-# 2.2 NioEventLoop 剖析
+# NioEventLoop 剖析
 
 NioEventLoop 线程不仅要处理 IO 事件，还要处理 Task（包括普通任务和定时任务），
 
