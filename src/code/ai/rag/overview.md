@@ -2,8 +2,8 @@
 order: 1
 title: RAG概述
 date: 2025-05-28
-category: AI
-tag: AI
+category: RAG
+tag: RAG
 timeline: true
 article: true
 ---
