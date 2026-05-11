@@ -107,7 +107,7 @@ print("句子窗口 Faithfulness:", pass_rate(window_results, "faithfulness"))
 
 ## 2. RAGAS
 
-`RAGAS` 是一个独立的 RAG 评估框架，它不要求你的应用必须使用某个 RAG 开发框架。只要能整理出问题、答案、上下文和可选标准答案，就可以跑评估。
+[RAGAS](https://docs.ragas.io/en/stable/) 是一个独立的 RAG 评估框架，它不要求你的应用必须使用某个 RAG 开发框架。只要能整理出问题、答案、上下文和可选标准答案，就可以跑评估。
 
 RAGAS 的核心思想是围绕下面几类对象建立指标：
 
@@ -204,7 +204,7 @@ new pipeline
 
 ## 3. Phoenix
 
-`Phoenix` 是 Arize 维护的开源 LLM 可观测性与评估平台。它更像是 RAG 系统的调试和监控工作台，而不是单纯的离线打分脚本。
+[Phoenix](https://arize.com/phoenix/) 是 Arize 维护的开源 LLM 可观测性与评估平台。它更像是 RAG 系统的调试和监控工作台，而不是单纯的离线打分脚本。
 
 Phoenix 的核心价值是 Trace：把一次 RAG 请求中的检索、重排、压缩、生成、评估等步骤记录下来，然后在 UI 中可视化分析。
 
