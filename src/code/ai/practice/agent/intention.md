@@ -1,7 +1,7 @@
 ---
 order: 2
 title: 意图识别
-date: 2026-01-15
+date: 2026-07-25
 category: 
     - AI
     - Agent
@@ -12,7 +12,7 @@ timeline: true
 article: true
 ---
 
-本文是关于自己学习agent工程中意图识别
+意图识别
 
 ## 提高意图识别准确率的方法
 
