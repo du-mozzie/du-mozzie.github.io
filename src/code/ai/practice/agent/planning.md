@@ -28,6 +28,10 @@ article: true
 - **过程不确定性**：执行是否"合法"（是否遵守约束、是否量化）——只能减轻（Checkpoint、Prompt 强调约束），无法根除；
 - **失败不确定性**：失败原因无数种，重试/查询/追问/重来怎么选。
 
+Plan 的基本思路看似只有四步：先分析用户需求 → 再收集相关信息 → 然后执行任务 → 最后总结输出。但**步骤只是其中的一个部分，是表现形态、是最终看到的产物；在这之前还有很多的步骤和内部信息需要关注**（正是下面 G4C 要覆盖的内容）。
+
+<img src="https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/202608302144685.png" style="zoom:50%;" />
+
 ### G4C：好 Plan 的 5 要素
 
 | 要素 | 核心问题 | 缺失后果 |
@@ -40,25 +44,146 @@ article: true
 
 一句话：Goal 解决去哪，Context 解决现状，Choice 解决怎么走，Checkpoint 解决怎么知道走偏，Correction 解决走偏后怎么拉回。
 
+<img src="https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/202608302146567.png" style="zoom:67%;" />
+
 **Goal 要点**：目标要给出"标准"——什么算"适合高级工程师表达"？标准最好由大模型结合知识库/RAG 检索自行定义（专属领域可预置标准）。**形容词是幻觉与不稳定的来源**，要精确定义其内涵。
 
-**Context 要点**：维护 known_facts / missing_info；**硬约束、软约束独立维护，每次调用大模型都放入系统提示词**（系统提示词地位高，上下文再长也不易被忽略）。
+**Context 要点**：维护 known_facts / missing_info；**硬约束、软约束独立维护，每次调用大模型都放入系统提示词**（系统提示词地位高，上下文再长也不易被忽略）。多轮对话中约束一般通过专门的摘要/约束提取步骤得来，**每一个约束的修改都需要有用户输入作为证据**。
 
 **Choice 要点**：输出候选路径 + 选择理由（evidence-based）；steps 可加 reason 字段便于排查。
 
-**Checkpoint 要点**（最易被忽略）：① 执行中防止偏离（每个检查点输出明确检查结果 + 证据）；② 为 Replan 和根因查找提供依据。粒度参考：里程碑（业务新状态）、关键中间步骤完成、容易出错的步骤之后。可用"检查点数量 = 步骤数 / 3"之类的规则定义"足够"。
+**Checkpoint 要点**（最易被忽略）：① 执行中防止偏离（每个检查点输出明确检查结果 + 证据）；② 为 Replan 和根因查找提供依据。粒度参考：每次业务逻辑上达到新状态、关键中间步骤完成、容易出错的步骤之后。可用"检查点数量 = 步骤数 / 3"之类的规则定义"足够"。
 
-**Correction 要点**：重试（当前步骤/局部/从头）、Replan（认定 Plan 本身有问题）、澄清（比瞎答好——错误回答浪费 token）、回滚（配合 Checkpoint）、中断（不可挽回时告知用户）。可输出结构化 condition→action 映射。
+**Correction 要点**：重试（当前步骤/局部/从头，工具偶发失败/格式错误/超时重试即可）、Replan（认定 Plan 本身有问题）、澄清（提前对缺失/歧义 Context 向用户确认，比瞎答好——错误回答浪费 token）、回滚（数据/状态错误时回滚到某步骤之前，配合 Checkpoint）、中断（不可挽回时告知用户）。可输出结构化 condition→action 映射。
+
+### G4C 结构化落地示例
+
+以下 JSON 是 G4C 各要素在"优化项目经历以适配阿里 Java 后端面试"场景下的结构化输出参考：
+
+**Goal**：目标 + 成功标准（success_criteria）
+
+```json
+{
+    "goal": {
+        "user_goal": "优化项目经历，使其适合阿里 Java 后端面试",
+        "success_criteria": [
+            "体现技术复杂度", "体现个人贡献", "体现业务价值",
+            "能支撑面试官追问", "不虚构用户没有做过的内容"
+        ]
+    }
+}
+```
+
+**Context**：known_facts（已确认事实）/ missing_info（缺失信息）
+
+```json
+{
+    "context": {
+        "known_facts": ["用户认为项目偏 CRUD", "目标岗位是 Java 后端", "目标公司是阿里", "用户希望同时生成面试追问"],
+        "missing_info": ["项目背景", "技术栈", "业务规模", "用户负责模块", "性能或稳定性数据", "实际做过的优化"]
+    }
+}
+```
+
+**Choice**：selected_path + reason + steps（步骤可带 id/objective）
+
+```json
+{
+    "choice": {
+        "selected_path": "先抽取和补齐项目事实，再生成项目亮点，最后生成面试追问",
+        "reason": "如果直接包装，容易违反不能虚构的要求；面试追问应该基于最终项目亮点生成",
+        "steps": [
+            {"id": "extract_project_facts", "objective": "抽取已有项目事实"},
+            {"id": "ask_missing_info", "objective": "追问缺失的关键信息"},
+            {"id": "generate_project_highlights", "objective": "生成项目亮点"},
+            {"id": "rewrite_project_experience", "objective": "改写项目经历"},
+            {"id": "generate_interview_questions", "objective": "基于项目亮点生成面试追问"}
+        ]
+    }
+}
+```
+
+**Checkpoint**：按 step_id 绑定检查项
+
+```json
+{
+    "checkpoint": [
+        {
+            "step_id": "extract_project_facts",
+            "checks": ["是否区分事实和推测", "是否识别出缺失信息", "是否保留用户硬约束"]
+        },
+        {
+            "step_id": "rewrite_project_experience",
+            "checks": ["是否存在虚构内容", "是否体现技术复杂度", "是否有量化结果", "是否适配阿里 Java 后端面试"]
+        }
+    ]
+}
+```
+
+**Correction**：condition → action 映射
+
+```json
+{
+    "correction": [
+        {"condition": "缺少关键项目信息", "action": "向用户澄清"},
+        {"condition": "生成内容包含未经确认的事实", "action": "回滚到事实抽取阶段"},
+        {"condition": "用户否认某个技术点", "action": "删除该技术点并局部 Replan"},
+        {"condition": "面试追问无法从项目经历中推导", "action": "重新生成项目亮点或降低表达强度"}
+    ]
+}
+```
+
+### Prompt 要点
+
+1. **给出非常明确的目标**，对形容词有清晰的标准，可支持去 RAG / 知识库检索已定义好的标准；
+2. **强调约束**：多轮对话中约束通过专门的摘要/约束提取步骤得到，约束的每次修改都要有用户输入作为证据；
+3. **生成 Plan 步骤时强调输出路径 + 选择理由**，方案必须有根据（evidence-based）；
+4. **检查点粒度**：业务逻辑上每次达到新状态、关键中间步骤完成、容易出错的步骤之后；
+5. **纠偏机制**：在提示词中列举不同的业务失败场景及对应的纠偏做法。
 
 ### 评估 Plan 质量
 
-- **离线分析**（LLM as Judge）：是否违反约束（尤其硬约束）、检查点是否足够（可抽样）。
-- **线上指标**：Plan 完成率、步骤成功率、重 Plan 触发率、用户纠正率（"不是这个意思"）、最终任务成功率。
+- **离线分析**（LLM as Judge）：围绕 G4C 展开细粒度评测——是否违反约束（尤其硬约束）、Context 是否完整、Choice 是否有依据、检查点是否足够（可抽样）。
+- **线上指标**：
+
+| 指标 | 解释 |
+|---|---|
+| Plan 完成率 | 按 Plan 完成任务的比例（可通过 Prometheus 监控） |
+| 步骤成功率 | 每个步骤执行成功率（Prometheus 监控） |
+| 重 Plan 触发率 | 执行中需要重 Plan 的比例（Prometheus 监控） |
+| 用户纠正率 | 用户说"不是这个意思/你理解错了"的比例，需在用户输入后引入评估/观察步骤 |
+| 最终任务成功率 | 用户目标是否达成；注意 Plan 完成 ≠ 任务成功 ≠ 达成用户目标，但一般任务完成说明 Plan 质量不错 |
 
 ### 高级方案
 
-- **迭代式 Plan 生成**：生成→评估→修正循环，引入 Plan Verifier（输出 score + 各类 issues + suggestions），相当于给 Plan 做一次 Code Review；控制最大循环次数并监控平均循环次数。
-- **DAG 式 Plan**：识别步骤间依赖关系生成 DAG（nodes + depends_on / edges + attrs）；Prompt 要写明依赖识别规则、反常规例子、**循环依赖检查（最终用代码检查，模型易错）**；线性 Plan 简单可靠，非面试场景够用。
+- **迭代式 Plan 生成**：生成→评估→修正循环，引入 Plan Verifier，相当于给 Plan 做一次 Code Review；控制最大循环次数并监控平均循环次数。Plan Verifier 输出示例（score 需要给出评分标准，否则只能让大模型自由发挥）：
+
+```json
+{
+    "score": 0.78,
+    "goal_issues": [],
+    "context_issues": ["没有识别出用户实际负责模块缺失"],
+    "choice_issues": ["当前Plan直接生成项目描述，存在虚构风险"],
+    "checkpoint_issues": ["缺少事实一致性检查"],
+    "correction_issues": ["没有定义用户否认技术点后的回滚策略"],
+    "suggestions": ["先追问用户实际负责内容", "增加事实一致性检查", "增加局部 Replan 条件"]
+}
+```
+
+- **DAG 式 Plan**：要求大模型先识别步骤间依赖关系，再生成 DAG；Prompt 要写明依赖识别规则、反常规例子、**循环依赖检查（最终用代码检查，模型易错）**；线性 Plan 简单可靠，非面试场景够用。
+
+```json
+{
+    "nodes": [
+        {"id": "generate_highlights", "depends_on": ["extract_project_facts", "analyze_target_role"]}
+    ],
+    "edges": [
+        {"src": "extract_project_facts", "dst": "generate_highlights", "attrs": {}}
+    ]
+}
+```
+
+（少数依赖关系带属性的场景，可使用 edges 结构。）
 
 ## 二、Replan（上）：触发时机、粒度与控制
 
