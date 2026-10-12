@@ -5,7 +5,7 @@ date: 2026-08-15
 category:
     - AI
     - Agent
-tag:
+tag:    
     - AI
     - Agent
     - 评测
@@ -18,7 +18,7 @@ article: true
 
 Agent 评测要回答：**当前版本好不好、哪里出了问题、改完是否真的变好。** 观测提供证据，评测给出判断，归因指明修改方向，再通过回归和线上验证确认效果。
 
-本文整合原有实践笔记与图灵 Agent 评测团队的两篇文章，按建设流程重新组织。来源见文末；落地模板、示例和自查项是综合整理，不是原文规范。
+![](https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/20261012204014169.png)
 
 ## 一、评测全景：四个模块、两条迭代闭环
 
