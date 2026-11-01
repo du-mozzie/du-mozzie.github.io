@@ -12,7 +12,7 @@ timeline: true
 article: true
 ---
 
-# 意图识别（Intention Recognition）
+# 意图识别
 
 意图识别可以拆成两个部分：**Intent Classification（选择业务流程）+ Slot Filling（提取流程所需参数）**。在此之前，通常还需要对用户输入做规范化，处理指代、省略、口语和行业术语等问题。
 

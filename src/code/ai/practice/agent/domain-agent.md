@@ -13,9 +13,11 @@ timeline: true
 article: true
 ---
 
-# 如何设计一个具体领域的 Agent：通用面试骨架（结束语）
+# 如何设计一个具体领域的 Agent：通用面试骨架
 
 > 场景题："如果让你设计一个 XX Agent，你会怎么做？"——把前面全部内容串成一套通用回答框架。初级工程师答清"大模型 + Tool + RAG"即可；高级岗位必须体现工程复杂度。
+
+<img src="https://raw.githubusercontent.com/du-mozzie/PicGo/master/images/20261021210633384.png" style="zoom: 67%;" />
 
 ## 整体架构：优先主 Agent + 多个领域子 Agent
 
